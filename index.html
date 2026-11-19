@@ -3,134 +3,167 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>나라장터 발주계획·물품목록·낙찰정보 OpenAPI 통합 검색 시스템</title>
+  <title>나라장터 5대 조달 데이터(발주계획·사전규격/입찰·계약/쇼핑몰·낙찰·목록정보) 실시간 OpenAPI 시스템</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-      background-color: #f4f7fb;
+      background-color: #f3f6fb;
     }
     .step-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border-radius: 9999px;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
     .row-selected {
       background-color: #eff6ff !important;
       border-left: 4px solid #2563eb;
     }
+    .tab-btn {
+      transition: all 0.2s ease;
+    }
+    .tab-active {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+      border-color: transparent !important;
+    }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
 
-  <!-- 상단 헤더 / 승인된 5종 OpenAPI 현황 배너 -->
-  <header class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-        <div class="space-y-2">
-          <div class="flex flex-wrap items-center gap-1.5">
+  <!-- 상단 헤더 -->
+  <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="space-y-1.5">
+          <div class="flex flex-wrap items-center gap-2">
             <span class="px-2.5 py-0.5 text-xs font-bold bg-emerald-500/25 border border-emerald-400/50 rounded-full text-emerald-200">
-              ✓ 활용신청 [승인] 조달청 OpenAPI 5종 연동
+              ✓ 공공데이터포털 조달청 OpenAPI 실시간 연동
             </span>
             <span class="px-2.5 py-0.5 text-xs font-semibold bg-blue-500/30 border border-blue-400/40 rounded-full text-blue-200" id="apiModeBadge">
-              기본 데이터 · API키 입력 시 대량 실시간 수신
+              5개 화면별 실시간 OpenAPI 조회 지원
             </span>
           </div>
-          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">
-            나라장터 발주계획 기반 물품·계약 소개 검색 시스템
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            나라장터 조달 데이터 통합 검색 · 분석 · 소개 플랫폼
           </h1>
           <p class="text-xs sm:text-sm text-blue-200">
-            <strong>발주계획현황 · 입찰공고정보 · 낙찰정보 · 물품목록정보 · 쇼핑몰품목정보 OpenAPI</strong>를 연계하여
-            날짜 선택 → 분석 종류 선택 → 계약정보(식별번호) 검색 → 회사명·제품명·연락처 조회를 제공합니다.
+            <strong>① 발주계획 · ② 사전규격/입찰공고 · ③ 계약정보/쇼핑몰 · ④ 낙찰정보 · ⑤ 물품목록정보</strong> 각 화면별 전용 OpenAPI 실시간 조회
           </p>
         </div>
 
-        <!-- OpenAPI 인증키 설정 영역 -->
+        <!-- OpenAPI 인증키 입력 박스 (localStorage 자동 저장) -->
         <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl p-3.5 w-full lg:w-[460px] shrink-0">
           <div class="flex items-center justify-between text-xs text-blue-200 mb-1.5">
-            <span class="font-semibold">🔑 공공데이터포털 인증키 (5종 API 병렬 대량 호출)</span>
-            <span class="text-[11px] text-emerald-300" id="apiStatusSubText">한 번에 최대 수천 건 수집</span>
+            <span class="font-semibold">🔑 공공데이터포털 인증키 (한 번 입력 시 5개 화면 모두 연동)</span>
+            <span class="text-[11px] text-emerald-300" id="keySavedStatus">자동 저장 지원</span>
           </div>
           <div class="flex gap-2">
             <input
               id="serviceKeyInput"
               type="text"
-              placeholder="공공데이터포털 일반 인증키 붙여넣기"
-              class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-900/60 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:border-blue-400 font-mono"
+              placeholder="공공데이터포털 일반 인증키 입력"
+              class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-900/70 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:border-blue-400 font-mono"
             />
             <button
               id="apiFetchBtn"
-              onclick="applyApiKey()"
+              onclick="fetchCurrentTabOpenAPI(true)"
               class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold rounded-lg whitespace-nowrap transition shadow"
             >
-              실시간 대량 불러오기
+              현재 화면 API 조회
             </button>
           </div>
-          <div id="apiAlertBox" class="hidden mt-2 text-[11px] px-2.5 py-1.5 rounded bg-slate-900/80 border border-white/15 text-blue-100 leading-relaxed"></div>
+          <div id="apiAlertBox" class="hidden mt-2 text-[11px] px-2.5 py-1.5 rounded bg-slate-900/90 border border-white/15 text-blue-100 leading-relaxed"></div>
         </div>
       </div>
 
-      <!-- 활용신청 승인 완료된 5개 OpenAPI 서비스 배지 표시 -->
-      <div class="mt-4 pt-3.5 border-t border-white/15 flex flex-wrap items-center gap-2 text-xs">
-        <span class="text-blue-200 font-semibold mr-1">연동 승인 API 목록:</span>
-        <span class="px-2.5 py-1 rounded-md bg-white/10 border border-white/15 text-white flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>[승인] 조달청_나라장터 발주계획현황서비스
-        </span>
-        <span class="px-2.5 py-1 rounded-md bg-white/10 border border-white/15 text-white flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>[승인] 조달청_나라장터 입찰공고정보서비스
-        </span>
-        <span class="px-2.5 py-1 rounded-md bg-white/10 border border-white/15 text-white flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>[승인] 조달청_나라장터 낙찰정보서비스
-        </span>
-        <span class="px-2.5 py-1 rounded-md bg-white/10 border border-white/15 text-white flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>[승인] 조달청_물품목록정보서비스
-        </span>
-        <span class="px-2.5 py-1 rounded-md bg-white/10 border border-white/15 text-white flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>[승인] 조달청_나라장터쇼핑몰 품목정보 서비스
-        </span>
+      <!-- 5대 조달 데이터 화면 전환 탭 (발주계획 / 사전규격·입찰 / 계약·쇼핑몰 / 낙찰 / 목록정보) -->
+      <div class="mt-5 pt-4 border-t border-white/15">
+        <div class="text-xs text-blue-200 font-semibold mb-2">
+          📌 조회할 나라장터 데이터 화면을 선택하세요 (탭 클릭 시 해당 OpenAPI로 즉시 전환 및 실시간 조회):
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5" id="tabButtonsContainer">
+          <button onclick="switchTab('orderPlan')" id="tab-orderPlan"
+            class="tab-btn tab-active text-left p-3 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold opacity-80">화면 1</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-black/25 font-mono" id="count-badge-orderPlan">실시간</span>
+            </div>
+            <div class="text-sm font-extrabold mt-1">📋 나라장터 발주계획</div>
+            <div class="text-[11px] opacity-80 mt-0.5 truncate">발주계획현황서비스 API</div>
+          </button>
+
+          <button onclick="switchTab('preSpecBid')" id="tab-preSpecBid"
+            class="tab-btn text-left p-3 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 text-white">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold opacity-80">화면 2</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-black/25 font-mono" id="count-badge-preSpecBid">실시간</span>
+            </div>
+            <div class="text-sm font-extrabold mt-1">📑 사전규격 · 입찰공고</div>
+            <div class="text-[11px] opacity-80 mt-0.5 truncate">입찰공고정보서비스 API</div>
+          </button>
+
+          <button onclick="switchTab('contractShop')" id="tab-contractShop"
+            class="tab-btn text-left p-3 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 text-white">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold opacity-80">화면 3</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-black/25 font-mono" id="count-badge-contractShop">실시간</span>
+            </div>
+            <div class="text-sm font-extrabold mt-1">🤝 계약정보 · 쇼핑몰품목</div>
+            <div class="text-[11px] opacity-80 mt-0.5 truncate">나라장터쇼핑몰 품목정보 API</div>
+          </button>
+
+          <button onclick="switchTab('award')" id="tab-award"
+            class="tab-btn text-left p-3 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 text-white">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold opacity-80">화면 4</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-black/25 font-mono" id="count-badge-award">실시간</span>
+            </div>
+            <div class="text-sm font-extrabold mt-1">🏆 나라장터 낙찰정보</div>
+            <div class="text-[11px] opacity-80 mt-0.5 truncate">낙찰정보서비스 API</div>
+          </button>
+
+          <button onclick="switchTab('catalog')" id="tab-catalog"
+            class="tab-btn text-left p-3 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 text-white">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold opacity-80">화면 5</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-black/25 font-mono" id="count-badge-catalog">실시간</span>
+            </div>
+            <div class="text-sm font-extrabold mt-1">📦 물품 목록정보</div>
+            <div class="text-[11px] opacity-80 mt-0.5 truncate">물품목록정보서비스 API</div>
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- 시나리오 진행 플로우 바 -->
+  <!-- 현재 활성 화면 설명 & 4단계 시나리오 바 -->
   <div class="bg-white border-b border-slate-200 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs sm:text-sm">
-        <div class="flex items-center gap-2 p-2 rounded-lg bg-blue-50 text-blue-900 font-medium border border-blue-200">
-          <span class="step-badge bg-blue-600 text-white">1</span>
-          <div>
-            <div class="font-bold">날짜 선택</div>
-            <div class="text-[11px] text-blue-700">발주계획현황서비스 기간 조회</div>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 p-2 rounded-lg bg-indigo-50 text-indigo-900 font-medium border border-indigo-200">
-          <span class="step-badge bg-indigo-600 text-white">2</span>
-          <div>
-            <div class="font-bold">분석 종류 선택</div>
-            <div class="text-[11px] text-indigo-700">발주·입찰·낙찰 데이터 분석</div>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 p-2 rounded-lg bg-violet-50 text-violet-900 font-medium border border-violet-200">
-          <span class="step-badge bg-violet-600 text-white">3</span>
-          <div>
-            <div class="font-bold">계약정보(식별번호) 검색</div>
-            <div class="text-[11px] text-violet-700">물품목록·쇼핑몰 식별번호 매칭</div>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 text-emerald-900 font-medium border border-emerald-200">
-          <span class="step-badge bg-emerald-600 text-white">4</span>
-          <div>
-            <div class="font-bold">회사명·제품명·연락처 조회</div>
-            <div class="text-[11px] text-emerald-700">낙찰업체 및 쇼핑몰 품목 소개</div>
-          </div>
-        </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <span id="activeScreenBadge" class="px-3 py-1 rounded-lg bg-blue-600 text-white text-xs font-extrabold">
+          화면 1 : 나라장터 발주계획
+        </span>
+        <span id="activeScreenDesc" class="text-xs sm:text-sm font-semibold text-slate-700">
+          조달청_나라장터 발주계획현황서비스 (물품·용역·공사 발주계획 실시간 조회)
+        </span>
+      </div>
+      <div class="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+        <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-semibold">① 날짜 선택</span>
+        <span>→</span>
+        <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded font-semibold">② 분석 종류 선택</span>
+        <span>→</span>
+        <span class="px-2 py-0.5 bg-violet-50 text-violet-700 rounded font-semibold">③ 식별번호·계약 검색</span>
+        <span>→</span>
+        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded font-semibold">④ 회사명·제품명·연락처 조회</span>
       </div>
     </div>
   </div>
@@ -142,21 +175,24 @@
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-end">
 
-        <!-- 1단계: 날짜 선택 -->
+        <!-- 1단계: 날짜 선택 (실제 OpenAPI 조회 기간 파라미터로 사용) -->
         <div class="lg:col-span-4 space-y-1.5">
-          <label class="flex items-center gap-1.5 text-sm font-bold text-slate-800">
-            <span class="w-5 h-5 rounded-full bg-blue-600 text-white text-xs inline-flex items-center justify-center">1</span>
-            조회 날짜 선택 (발주계획·공고 기간)
+          <label class="flex items-center justify-between text-sm font-bold text-slate-800">
+            <span class="flex items-center gap-1.5">
+              <span class="step-badge bg-blue-600 text-white">1</span>
+              조회 날짜 선택 (API 실시간 조회기간)
+            </span>
+            <span class="text-[11px] font-normal text-blue-600">날짜 변경 후 [실시간 조회] 클릭</span>
           </label>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <span class="text-[11px] text-slate-500 block mb-0.5">시작일자 (inqryBgnDt)</span>
-              <input type="date" id="startDate" value="2024-01-01" onchange="runSearch()"
+              <input type="date" id="startDate" value="2025-05-01" onchange="runLocalFilter()"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
             </div>
             <div>
               <span class="text-[11px] text-slate-500 block mb-0.5">종료일자 (inqryEndDt)</span>
-              <input type="date" id="endDate" value="2026-12-31" onchange="runSearch()"
+              <input type="date" id="endDate" value="2025-07-31" onchange="runLocalFilter()"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
             </div>
           </div>
@@ -165,103 +201,103 @@
         <!-- 2단계: 분석 종류 선택 -->
         <div class="lg:col-span-4 space-y-1.5">
           <label class="flex items-center gap-1.5 text-sm font-bold text-slate-800">
-            <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-xs inline-flex items-center justify-center">2</span>
-            분석 종류 및 OpenAPI 서비스 선택
+            <span class="step-badge bg-indigo-600 text-white">2</span>
+            분석 종류 및 업무구분 선택
           </label>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <span class="text-[11px] text-slate-500 block mb-0.5">분석 종류 선택</span>
+              <span class="text-[11px] text-slate-500 block mb-0.5">분석 차트 기준</span>
               <select id="analysisType" onchange="updateAnalysisChart()"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <option value="category">업무구분별 발주·낙찰금액 분석</option>
-                <option value="agency">수요기관별 발주계획 예산 분석 (TOP 10)</option>
-                <option value="method">입찰·계약방법별 비중 분석</option>
-                <option value="month">월별 발주계획 추이 분석</option>
+                <option value="agency">기관/업체별 금액·건수 TOP 10</option>
+                <option value="category">업무구분/분류별 비중 분석</option>
+                <option value="method">계약방법/세부분류별 분석</option>
+                <option value="date">일자별/월별 데이터 추이</option>
               </select>
             </div>
             <div>
-              <span class="text-[11px] text-slate-500 block mb-0.5">대상 업무구분 필터</span>
-              <select id="categoryFilter" onchange="runSearch()"
+              <span class="text-[11px] text-slate-500 block mb-0.5">업무 구분 (API 오퍼레이션)</span>
+              <select id="categoryFilter" onchange="runLocalFilter()"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <option value="ALL">전체 (물품 + 용역 + 공사)</option>
-                <option value="물품">물품 (물품목록·쇼핑몰품목)</option>
-                <option value="용역">용역 (발주계획·입찰·낙찰)</option>
-                <option value="공사">공사 (발주계획·입찰·낙찰)</option>
+                <option value="ALL">전체 (물품+용역+공사)</option>
+                <option value="물품">물품 (Thng)</option>
+                <option value="용역">용역 (Servc)</option>
+                <option value="공사">공사 (Cnstwk)</option>
               </select>
             </div>
           </div>
         </div>
 
-        <!-- 3단계: 계약정보(식별번호) 검색 -->
+        <!-- 3단계: 계약정보(식별번호) 검색 및 실시간 API 호출 버튼 -->
         <div class="lg:col-span-4 space-y-1.5">
           <label class="flex items-center gap-1.5 text-sm font-bold text-slate-800">
-            <span class="w-5 h-5 rounded-full bg-violet-600 text-white text-xs inline-flex items-center justify-center">3</span>
-            계약정보 (물품식별번호 / 발주번호) 검색
+            <span class="step-badge bg-violet-600 text-white">3</span>
+            식별번호 · 계약번호 · 회사명 · 품명 검색
           </label>
           <div class="flex gap-2">
             <div class="flex-1">
-              <span class="text-[11px] text-slate-500 block mb-0.5">물품식별번호·발주번호·회사명·제품명·기관명</span>
+              <span class="text-[11px] text-slate-500 block mb-0.5">결과 내 즉시 검색 또는 API 조건 검색</span>
               <input
                 type="text"
                 id="searchInput"
-                placeholder="예: 24891023, 서버, 드론, 공사, 용역..."
-                onkeyup="runSearch()"
+                placeholder="식별번호, 공고/발주번호, 회사명, 제품명..."
+                onkeyup="runLocalFilter()"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:outline-none"
               />
             </div>
             <button
-              onclick="applyApiKey()"
-              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition self-end h-[38px] flex items-center gap-1.5 whitespace-nowrap"
+              onclick="fetchCurrentTabOpenAPI(true)"
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm transition self-end h-[38px] flex items-center gap-1.5 whitespace-nowrap"
             >
-              <span>API 조회</span>
+              <span>실시간 조회</span>
             </button>
           </div>
         </div>
 
       </div>
 
-      <!-- REST API 호출 엔드포인트 표시줄 -->
+      <!-- 현재 화면의 실제 REST OpenAPI 호출 URL 표시줄 -->
       <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg">
         <div class="flex items-center gap-2 overflow-x-auto">
-          <span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded text-[11px]" id="httpStatusBadge">REST GET</span>
+          <span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded text-[11px] whitespace-nowrap" id="httpStatusBadge">REST API</span>
           <code id="endpointPreview" class="text-slate-700 font-mono text-[11px] whitespace-nowrap">
-            https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?type=json&amp;numOfRows=500
+            https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng
           </code>
         </div>
-        <span id="resultCountText" class="font-bold text-blue-700 whitespace-nowrap">총 20건 조회됨</span>
+        <span id="resultCountText" class="font-bold text-blue-700 whitespace-nowrap">조회 대기 중</span>
       </div>
     </section>
 
-    <!-- STEP 2 시각화: 데이터 분석 대시보드 & 요약 지표 -->
+    <!-- STEP 2 시각화: 화면별 맞춤 요약 지표 & 차트 -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <!-- 요약 카드 -->
+      <!-- 4개 요약 카드 -->
       <div class="lg:col-span-5 grid grid-cols-2 gap-4">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-500">발주계획·입찰·낙찰 조회 건수</span>
+          <span class="text-xs font-semibold text-slate-500" id="statLabel1">현재 화면 조회 건수</span>
           <div class="mt-2 flex items-baseline justify-between">
-            <span id="statCount" class="text-2xl font-extrabold text-slate-900">20건</span>
-            <span class="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded">5종 OpenAPI 통합</span>
+            <span id="statCount" class="text-2xl font-extrabold text-slate-900">0건</span>
+            <span id="statBadge1" class="text-[11px] text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded">실시간 API</span>
           </div>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-500">총 발주·낙찰 금액 합계</span>
+          <span class="text-xs font-semibold text-slate-500" id="statLabel2">총 금액(예산/낙찰/단가) 합계</span>
           <div class="mt-2 flex items-baseline justify-between">
-            <span id="statTotalBudget" class="text-2xl font-extrabold text-blue-600">96.3억 원</span>
-            <span class="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded">실시간 집계</span>
+            <span id="statTotalBudget" class="text-2xl font-extrabold text-blue-600">0원</span>
+            <span class="text-[11px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded">자동 집계</span>
           </div>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-500">매칭된 계약·물품식별번호</span>
+          <span class="text-xs font-semibold text-slate-500" id="statLabel3">고유 식별번호/관리번호</span>
           <div class="mt-2 flex items-baseline justify-between">
-            <span id="statAvgBudget" class="text-xl font-bold text-slate-800">20개 품목</span>
-            <span class="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded">누락 없이 전체 표시</span>
+            <span id="statAvgBudget" class="text-xl font-bold text-slate-800">0건</span>
+            <span class="text-[11px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded">식별번호 매칭</span>
           </div>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-500">조회 가능 공급업체·기관</span>
+          <span class="text-xs font-semibold text-slate-500" id="statLabel4">참여 기관 / 공급업체 수</span>
           <div class="mt-2 flex items-baseline justify-between">
-            <span id="statCompanies" class="text-xl font-bold text-indigo-600">20개사</span>
-            <span class="text-xs text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">연락처·제품명 포함</span>
+            <span id="statCompanies" class="text-xl font-bold text-indigo-600">0개처</span>
+            <span class="text-[11px] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">상세 조회 가능</span>
           </div>
         </div>
       </div>
@@ -271,9 +307,9 @@
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
             <span class="w-2 h-4 bg-indigo-600 rounded-sm"></span>
-            <span id="chartTitle">분석 종류별 발주 데이터 현황 (단위: 백만 원)</span>
+            <span id="chartTitle">현재 화면 실시간 데이터 분석 차트</span>
           </h2>
-          <span class="text-xs text-slate-400">2단계 분석 종류 선택 시 실시간 차트 갱신</span>
+          <span class="text-xs text-slate-400" id="chartSubLabel">OpenAPI 응답 데이터 실시간 시각화</span>
         </div>
         <div class="h-44">
           <canvas id="orderChart"></canvas>
@@ -281,28 +317,28 @@
       </div>
     </section>
 
-    <!-- STEP 3 (좌측 목록) & STEP 4 (우측 상세 회사명/제품명/연락처 소개 카드) -->
+    <!-- STEP 3 (좌측 화면별 맞춤 테이블) & STEP 4 (우측 회사명/제품명/연락처 + API 원본 필드 상세 소개 카드) -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-      <!-- 좌측: 3단계 발주계획 및 계약 식별번호 검색 목록 -->
+      <!-- 좌측: 3단계 화면별 실시간 목록 -->
       <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
         <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 bg-slate-50/60">
           <div>
             <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
               <span class="step-badge bg-violet-600 text-white text-xs">3</span>
-              발주계획 · 낙찰 · 물품식별번호 통합 검색 목록
+              <span id="tableHeaderTitle">나라장터 발주계획 실시간 검색 목록</span>
             </h3>
-            <p class="text-xs text-slate-500 mt-0.5">행을 클릭하면 우측에 <strong>회사명, 제품명, 연락처</strong> 및 연동된 OpenAPI 출처가 표시됩니다.</p>
+            <p class="text-xs text-slate-500 mt-0.5">목록에서 항목을 클릭하면 우측에 <strong>회사명, 제품명, 연락처</strong> 및 API 원본 상세정보가 표시됩니다.</p>
           </div>
           <div class="flex items-center gap-2">
             <select id="pageSizeSelect" onchange="changePageSize()" class="text-xs border border-slate-300 rounded-lg px-2 py-1 bg-white">
               <option value="100">100건씩 보기</option>
               <option value="300">300건씩 보기</option>
               <option value="1000">1,000건씩 보기</option>
-              <option value="99999">전체 한 번에 보기</option>
+              <option value="99999">전체 보기</option>
             </select>
             <button onclick="resetFilters()" class="text-xs text-slate-600 hover:text-blue-600 border border-slate-300 bg-white px-2.5 py-1 rounded-lg">
-              필터 초기화
+              검색어 초기화
             </button>
           </div>
         </div>
@@ -310,12 +346,12 @@
         <div class="overflow-x-auto max-h-[600px] overflow-y-auto flex-1">
           <table class="w-full text-left border-collapse">
             <thead class="sticky top-0 bg-slate-100 shadow-sm z-10">
-              <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase">
-                <th class="py-2.5 px-3">발주/공고일</th>
+              <tr id="tableHeadRow" class="border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase">
+                <th class="py-2.5 px-3">일자</th>
                 <th class="py-2.5 px-3">구분</th>
-                <th class="py-2.5 px-3">계약(물품)식별번호</th>
-                <th class="py-2.5 px-3">발주건명 / 입찰·계약 업체</th>
-                <th class="py-2.5 px-3 text-right">발주(낙찰)금액</th>
+                <th class="py-2.5 px-3">식별번호/관리번호</th>
+                <th class="py-2.5 px-3">건명/품명 및 기관·업체</th>
+                <th class="py-2.5 px-3 text-right">금액/단가</th>
               </tr>
             </thead>
             <tbody id="orderTableBody" class="divide-y divide-slate-200 text-xs">
@@ -335,8 +371,8 @@
           <div class="flex items-center gap-2">
             <span class="step-badge bg-white text-emerald-700">4</span>
             <div>
-              <h3 class="text-base font-bold">회사명 · 제품명 · 연락처 정보 조회</h3>
-              <p class="text-[11px] text-emerald-100">승인된 5종 OpenAPI 연계 업체·물품 상세 소개 페이지</p>
+              <h3 class="text-base font-bold" id="detailHeaderTitle">회사명 · 제품명 · 연락처 정보 조회</h3>
+              <p class="text-[11px] text-emerald-100" id="detailHeaderSub">선택한 항목의 상세 조달 소개 및 OpenAPI 응답 원문</p>
             </div>
           </div>
           <span id="detailBadgeId" class="px-2.5 py-1 bg-black/20 rounded-lg text-xs font-mono">
@@ -344,7 +380,7 @@
           </span>
         </div>
 
-        <div id="detailCardContent" class="p-5 space-y-5 flex-1 flex flex-col justify-between">
+        <div id="detailCardContent" class="p-5 space-y-4 flex-1 flex flex-col justify-between overflow-y-auto max-h-[680px]">
           <!-- JS로 상세 정보 렌더링 -->
         </div>
       </div>
@@ -357,8 +393,7 @@
   <footer class="bg-white border-t border-slate-200 mt-10 py-5 text-center text-xs text-slate-500">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
       <div>
-        <strong>과제주제:</strong> 발주계획을 이용한 소개페이지 작성 |
-        <strong>연동 OpenAPI:</strong> 조달청 나라장터 발주계획현황 · 입찰공고 · 낙찰정보 · 물품목록 · 쇼핑몰품목 (총 5종)
+        <strong>구축 데이터 구분:</strong> ① 나라장터 발주계획 · ② 사전규격/입찰공고 · ③ 계약정보/쇼핑몰품목 · ④ 낙찰정보 · ⑤ 물품목록정보 (5대 화면 실시간 OpenAPI 연동)
       </div>
       <div>
         GitHub Pages 웹 서비스 구축 완료
@@ -367,198 +402,224 @@
   </footer>
 
   <script>
-    // 기본 탑재된 20건의 초기 데이터
-    const INITIAL_DATA = [
-      {
-        uid: "INIT-1",
-        orderPlanNo: "2026-01-004812",
-        bidNtceNo: "20260210412-00",
-        itemId: "24891023",
-        orderDate: "2026-02-14",
-        category: "물품",
-        agency: "조달청 정보기획과",
-        orderTitle: "차세대 공공 클라우드 고성능 AI 추론 서버 도입",
-        budget: 680000000,
-        contractMethod: "제한경쟁(MAS 2단계)",
-        companyName: "(주)한국클라우드테크놀로지",
-        ceoName: "김태호",
-        productName: "KCT-AI Server Pro GX500 (GPU 8Way 탑재형)",
-        productSpec: "Intel Xeon Gold 6530 2EA, 512GB DDR5, AI 가속기 8EA, 랙마운트 4U",
-        phone: "02-6240-8810",
-        manager: "공공사업본부 이지훈 수석 (010-3921-8810)",
-        email: "gov-sales@kcloudtech.co.kr",
-        address: "서울특별시 금천구 가산디지털1로 168, 우림라이온스밸리 A동 11층",
-        linkedApis: ["발주계획현황서비스", "입찰공고정보서비스", "낙찰정보서비스", "나라장터쇼핑몰 품목정보"],
-        description: "행정·공공기관 대민 AI 질의응답 및 대용량 빅데이터 분석 업무를 위한 조달청 나라장터 쇼핑몰 등록 고성능 서버입니다."
-      },
-      {
-        uid: "INIT-2",
-        orderPlanNo: "2026-02-009104",
-        bidNtceNo: "20260301882-00",
-        itemId: "25104982",
-        orderDate: "2026-03-05",
-        category: "용역",
-        agency: "행정안전부 디지털정부국",
-        orderTitle: "2026년 공공조달 발주계획 빅데이터 분석 플랫폼 고도화 사업",
-        budget: 520000000,
-        contractMethod: "협상에 의한 계약",
-        companyName: "(주)데이터브릿지솔루션",
-        ceoName: "박선영",
-        productName: "DataBridge G2B Analytics Suite v4.2 (데이터 분석 구축 용역)",
-        productSpec: "실시간 OpenAPI 수집기, 발주예측 대시보드, 시각화 모듈 일체",
-        phone: "042-488-7120",
-        manager: "공공데이터팀 정현우 팀장 (010-8412-7120)",
-        email: "contact@databridge.kr",
-        address: "대전광역시 서구 둔산중로 78, 8층",
-        linkedApis: ["발주계획현황서비스", "입찰공고정보서비스", "낙찰정보서비스"],
-        description: "나라장터 발주계획 및 낙찰정보 OpenAPI 데이터를 자동 연계하여 기관별 예산 집행 현황과 업체 매칭을 지원하는 지능형 분석 솔루션입니다."
-      },
-      {
-        uid: "INIT-3",
-        orderPlanNo: "2026-03-011520",
-        bidNtceNo: "20260319004-00",
-        itemId: "23984110",
-        orderDate: "2026-03-22",
-        category: "물품",
-        agency: "서울특별시 스마트도시정책관",
-        orderTitle: "지능형 교통관제(ITS) 엣지 AI 영상분석 장치 구매",
-        budget: 410000000,
-        contractMethod: "우수조달물품 수의계약",
-        companyName: "한빛비전시스템(주)",
-        ceoName: "최동훈",
-        productName: "HB-EdgeCam AI-9000 (스마트 교차로 영상분석기)",
-        productSpec: "4K 60fps 8채널 실시간 객체인식, 방수방진 IP67, 우수조달 지정 물품",
-        phone: "031-709-3340",
-        manager: "조달영업팀 강민수 과장 (010-5501-3340)",
-        email: "sales@hanbitvision.com",
-        address: "경기도 성남시 분당구 판교로 255, B동 6층",
-        linkedApis: ["발주계획현황서비스", "물품목록정보서비스", "나라장터쇼핑몰 품목정보"],
-        description: "조달청 우수조달물품으로 지정된 실시간 도로 교통량·보행자 안전 감지 AI 영상분석 장비로 전국 지자체 관제센터와 즉시 호환됩니다."
-      },
-      {
-        uid: "INIT-4",
-        orderPlanNo: "2026-04-002390",
-        bidNtceNo: "20260405119-00",
-        itemId: "24110854",
-        orderDate: "2026-04-10",
-        category: "물품",
-        agency: "한국전력공사 디지털변환처",
-        orderTitle: "스마트 변전소 무정전 전원장치(UPS) 및 배전반 교체 발주",
-        budget: 390000000,
-        contractMethod: "일반경쟁입찰",
-        companyName: "대한파워일렉트릭(주)",
-        ceoName: "윤성민",
-        productName: "DPE-UPS 300KVA 친환경 고효율 무정전전원장치",
-        productSpec: "정격용량 300kVA, 리튬인산철 배터리팩 포함, 에너지효율 1등급",
-        phone: "062-954-1190",
-        manager: "전력기자재팀 오승환 차장 (010-7210-1190)",
-        email: "ups@dhpower.co.kr",
-        address: "광주광역시 북구 첨단과기로 208번길 42",
-        linkedApis: ["발주계획현황서비스", "입찰공고정보서비스", "물품목록정보서비스", "낙찰정보서비스"],
-        description: "공공 인프라 및 전산센터의 안정적인 전력 공급을 보장하는 고효율 모듈형 UPS로 원격 상태 모니터링(SNMP)을 기본 지원합니다."
-      },
-      {
-        uid: "INIT-5",
-        orderPlanNo: "2026-05-007812",
-        bidNtceNo: "20260512773-00",
-        itemId: "25301920",
-        orderDate: "2026-05-18",
-        category: "공사",
-        agency: "교육부 스마트교육기반과",
-        orderTitle: "국립대학 디지털 도서관 초고속 무선망(Wi-Fi 7) 인프라 구축공사",
-        budget: 460000000,
-        contractMethod: "제한경쟁입찰",
-        companyName: "(주)네트웍스코리아정보통신",
-        ceoName: "장재영",
-        productName: "초고속 정보통신망 광케이블 및 Wi-Fi 7 AP 통합 시공",
-        productSpec: "10Gbps 백본 스위치 12식, Wi-Fi 7 무선 AP 350식 설치 및 망관리시스템 구축",
-        phone: "02-3452-9080",
-        manager: "공공SI사업부 신동엽 부장 (010-6320-9080)",
-        email: "bid@networkskorea.co.kr",
-        address: "서울특별시 강남구 테헤란로 311, 14층",
-        linkedApis: ["발주계획현황서비스", "입찰공고정보서비스", "낙찰정보서비스"],
-        description: "교육기관 및 공공청사 대규모 무선 네트워크 환경 구축 전문 정보통신공사업체로 설계부터 유지보수까지 원스톱 지원합니다."
-      },
-      {
-        uid: "INIT-6",
-        orderPlanNo: "2026-06-003910",
-        bidNtceNo: "20260602310-00",
-        itemId: "24778120",
-        orderDate: "2026-06-09",
-        category: "물품",
-        agency: "환경부 국립환경과학원",
-        orderTitle: "대기오염 미세먼지 실시간 정밀 측정기 도입 발주",
-        budget: 270000000,
-        contractMethod: "다수공급자계약(MAS)",
-        companyName: "에코센서테크(주)",
-        ceoName: "한지숙",
-        productName: "EcoAir-PM2500 대기질 복합 자동측정시스템",
-        productSpec: "PM10/PM2.5/오존/이산화질소 동시측정, 환경부 형식승인 제2025-19호",
-        phone: "032-581-4420",
-        manager: "환경계측팀 송유진 과장 (010-2918-4420)",
-        email: "eco@ecosensortech.kr",
-        address: "인천광역시 연수구 송도미래로 30, 스마트밸리 D동",
-        linkedApis: ["발주계획현황서비스", "물품목록정보서비스", "나라장터쇼핑몰 품목정보"],
-        description: "전국 지자체 대기환경 측정망에 납품 중인 정밀 환경계측 장비로, 나라장터 종합쇼핑몰에서 물품식별번호로 즉시 구매 가능한 제품입니다."
-      },
-      {
-        uid: "INIT-7",
-        orderPlanNo: "2026-07-010293",
-        bidNtceNo: "20260715992-00",
-        itemId: "25490112",
-        orderDate: "2026-07-21",
-        category: "용역",
-        agency: "조달청 조달관리국",
-        orderTitle: "생성형 AI 기반 나라장터 입찰공고 및 사전규격 자동검토 서비스 구축",
-        budget: 450000000,
-        contractMethod: "협상에 의한 계약",
-        companyName: "(주)와이즈프롬프트AI",
-        ceoName: "서준혁",
-        productName: "WiseGov LLM Assistant v2.0 (공공문서 특화 AI 솔루션)",
-        productSpec: "한국어 공공조달 법령·규격 특화 RAG 엔진, 환각방지 검증 모듈 포함",
-        phone: "02-598-7700",
-        manager: "AI공공사업팀 김나연 책임 (010-9102-7700)",
-        email: "gov@wiseprompt.ai",
-        address: "서울특별시 서초구 반포대로 58, 5층",
-        linkedApis: ["발주계획현황서비스", "입찰공고정보서비스", "낙찰정보서비스"],
-        description: "나라장터 발주계획서 및 입찰공고서의 규격 적정성을 AI로 자동 점검하고 유사 낙찰 사례를 추천하는 솔루션입니다."
-      },
-      {
-        uid: "INIT-8",
-        orderPlanNo: "2026-09-005129",
-        bidNtceNo: "20260908441-00",
-        itemId: "24660198",
-        orderDate: "2026-09-14",
-        category: "물품",
-        agency: "국토교통부 국토지리정보원",
-        orderTitle: "디지털 트윈 국토 정밀 측량용 RTK 드론 기체 및 라이다 세트 구매",
-        budget: 300000000,
-        contractMethod: "제한경쟁입찰",
-        companyName: "스카이로보틱스(주)",
-        ceoName: "임도현",
-        productName: "SkySurveyor X8-LiDAR 국산 산업용 측량 드론",
-        productSpec: "최대 비행시간 55분, 고정밀 LiDAR 센서 탑재, 국산화율 88% 달성",
-        phone: "042-863-5090",
-        manager: "무인기사업부 배성훈 팀장 (010-4419-5090)",
-        email: "drone@skyrobotics.co.kr",
-        address: "대전광역시 유성구 테크노2로 187",
-        linkedApis: ["발주계획현황서비스", "물품목록정보서비스", "나라장터쇼핑몰 품목정보", "낙찰정보서비스"],
-        description: "공공 측량 및 재난재해 현장 3D 지형 모델링에 최적화된 산업용 드론으로 물품목록정보서비스에 등록된 정식 조달 제품입니다."
-      }
-    ];
+    // 기본 내장 인증키 (사용자가 직접 변경 가능하며 localStorage에 유지됨)
+    const DEFAULT_SERVICE_KEY = "6f51e14ac40d711807b2b60f3aed76c9683d9d3e8d7740cf5a6760c13e6fb577";
 
-    let currentData = [...INITIAL_DATA];
-    let filteredData = [...INITIAL_DATA];
-    let selectedItem = INITIAL_DATA[0];
+    // 5개 화면(탭) 설정 정의
+    const TAB_CONFIGS = {
+      orderPlan: {
+        id: "orderPlan",
+        badge: "화면 1 : 나라장터 발주계획",
+        title: "나라장터 발주계획 실시간 검색 목록",
+        apiName: "조달청_나라장터 발주계획현황서비스 (OrderPlanSttusService)",
+        colHeaders: ["발주계획월/일", "업무구분", "발주계획번호 / 물품분류", "사업명(발주건명) / 발주기관", "발주예산액"],
+        sampleEndpoint: "https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng"
+      },
+      preSpecBid: {
+        id: "preSpecBid",
+        badge: "화면 2 : 사전규격 · 입찰공고",
+        title: "나라장터 사전규격 · 입찰공고 실시간 검색 목록",
+        apiName: "조달청_나라장터 입찰공고정보서비스 (BidPublicInfoService)",
+        colHeaders: ["공고일시", "업무구분", "입찰공고번호 / 식별번호", "공고명(규격명) / 공고·수요기관", "추정가격(배정예산)"],
+        sampleEndpoint: "https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoThng"
+      },
+      contractShop: {
+        id: "contractShop",
+        badge: "화면 3 : 계약정보 · 쇼핑몰품목",
+        title: "나라장터 계약정보 · 종합쇼핑몰 품목 실시간 검색 목록",
+        apiName: "조달청_나라장터쇼핑몰 품목정보 서비스 (ShoppingMallPrdctInfoService)",
+        colHeaders: ["등록/계약일", "품목구분", "물품식별번호(계약번호)", "제품명(규격) / 계약업체(회사명)", "계약단가(금액)"],
+        sampleEndpoint: "https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getShoppingMallPrdctInfoList"
+      },
+      award: {
+        id: "award",
+        badge: "화면 4 : 나라장터 낙찰정보",
+        title: "나라장터 낙찰정보 및 낙찰업체 실시간 검색 목록",
+        apiName: "조달청_나라장터 낙찰정보서비스 (ScsbidInfoService)",
+        colHeaders: ["개찰/낙찰일", "업무구분", "공고번호 / 사업자번호", "공고명 / 최종 낙찰업체(회사명)", "낙찰금액(낙찰률)"],
+        sampleEndpoint: "https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusThng"
+      },
+      catalog: {
+        id: "catalog",
+        badge: "화면 5 : 물품 목록정보",
+        title: "조달청 물품목록정보(품명·규격·제조사) 실시간 검색 목록",
+        apiName: "조달청_물품목록정보서비스 (ThngListInfoService)",
+        colHeaders: ["등록/변경일", "분류", "물품식별번호(8자리)", "품명(세부품명) / 규격·제조업체", "물품분류번호"],
+        sampleEndpoint: "https://apis.data.go.kr/1230000/at/ThngListInfoService/getThngListInfoList"
+      }
+    };
+
+    // 각 탭별 초기 시연용 폴백 데이터 (API 호출 전 또는 오프라인 시에도 화면별 특성이 즉시 보이도록 구성)
+    const FALLBACK_BY_TAB = {
+      orderPlan: [
+        {
+          uid: "OP-1",
+          tab: "orderPlan",
+          orderDate: "2025-06-14",
+          category: "물품",
+          itemId: "43211501",
+          manageNo: "2025-06-004812",
+          subManageNo: "발주계획통합번호: 1-1230000-2025-004812",
+          title: "차세대 공공 클라우드 고성능 AI 추론 서버 도입 발주계획",
+          agency: "조달청 정보기획과",
+          companyName: "조달청 다수공급자계약(MAS) 대상업체",
+          ceoName: "공공조달등록업체",
+          productName: "고성능 AI 추론 서버 (물품분류: 43211501)",
+          productSpec: "GPU 가속기 탑재 랙마운트 서버 일체 (발주계획 규격)",
+          amount: 680000000,
+          subAmountText: "예산액 6.80억 원",
+          contractMethod: "제한경쟁(MAS 2단계)",
+          phone: "042-724-7114",
+          manager: "정보기획과 발주담당 (042-724-7114)",
+          email: "g2b-orderplan@korea.kr",
+          address: "대전광역시 서구 청사로 189 정부대전청사",
+          apiSource: "조달청_나라장터 발주계획현황서비스",
+          rawFields: { 발주계획통합번호: "2025-06-004812", 발주기관명: "조달청 정보기획과", 사업명: "차세대 공공 클라우드 고성능 AI 추론 서버 도입", 발주금액: "680,000,000원", 계약방법: "제한경쟁" }
+        }
+      ],
+      preSpecBid: [
+        {
+          uid: "BID-1",
+          tab: "preSpecBid",
+          orderDate: "2025-06-18",
+          category: "물품",
+          itemId: "20250618412-00",
+          manageNo: "20250618412-00",
+          subManageNo: "사전규격등록번호: 1420255",
+          title: "[사전규격·입찰공고] 지능형 교통관제(ITS) 엣지 AI 영상분석 장치 구매",
+          agency: "서울특별시 스마트도시정책관",
+          companyName: "입찰참가 자격등록 조달업체",
+          ceoName: "입찰공고 진행건",
+          productName: "지능형 교통관제(ITS) 엣지 AI 영상분석 장치",
+          productSpec: "입찰공고서 및 사전규격서 첨부파일 참조 (제한경쟁입찰)",
+          amount: 410000000,
+          subAmountText: "추정가격 4.10억 원",
+          contractMethod: "제한경쟁(총액/전자입찰)",
+          phone: "02-2133-2810",
+          manager: "스마트도시정책관 입찰담당관 (02-2133-2810)",
+          email: "seoul-its@seoul.go.kr",
+          address: "서울특별시 중구 세종대로 110",
+          apiSource: "조달청_나라장터 입찰공고정보서비스",
+          rawFields: { 입찰공고번호: "20250618412-00", 공고명: "지능형 교통관제(ITS) 엣지 AI 영상분석 장치 구매", 공고기관: "조달청 서울지방조달청", 수요기관: "서울특별시", 추정가격: "410,000,000원" }
+        }
+      ],
+      contractShop: [
+        {
+          uid: "SHOP-1",
+          tab: "contractShop",
+          orderDate: "2025-06-10",
+          category: "물품",
+          itemId: "24891023",
+          manageNo: "24891023",
+          subManageNo: "물품분류번호: 43211501",
+          title: "KCT-AI Server Pro GX500 (GPU 8Way 탑재형 클라우드 서버)",
+          agency: "나라장터 종합쇼핑몰 등록 계약품목",
+          companyName: "(주)한국클라우드테크놀로지",
+          ceoName: "김태호",
+          productName: "KCT-AI Server Pro GX500",
+          productSpec: "Intel Xeon Gold 6530 2EA, 512GB DDR5, AI 가속기 8EA, 랙마운트 4U",
+          amount: 68000000,
+          subAmountText: "쇼핑몰 계약단가 6,800만 원",
+          contractMethod: "제3자단가계약(MAS)",
+          phone: "02-6240-8810",
+          manager: "(주)한국클라우드테크놀로지 조달계약팀 (02-6240-8810)",
+          email: "gov-sales@kcloudtech.co.kr",
+          address: "서울특별시 금천구 가산디지털1로 168",
+          apiSource: "조달청_나라장터쇼핑몰 품목정보 서비스",
+          rawFields: { 물품식별번호: "24891023", 물품분류명: "컴퓨터서버", 품명: "KCT-AI Server Pro GX500", 계약업체명: "(주)한국클라우드테크놀로지", 계약단가: "68,000,000원" }
+        }
+      ],
+      award: [
+        {
+          uid: "AWD-1",
+          tab: "award",
+          orderDate: "2025-06-20",
+          category: "용역",
+          itemId: "20250601882-00",
+          manageNo: "20250601882-00",
+          subManageNo: "낙찰자 사업자번호: 314-86-19204",
+          title: "공공조달 발주계획 빅데이터 분석 플랫폼 고도화 사업",
+          agency: "행정안전부 디지털정부국",
+          companyName: "(주)데이터브릿지솔루션",
+          ceoName: "박선영",
+          productName: "공공조달 빅데이터 분석 플랫폼 고도화 (낙찰률: 91.45%)",
+          productSpec: "최종낙찰업체: (주)데이터브릿지솔루션 | 대표자: 박선영 | 낙찰률: 91.45%",
+          amount: 520000000,
+          subAmountText: "낙찰금액 5.20억 (91.45%)",
+          contractMethod: "협상에 의한 계약",
+          phone: "042-488-7120",
+          manager: "(주)데이터브릿지솔루션 박선영 대표 (042-488-7120)",
+          email: "contact@databridge.kr",
+          address: "대전광역시 서구 둔산중로 78, 8층",
+          apiSource: "조달청_나라장터 낙찰정보서비스",
+          rawFields: { 입찰공고번호: "20250601882-00", 최종낙찰업체명: "(주)데이터브릿지솔루션", 대표자명: "박선영", 최종낙찰금액: "520,000,000원", 최종낙찰률: "91.45%" }
+        }
+      ],
+      catalog: [
+        {
+          uid: "CAT-1",
+          tab: "catalog",
+          orderDate: "2025-06-05",
+          category: "물품목록",
+          itemId: "24660198",
+          manageNo: "24660198",
+          subManageNo: "물품분류번호(8자리): 25131802",
+          title: "무인항공기 (SkySurveyor X8-LiDAR 국산 산업용 측량 드론)",
+          agency: "조달청 물품목록정보 정식 등록 품목",
+          companyName: "스카이로보틱스(주)",
+          ceoName: "임도현",
+          productName: "무인항공기 / SkySurveyor X8-LiDAR",
+          productSpec: "최대 비행시간 55분, 고정밀 LiDAR 센서 탑재, 물품식별번호: 24660198",
+          amount: 25131802,
+          subAmountText: "분류번호 25131802",
+          contractMethod: "조달청 목록화 완료",
+          phone: "042-863-5090",
+          manager: "스카이로보틱스(주) 제조사 연락처 (042-863-5090)",
+          email: "drone@skyrobotics.co.kr",
+          address: "대전광역시 유성구 테크노2로 187",
+          apiSource: "조달청_물품목록정보서비스",
+          rawFields: { 물품식별번호: "24660198", 물품분류번호: "25131802", 품명: "무인항공기", 규격명: "SkySurveyor X8-LiDAR", 제조업체명: "스카이로보틱스(주)" }
+        }
+      ]
+    };
+
+    // 탭별 캐시 저장소 (한 번 불러온 탭 데이터는 탭 전환 시 즉시 표시 + 언제든 재조회 가능)
+    const tabDataStore = {
+      orderPlan: [...FALLBACK_BY_TAB.orderPlan],
+      preSpecBid: [...FALLBACK_BY_TAB.preSpecBid],
+      contractShop: [...FALLBACK_BY_TAB.contractShop],
+      award: [...FALLBACK_BY_TAB.award],
+      catalog: [...FALLBACK_BY_TAB.catalog]
+    };
+
+    const tabLoadedLive = {
+      orderPlan: false,
+      preSpecBid: false,
+      contractShop: false,
+      award: false,
+      catalog: false
+    };
+
+    let currentTab = "orderPlan";
+    let currentData = tabDataStore.orderPlan;
+    let filteredData = [...currentData];
+    let selectedItem = currentData[0];
     let chartInstance = null;
     let currentPage = 1;
     let pageSize = 100;
 
-    function formatKRW(num) {
+    function formatKRW(num, isCatalog = false) {
+      if (isCatalog) {
+        return `분류 ${num}`;
+      }
+      if (!num || num <= 0) return "금액미상(0원)";
       if (num >= 100000000) {
         return (num / 100000000).toFixed(2) + "억 원";
       }
-      return Math.round(num / 10000).toLocaleString() + "만 원";
+      if (num >= 10000) {
+        return Math.round(num / 10000).toLocaleString() + "만 원";
+      }
+      return num.toLocaleString() + "원";
     }
 
     function showApiAlert(msg, isSuccess = true) {
@@ -572,109 +633,237 @@
       box.innerHTML = msg;
     }
 
-    // 승인받은 5종 API의 모든 오퍼레이션(물품/용역/공사 등)과 다중 기간을 병렬 호출(numOfRows=500)하여 대량 수집
-    async function applyApiKey() {
-      const rawKey = document.getElementById("serviceKeyInput").value.trim();
-      const badge = document.getElementById("apiModeBadge");
-      const btn = document.getElementById("apiFetchBtn");
+    // 탭 전환 함수: 탭을 클릭하면 화면 헤더/컬럼을 바꾸고 해당 탭의 실시간 API를 자동 호출
+    async function switchTab(tabId) {
+      currentTab = tabId;
+      const cfg = TAB_CONFIGS[tabId];
 
-      if (!rawKey) {
-        showApiAlert("⚠️ 공공데이터포털 일반 인증키를 입력하신 후 버튼을 눌러주세요!", false);
-        return;
+      // 탭 버튼 스타일 업데이트
+      Object.keys(TAB_CONFIGS).forEach(id => {
+        const btn = document.getElementById(`tab-${id}`);
+        if (id === tabId) {
+          btn.classList.add("tab-active");
+        } else {
+          btn.classList.remove("tab-active");
+        }
+      });
+
+      // 상단 화면 배지 및 테이블 헤더 변경
+      document.getElementById("activeScreenBadge").textContent = cfg.badge;
+      document.getElementById("activeScreenDesc").textContent = cfg.apiName;
+      document.getElementById("tableHeaderTitle").textContent = cfg.title;
+      document.getElementById("endpointPreview").textContent = cfg.sampleEndpoint;
+
+      const headRow = document.getElementById("tableHeadRow");
+      headRow.innerHTML = `
+        <th class="py-2.5 px-3">${cfg.colHeaders[0]}</th>
+        <th class="py-2.5 px-3">${cfg.colHeaders[1]}</th>
+        <th class="py-2.5 px-3">${cfg.colHeaders[2]}</th>
+        <th class="py-2.5 px-3">${cfg.colHeaders[3]}</th>
+        <th class="py-2.5 px-3 text-right">${cfg.colHeaders[4]}</th>
+      `;
+
+      currentData = tabDataStore[tabId];
+      currentPage = 1;
+      runLocalFilter();
+
+      // 아직 해당 화면의 실시간 API를 불러오지 않았다면 자동으로 즉시 실시간 API 호출!
+      if (!tabLoadedLive[tabId]) {
+        await fetchCurrentTabOpenAPI(false);
+      }
+    }
+
+    // 선택한 시작~종료 날짜를 기반으로 API가 허용하는 날짜 윈도우 배열 생성 (조회기간 초과 에러 07 방지)
+    function buildDateWindows(startStr, endStr, windowDays = 28, maxWindows = 4) {
+      const start = startStr ? new Date(startStr) : new Date("2025-05-01");
+      const end = endStr ? new Date(endStr) : new Date("2025-07-31");
+      const windows = [];
+
+      let cursor = new Date(start);
+      while (cursor <= end && windows.length < maxWindows) {
+        const wEnd = new Date(cursor);
+        wEnd.setDate(wEnd.getDate() + windowDays);
+        const actualEnd = wEnd < end ? wEnd : end;
+
+        const fmt = (d) => {
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, "0");
+          const dd = String(d.getDate()).padStart(2, "0");
+          return `${yyyy}${mm}${dd}`;
+        };
+
+        const bgnYmd = fmt(cursor);
+        const endYmd = fmt(actualEnd);
+        windows.push({
+          bgnDt: `${bgnYmd}0000`,
+          endDt: `${endYmd}2359`,
+          bgnDate: bgnYmd,
+          endDate: endYmd,
+          bgnYm: bgnYmd.slice(0, 6),
+          endYm: endYmd.slice(0, 6)
+        });
+
+        cursor = new Date(actualEnd);
+        cursor.setDate(cursor.getDate() + 1);
       }
 
-      btn.textContent = "대량 수집 중...";
-      btn.disabled = true;
-      showApiAlert("⏳ 승인된 5종 OpenAPI(발주계획·입찰공고·낙찰정보·물품목록·쇼핑몰품목)에서 페이지당 최대 500건씩 병렬 수집 중입니다...", true);
+      if (windows.length === 0) {
+        windows.push({
+          bgnDt: "202506010000",
+          endDt: "202506302359",
+          bgnDate: "20250601",
+          endDate: "20250630",
+          bgnYm: "202506",
+          endYm: "202506"
+        });
+      }
+      return windows;
+    }
+
+    // 현재 선택된 탭(화면)의 전용 OpenAPI를 실시간 호출
+    async function fetchCurrentTabOpenAPI(isManualClick = false) {
+      let rawKey = document.getElementById("serviceKeyInput").value.trim();
+      if (!rawKey) {
+        rawKey = localStorage.getItem("g2b_service_key") || DEFAULT_SERVICE_KEY;
+        document.getElementById("serviceKeyInput").value = rawKey;
+      } else {
+        localStorage.setItem("g2b_service_key", rawKey);
+      }
 
       const encodedKey = rawKey.includes("%") ? rawKey : encodeURIComponent(rawKey);
+      const btn = document.getElementById("apiFetchBtn");
+      const cfg = TAB_CONFIGS[currentTab];
 
-      // 다중 월 구간 설정 (발주계획/입찰/낙찰 데이터를 풍부하게 가져오기 위해 여러 구간 동시 요청)
-      const dateWindows = [
-        { bgn: "202503010000", end: "202503312359" },
-        { bgn: "202504010000", end: "202504302359" },
-        { bgn: "202505010000", end: "202505312359" },
-        { bgn: "202506010000", end: "202506302359" },
-        { bgn: "202507010000", end: "202507312359" },
-        { bgn: "202508010000", end: "202508312359" },
-        { bgn: "202509010000", end: "202509302359" },
-        { bgn: "202510010000", end: "202510312359" }
-      ];
+      btn.textContent = "실시간 수신 중...";
+      btn.disabled = true;
+      showApiAlert(`⏳ <strong>[${cfg.badge}]</strong> 전용 OpenAPI (<code>${cfg.apiName}</code>)에서 실시간 데이터를 수신하고 있습니다...`, true);
+
+      const startVal = document.getElementById("startDate").value;
+      const endVal = document.getElementById("endDate").value;
 
       const endpoints = [];
 
-      // 1. 조달청_나라장터 발주계획현황서비스 (물품 / 용역 / 공사 × 다중 월, 각 500건)
-      dateWindows.forEach(w => {
-        endpoints.push({
-          name: "발주계획현황서비스(물품)",
-          category: "물품",
-          url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgn}&inqryEndDt=${w.end}`
+      if (currentTab === "orderPlan") {
+        // 1. 나라장터 발주계획현황서비스 (물품/용역/공사)
+        const wins = buildDateWindows(startVal, endVal, 29, 5);
+        wins.forEach(w => {
+          endpoints.push({
+            label: "발주계획현황(물품)",
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "발주계획현황(용역)",
+            category: "용역",
+            url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListServc?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "발주계획현황(공사)",
+            category: "공사",
+            url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
         });
-        endpoints.push({
-          name: "발주계획현황서비스(용역)",
-          category: "용역",
-          url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListServc?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgn}&inqryEndDt=${w.end}`
+      } else if (currentTab === "preSpecBid") {
+        // 2. 사전규격 · 입찰공고정보서비스 (입찰공고 조회기간 제한은 보통 7~15일이므로 10일 단위로 분할 호출)
+        const wins = buildDateWindows(startVal, endVal, 10, 4);
+        wins.forEach(w => {
+          endpoints.push({
+            label: "입찰공고정보(물품)",
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoThng?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "입찰공고정보(용역)",
+            category: "용역",
+            url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoServc?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "입찰공고정보(공사)",
+            category: "공사",
+            url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          // 구버전 엔드포인트 폴백
+          endpoints.push({
+            label: "입찰공고정보04(물품)",
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/BidPublicInfoService04/getBidPblancListInfoThng01?serviceKey=${encodedKey}&type=json&numOfRows=200&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
         });
-        endpoints.push({
-          name: "발주계획현황서비스(공사)",
-          category: "공사",
-          url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgn}&inqryEndDt=${w.end}`
+      } else if (currentTab === "contractShop") {
+        // 3. 계약정보 · 나라장터쇼핑몰 품목정보 서비스 (inqryBgnDate=YYYYMMDD 8자리 및 다중 경로 지원)
+        const wins = buildDateWindows(startVal, endVal, 10, 4);
+        wins.forEach((w, idx) => {
+          endpoints.push({
+            label: "나라장터쇼핑몰 품목정보",
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getShoppingMallPrdctInfoList?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=${idx + 1}&inqryDiv=1&inqryBgnDate=${w.bgnDate}&inqryEndDate=${w.endDate}`
+          });
+          endpoints.push({
+            label: "나라장터쇼핑몰 품목정보(일반)",
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/ShoppingMallPrdctInfoService/getShoppingMallPrdctInfoList?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=${idx + 1}&inqryDiv=1&inqryBgnDate=${w.bgnDate}&inqryEndDate=${w.endDate}`
+          });
+          endpoints.push({
+            label: "나라장터쇼핑몰 품목정보05",
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/ShoppingMallPrdctInfoService05/getShoppingMallPrdctInfoList01?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=${idx + 1}&inqryDiv=1&inqryBgnDate=${w.bgnDate}&inqryEndDate=${w.endDate}`
+          });
         });
-      });
+      } else if (currentTab === "award") {
+        // 4. 나라장터 낙찰정보서비스 (물품/용역/공사)
+        const wins = buildDateWindows(startVal, endVal, 10, 4);
+        wins.forEach(w => {
+          endpoints.push({
+            label: "낙찰정보서비스(물품)",
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusThng?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "낙찰정보서비스(용역)",
+            category: "용역",
+            url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusServc?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "낙찰정보서비스(공사)",
+            category: "공사",
+            url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "낙찰정보서비스04(물품)",
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/ScsbidInfoService04/getScsbidListSttusThng01?serviceKey=${encodedKey}&type=json&numOfRows=200&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+        });
+      } else if (currentTab === "catalog") {
+        // 5. 조달청 물품목록정보서비스 (다중 엔드포인트 및 조건 없이 목록 페이지네이션 동시 시도)
+        const wins = buildDateWindows(startVal, endVal, 15, 3);
+        wins.forEach((w, idx) => {
+          endpoints.push({
+            label: "물품목록정보서비스(at)",
+            category: "물품목록",
+            url: `https://apis.data.go.kr/1230000/at/ThngListInfoService/getThngListInfoList?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=${idx + 1}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "물품목록정보서비스(일반)",
+            category: "물품목록",
+            url: `https://apis.data.go.kr/1230000/ThngListInfoService/getThngListInfoList?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=${idx + 1}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+          endpoints.push({
+            label: "물품목록정보서비스04",
+            category: "물품목록",
+            url: `https://apis.data.go.kr/1230000/ThngListInfoService04/getThngListInfoList01?serviceKey=${encodedKey}&type=json&numOfRows=300&pageNo=${idx + 1}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+          });
+        });
+      }
 
-      // 2. 조달청_나라장터 입찰공고정보서비스 (물품 / 용역 / 공사, 각 500건)
-      endpoints.push({
-        name: "입찰공고정보서비스(물품)",
-        category: "물품",
-        url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoThng?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=202506010000&inqryEndDt=202506152359`
-      });
-      endpoints.push({
-        name: "입찰공고정보서비스(용역)",
-        category: "용역",
-        url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoServc?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=202506010000&inqryEndDt=202506152359`
-      });
-      endpoints.push({
-        name: "입찰공고정보서비스(공사)",
-        category: "공사",
-        url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=202506010000&inqryEndDt=202506152359`
-      });
+      if (endpoints.length > 0) {
+        document.getElementById("endpointPreview").textContent = endpoints[0].url.replace(encodedKey, "[승인인증키]");
+      }
 
-      // 3. 조달청_나라장터 낙찰정보서비스 (물품 / 용역 / 공사, 각 500건)
-      endpoints.push({
-        name: "낙찰정보서비스(물품)",
-        category: "물품",
-        url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusThng?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=202506010000&inqryEndDt=202506152359`
-      });
-      endpoints.push({
-        name: "낙찰정보서비스(용역)",
-        category: "용역",
-        url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusServc?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=202506010000&inqryEndDt=202506152359`
-      });
-      endpoints.push({
-        name: "낙찰정보서비스(공사)",
-        category: "공사",
-        url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=202506010000&inqryEndDt=202506152359`
-      });
+      const fetchedRows = [];
+      let lastErrorMsg = "";
 
-      // 4. 조달청_나라장터쇼핑몰 품목정보 서비스 & 물품목록정보서비스 (각 500건)
-      endpoints.push({
-        name: "나라장터쇼핑몰 품목정보",
-        category: "물품",
-        url: `https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getShoppingMallPrdctInfoList?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDate=20250601&inqryEndDate=20250630`
-      });
-      endpoints.push({
-        name: "물품목록정보서비스",
-        category: "물품",
-        url: `https://apis.data.go.kr/1230000/at/ThngListInfoService/getThngListInfoList?serviceKey=${encodedKey}&type=json&numOfRows=500&pageNo=1&inqryDiv=1&inqryBgnDt=202506010000&inqryEndDt=202506302359`
-      });
-
-      document.getElementById("endpointPreview").textContent = endpoints[0].url.replace(encodedKey, "[승인인증키_적용됨]");
-
-      let liveFetchedItems = [];
-      let apiCallSuccessCount = 0;
-
-      // 모든 엔드포인트 병렬 호출
-      const responses = await Promise.allSettled(
+      const results = await Promise.allSettled(
         endpoints.map(async (ep) => {
           const res = await fetch(ep.url);
           const text = await res.text();
@@ -682,127 +871,272 @@
         })
       );
 
-      responses.forEach((result) => {
-        if (result.status !== "fulfilled") return;
-        const { ep, text } = result.value;
+      results.forEach((r) => {
+        if (r.status !== "fulfilled") return;
+        const { ep, text } = r.value;
 
+        // 1) JSON 파싱 시도
         try {
           const json = JSON.parse(text);
-          const rawItems = json?.response?.body?.items;
-          const list = Array.isArray(rawItems) ? rawItems : (Array.isArray(rawItems?.item) ? rawItems.item : []);
-          if (list.length > 0) {
-            apiCallSuccessCount++;
-            list.forEach((it) => {
-              liveFetchedItems.push(mapRawApiItem(it, liveFetchedItems.length, ep.name, ep.category));
-            });
+          const header = json?.response?.header || json?.["nkoneps.com.response.ResponseError"]?.header;
+          if (header && header.resultCode && header.resultCode !== "00") {
+            lastErrorMsg = `${header.resultMsg || "API 응답 코드: " + header.resultCode}`;
           }
+          const rawItems = json?.response?.body?.items;
+          const list = Array.isArray(rawItems)
+            ? rawItems
+            : Array.isArray(rawItems?.item)
+            ? rawItems.item
+            : rawItems?.item
+            ? [rawItems.item]
+            : [];
+
+          list.forEach((itemObj) => {
+            fetchedRows.push(normalizeApiRow(itemObj, fetchedRows.length, currentTab, ep.category, ep.label));
+          });
+          return;
         } catch (_) {
-          // XML 응답 파싱 지원
+          // JSON이 아니면 XML 파싱
+        }
+
+        // 2) XML 파싱 시도
+        try {
           const parser = new DOMParser();
           const xml = parser.parseFromString(text, "text/xml");
-          const itemNodes = xml.querySelectorAll("item");
-          if (itemNodes.length > 0) {
-            apiCallSuccessCount++;
-            itemNodes.forEach((node) => {
-              const getTag = (tag) => node.querySelector(tag)?.textContent || "";
-              liveFetchedItems.push(mapRawApiItem({
-                orderPlanUntyNo: getTag("orderPlanUntyNo") || getTag("bidNtceNo"),
-                bidNtceNo: getTag("bidNtceNo"),
-                prdctClsfcNo: getTag("prdctClsfcNo") || getTag("dtilPrdctClsfcNo") || getTag("prdctIdntNo"),
-                orderPlanDt: getTag("orderPlanDt") || getTag("bidNtceDt") || getTag("rgstDt") || getTag("opengDt"),
-                bsnsDivNm: getTag("bsnsDivNm") || ep.category,
-                orderInsttNm: getTag("orderInsttNm") || getTag("ntceInsttNm") || getTag("dminsttNm"),
-                bizNm: getTag("bizNm") || getTag("bidNtceNm") || getTag("prdctClsfcNoNm"),
-                sumOrderAmt: getTag("sumOrderAmt") || getTag("presmptPrce") || getTag("sucsfbidAmt") || getTag("prdctUnitPrce") || getTag("asignBdgtAmt"),
-                cntrctMthdNm: getTag("cntrctMthdNm") || "나라장터 경쟁입찰",
-                corpNm: getTag("corpNm") || getTag("bidwinnrNm") || getTag("cntrctCorpNm") || getTag("mnfctrNm"),
-                ceoNm: getTag("ceoNm") || getTag("bidwinnrCeoNm"),
-                prdctNm: getTag("prdctNm") || getTag("prdctClsfcNoNm") || getTag("bizNm") || getTag("bidNtceNm"),
-                specNm: getTag("specNm") || getTag("prdctSpecNm"),
-                telNo: getTag("telNo") || getTag("bidwinnrTelNo") || getTag("ofclTelNo") || getTag("ntceInsttOfclTelNo"),
-                deptNm: getTag("deptNm"),
-                ofclNm: getTag("ofclNm") || getTag("ntceInsttOfclNm"),
-                ntceInsttOfclEmailAdrs: getTag("ntceInsttOfclEmailAdrs")
-              }, liveFetchedItems.length, ep.name, ep.category));
-            });
+          const errMsg = xml.querySelector("returnAuthMsg, resultMsg")?.textContent;
+          if (errMsg && errMsg !== "정상") {
+            lastErrorMsg = errMsg;
           }
-        }
+          const itemNodes = xml.querySelectorAll("item");
+          itemNodes.forEach((node) => {
+            const obj = {};
+            node.childNodes.forEach((child) => {
+              if (child.nodeType === 1) {
+                obj[child.nodeName] = child.textContent;
+              }
+            });
+            fetchedRows.push(normalizeApiRow(obj, fetchedRows.length, currentTab, ep.category, ep.label));
+          });
+        } catch (_) {}
       });
 
-      // 중요: 물품분류번호(prdctClsfcNo)가 같거나 비어있다는 이유로 데이터가 삭제되지 않도록 고유 uid 기준으로 전체 보존!
-      currentData = [...liveFetchedItems, ...INITIAL_DATA];
-
-      btn.textContent = "실시간 대량 불러오기";
+      btn.textContent = "현재 화면 API 조회";
       btn.disabled = false;
 
-      badge.textContent = `✓ 5종 OpenAPI 실시간 연동 완료 (총 ${currentData.length.toLocaleString()}건)`;
-      badge.className = "px-2.5 py-0.5 text-xs font-bold bg-emerald-500/30 border border-emerald-300 rounded-full text-white";
-      document.getElementById("httpStatusBadge").textContent = "HTTP 200 OK";
-      document.getElementById("httpStatusBadge").className = "px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px]";
+      if (fetchedRows.length > 0) {
+        tabDataStore[currentTab] = fetchedRows;
+        tabLoadedLive[currentTab] = true;
+        currentData = fetchedRows;
 
-      showApiAlert(
-        `✅ 공공데이터포털 OpenAPI 실시간 대량 수신 성공! <strong>+${liveFetchedItems.length.toLocaleString()}건</strong>을 수신하여 총 <strong>${currentData.length.toLocaleString()}건</strong>의 조달 데이터가 로드되었습니다. (누락 없이 전체 표시됨)`,
-        true
-      );
+        document.getElementById(`count-badge-${currentTab}`).textContent = `${fetchedRows.length.toLocaleString()}건`;
+        document.getElementById(`count-badge-${currentTab}`).className = "text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/40 text-white font-bold font-mono";
+        document.getElementById("httpStatusBadge").textContent = "HTTP 200 OK (LIVE)";
+        document.getElementById("httpStatusBadge").className = "px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] whitespace-nowrap";
+
+        showApiAlert(
+          `✅ <strong>[${cfg.badge}]</strong> 실시간 OpenAPI 연동 완료! 총 <strong>${fetchedRows.length.toLocaleString()}건</strong>의 실제 데이터를 수신했습니다.`,
+          true
+        );
+      } else {
+        showApiAlert(
+          `ℹ️ 현재 선택한 날짜 구간(${startVal} ~ ${endVal})에 대한 [${cfg.apiName}] 응답이 없거나 조회기간 제한(${lastErrorMsg || "날짜 범위 조정 필요"})이 있어 기본 시연 데이터를 표시합니다. 날짜를 1개월 이내(예: 2025-06-01 ~ 2025-06-15)로 좁혀서 조회해 보세요!`,
+          false
+        );
+      }
 
       currentPage = 1;
-      runSearch();
+      runLocalFilter();
     }
 
-    function mapRawApiItem(it, idx, apiSourceName, defaultCat) {
-      const rawDate = String(
-        it.orderPlanDt || it.bidNtceDt || it.opengDt || it.rgstDt || it.inptDt || "20250615"
+    // 5개 화면 각각의 OpenAPI 응답 필드에 맞춘 표준화 매핑 함수
+    function normalizeApiRow(it, idx, tabId, defaultCat, apiLabel) {
+      // 날짜 추출
+      const rawDt = String(
+        it.orderPlanDt || it.bidNtceDt || it.opengDt || it.rgstDt || it.inptDt || it.cntrctDate || it.chgDt || "20250615"
       ).replace(/[^0-9]/g, "");
-      const formattedDate = rawDate.length >= 8
-        ? `${rawDate.slice(0, 4)}-${rawDate.slice(4, 6)}-${rawDate.slice(6, 8)}`
+      const orderDate = rawDt.length >= 8
+        ? `${rawDt.slice(0, 4)}-${rawDt.slice(4, 6)}-${rawDt.slice(6, 8)}`
+        : rawDt.length === 6
+        ? `${rawDt.slice(0, 4)}-${rawDt.slice(4, 6)}-01`
         : "2025-06-15";
 
-      const planNo = it.orderPlanUntyNo || it.orderPlanNo || it.bidNtceNo || `2025-G2B-${10000 + idx}`;
-      const bidNo = it.bidNtceNo || it.orderPlanUntyNo || `202506-${10000 + idx}`;
+      const rawCat = String(it.bsnsDivNm || it.srvceDivNm || it.prdctClsfcNoNm || defaultCat || "물품");
+      const category = rawCat.includes("용역") ? "용역" : rawCat.includes("공사") ? "공사" : (tabId === "catalog" ? "물품목록" : "물품");
 
-      // 물품식별번호가 없거나 중복 분류코드인 경우에도 각 계약건별 고유 식별번호 부여하여 검색 및 선택이 100% 가능하도록 처리
-      const rawItemId = it.dtilPrdctClsfcNo || it.prdctIdntNo || it.prdctClsfcNo || "";
-      const uniqueItemId = rawItemId
-        ? `${rawItemId}-${idx + 1}`
-        : String(25000000 + idx + 1);
+      // 화면별 맞춤 매핑
+      if (tabId === "orderPlan") {
+        const planNo = it.orderPlanUntyNo || it.orderPlanNo || `2025-PLAN-${idx + 1}`;
+        const clsNo = it.prdctClsfcNo || it.dtilPrdctClsfcNo || String(43211500 + (idx % 90));
+        const amt = Number(it.sumOrderAmt || it.orderContrctAmt || it.orderAmt || 0);
+        const agency = it.orderInsttNm || "조달청 수요기관";
+        const bizNm = it.bizNm || "나라장터 발주계획 사업";
+        const dept = it.deptNm || "발주담당부서";
+        const ofcl = it.ofclNm || "담당자";
+        const tel = it.telNo || "1588-0800";
 
-      const rawAmt = Number(
-        it.sumOrderAmt || it.orderContrctAmt || it.asignBdgtAmt || it.presmptPrce || it.sucsfbidAmt || it.prdctUnitPrce || 0
-      );
-      const budget = rawAmt > 0 ? rawAmt : (50000000 + ((idx * 17300000) % 450000000));
+        return {
+          uid: `OP-${idx}-${planNo}`,
+          tab: tabId,
+          orderDate,
+          category,
+          itemId: `${clsNo} (${planNo})`,
+          manageNo: planNo,
+          subManageNo: `물품분류번호: ${clsNo} | 발주연월: ${it.orderYear || "2025"}-${it.orderMnth || "06"}`,
+          title: bizNm,
+          agency,
+          companyName: it.corpNm || `${agency} 발주계획 대상업체`,
+          ceoName: it.ceoNm || `${dept} (${ofcl})`,
+          productName: it.prdctNm || bizNm,
+          productSpec: it.specNm || `조달구분: ${it.prcrmntMethd || "자체/중앙조달"} | 계약방법: ${it.cntrctMthdNm || "경쟁입찰"}`,
+          amount: amt,
+          subAmountText: formatKRW(amt),
+          contractMethod: it.cntrctMthdNm || "일반경쟁",
+          phone: tel,
+          manager: `${agency} ${dept} ${ofcl} (${tel})`,
+          email: "g2b-orderplan@korea.kr",
+          address: `${agency} 소재지`,
+          apiSource: apiLabel,
+          rawFields: it
+        };
+      }
 
-      const catText = String(it.bsnsDivNm || it.srvceDivNm || defaultCat || "물품");
-      const category = catText.includes("용역") ? "용역" : catText.includes("공사") ? "공사" : "물품";
+      if (tabId === "preSpecBid") {
+        const bidNo = it.bidNtceNo ? `${it.bidNtceNo}-${it.bidNtceOrd || "00"}` : (it.bfSpecRgstNo || `202506-${idx + 1}`);
+        const title = it.bidNtceNm || it.prdctClsfcNoNm || it.bizNm || "나라장터 입찰공고";
+        const agency = it.dminsttNm || it.ntceInsttNm || "조달청 공고기관";
+        const amt = Number(it.presmptPrce || it.asignBdgtAmt || it.bdgtAmt || 0);
+        const tel = it.ntceInsttOfclTelNo || it.ofclTelNo || it.telNo || "1588-0800";
+        const ofcl = it.ntceInsttOfclNm || it.ofclNm || "입찰공고담당관";
+        const email = it.ntceInsttOfclEmailAdrs || "g2b-bid@korea.kr";
 
-      const agency = it.orderInsttNm || it.dminsttNm || it.ntceInsttNm || "조달청 수요기관";
-      const title = it.bizNm || it.bidNtceNm || it.prdctClsfcNoNm || it.prdctNm || "나라장터 발주계획 품목";
-      const company = it.bidwinnrNm || it.corpNm || it.cntrctCorpNm || it.mnfctrNm || `${agency} 협력조달기업(${idx + 1}호)`;
-      const ceo = it.bidwinnrCeoNm || it.ceoNm || "조달등록대표";
-      const phone = it.telNo || it.bidwinnrTelNo || it.ofclTelNo || it.ntceInsttOfclTelNo || "1588-0800";
-      const managerName = it.ofclNm || it.ntceInsttOfclNm || it.chrgPrsnNm || "조달계약담당";
-      const dept = it.deptNm || it.orderInsttNm || "계약담당부서";
+        return {
+          uid: `BID-${idx}-${bidNo}`,
+          tab: tabId,
+          orderDate,
+          category,
+          itemId: bidNo,
+          manageNo: bidNo,
+          subManageNo: `공고기관: ${it.ntceInsttNm || agency} | 입찰마감: ${it.bidClseDt || "-"}`,
+          title,
+          agency,
+          companyName: `${agency} (수요기관)`,
+          ceoName: `공고담당: ${ofcl}`,
+          productName: it.prdctClsfcNoNm || title,
+          productSpec: `입찰방식: ${it.bidMethdNm || "전자입찰"} | 낙찰방법: ${it.sucsfbidMthdNm || "적격심사"}`,
+          amount: amt,
+          subAmountText: formatKRW(amt),
+          contractMethod: it.cntrctCnclsMthdNm || it.bidMethdNm || "일반경쟁",
+          phone: tel,
+          manager: `${it.ntceInsttNm || agency} ${ofcl} (${tel})`,
+          email,
+          address: it.bidNtceDtlUrl || "https://www.g2b.go.kr",
+          apiSource: apiLabel,
+          rawFields: it
+        };
+      }
+
+      if (tabId === "contractShop") {
+        const idntNo = it.prdctIdntNo || it.dtilPrdctClsfcNo || it.cntrctNo || String(24800000 + idx);
+        const clsNo = it.prdctClsfcNo || it.dtilPrdctClsfcNo || "-";
+        const prodNm = it.prdctSpecNm || it.prdctNm || it.prdctClsfcNoNm || "나라장터 쇼핑몰 계약 품목";
+        const compNm = it.cntrctCorpNm || it.corpNm || it.mnfctrNm || "(주)나라장터쇼핑몰공급사";
+        const price = Number(it.prdctUnitPrce || it.cntrctAmt || it.prdctPrc || 0);
+        const tel = it.telNo || it.corpTelNo || "1588-0800";
+
+        return {
+          uid: `SHOP-${idx}-${idntNo}`,
+          tab: tabId,
+          orderDate,
+          category: "쇼핑몰품목",
+          itemId: String(idntNo),
+          manageNo: String(idntNo),
+          subManageNo: `물품분류번호: ${clsNo} | 단위: ${it.prdctUnit || "식"}`,
+          title: `${it.prdctClsfcNoNm || ""} - ${prodNm}`,
+          agency: it.dminsttNm || "나라장터 종합쇼핑몰(MAS 계약)",
+          companyName: compNm,
+          ceoName: it.ceoNm || it.mnfctrNm || "조달쇼핑몰 계약대표",
+          productName: prodNm,
+          productSpec: `품명: ${it.prdctClsfcNoNm || "-"} | 규격: ${prodNm} | 제조사: ${it.mnfctrNm || compNm}`,
+          amount: price,
+          subAmountText: `단가 ${formatKRW(price)}`,
+          contractMethod: it.cntrctMthdNm || "다수공급자계약(MAS)",
+          phone: tel,
+          manager: `${compNm} 쇼핑몰 계약담당 (${tel})`,
+          email: "shoppingmall@g2b.go.kr",
+          address: it.prodctCertList || "나라장터 종합쇼핑몰 정식 등록 제품",
+          apiSource: apiLabel,
+          rawFields: it
+        };
+      }
+
+      if (tabId === "award") {
+        const bidNo = it.bidNtceNo ? `${it.bidNtceNo}-${it.bidNtceOrd || "00"}` : `2025-AWD-${idx + 1}`;
+        const bizNo = it.bidwinnrBizno || it.bizno || "-";
+        const winner = it.bidwinnrNm || it.corpNm || "(주)나라장터낙찰기업";
+        const ceo = it.bidwinnrCeoNm || it.ceoNm || "-";
+        const amt = Number(it.sucsfbidAmt || it.fnlSucsfbidAmt || 0);
+        const rate = it.sucsfbidRate || it.fnlSucsfbidRate || "-";
+        const tel = it.bidwinnrTelNo || it.telNo || "1588-0800";
+        const adrs = it.bidwinnrAdrs || "대한민국 조달등록 사업장";
+        const title = it.bidNtceNm || it.bizNm || "나라장터 낙찰 건명";
+        const agency = it.dminsttNm || it.ntceInsttNm || "조달청 수요기관";
+
+        return {
+          uid: `AWD-${idx}-${bidNo}`,
+          tab: tabId,
+          orderDate,
+          category,
+          itemId: `${bidNo}`,
+          manageNo: bidNo,
+          subManageNo: `사업자등록번호: ${bizNo} | 낙찰률: ${rate}%`,
+          title,
+          agency,
+          companyName: winner,
+          ceoName: ceo,
+          productName: `${title} (낙찰률: ${rate}%)`,
+          productSpec: `개찰일시: ${it.rlOpengDt || it.opengDt || orderDate} | 참가업체수: ${it.prtcptCnum || "-"}개사`,
+          amount: amt,
+          subAmountText: `${formatKRW(amt)} (${rate}%)`,
+          contractMethod: `낙찰률 ${rate}%`,
+          phone: tel,
+          manager: `${winner} 대표 ${ceo} (${tel})`,
+          email: "award-info@g2b.go.kr",
+          address: adrs,
+          apiSource: apiLabel,
+          rawFields: it
+        };
+      }
+
+      // 5. catalog (물품목록정보서비스)
+      const idntNo = it.prdctIdntNo || it.dtilPrdctClsfcNo || String(24000000 + idx);
+      const clsNo = Number(it.prdctClsfcNo || 43211500);
+      const prodNm = it.prdctClsfcNoNm || it.dtilPrdctClsfcNoNm || it.prdctNm || "조달 등록 물품";
+      const specNm = it.prdctSpecNm || it.specNm || prodNm;
+      const maker = it.mnfctrNm || it.corpNm || it.prodctMakrNm || "조달목록 등록 제조사";
 
       return {
-        uid: `API-${idx}-${planNo}`,
-        orderPlanNo: String(planNo),
-        bidNtceNo: String(bidNo),
-        itemId: uniqueItemId,
-        orderDate: formattedDate,
-        category,
-        agency,
-        orderTitle: title,
-        budget,
-        contractMethod: it.cntrctMthdNm || it.bidMethdNm || "나라장터 경쟁입찰",
-        companyName: company,
-        ceoName: ceo,
-        productName: it.prdctNm || it.prdctClsfcNoNm || title,
-        productSpec: it.specNm || it.prdctSpecNm || `${category} 표준 조달규격 (식별번호: ${uniqueItemId})`,
-        phone,
-        manager: `${dept} ${managerName} (${phone})`,
-        email: it.ntceInsttOfclEmailAdrs || "g2b-openapi@korea.kr",
-        address: it.bidwinnrAdrs || `${agency} 관할 납품 사업장`,
-        linkedApis: [apiSourceName, "물품목록정보서비스", "낙찰정보서비스"],
-        description: `공공데이터포털 승인 OpenAPI [${apiSourceName}]에서 실시간으로 수신된 발주·입찰·계약 데이터입니다. (발주/공고번호: ${planNo})`
+        uid: `CAT-${idx}-${idntNo}`,
+        tab: tabId,
+        orderDate,
+        category: "물품목록",
+        itemId: String(idntNo),
+        manageNo: String(idntNo),
+        subManageNo: `물품분류번호: ${clsNo}`,
+        title: `${prodNm} (${specNm})`,
+        agency: "조달청 물품목록정보 등록 품목",
+        companyName: maker,
+        ceoName: "물품목록 등록 제조업체",
+        productName: prodNm,
+        productSpec: specNm,
+        amount: clsNo,
+        subAmountText: `분류 ${clsNo}`,
+        contractMethod: "목록정보 정식등록",
+        phone: it.telNo || "1588-0800",
+        manager: `${maker} (${it.telNo || "조달청 목록정보센터 1588-0800"})`,
+        email: "catalog@g2b.go.kr",
+        address: "나라장터 물품목록관리시스템 등록",
+        apiSource: apiLabel,
+        rawFields: it
       };
     }
 
@@ -818,24 +1152,21 @@
       renderTable();
     }
 
-    function runSearch() {
-      const start = document.getElementById("startDate").value;
-      const end = document.getElementById("endDate").value;
+    function runLocalFilter() {
       const cat = document.getElementById("categoryFilter").value;
       const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
 
       filteredData = currentData.filter(item => {
-        const matchDate = (!start || item.orderDate >= start) && (!end || item.orderDate <= end);
         const matchCat = cat === "ALL" || item.category.includes(cat);
         const matchKey = !keyword ||
-          item.itemId.toLowerCase().includes(keyword) ||
-          item.orderPlanNo.toLowerCase().includes(keyword) ||
-          item.bidNtceNo.toLowerCase().includes(keyword) ||
-          item.orderTitle.toLowerCase().includes(keyword) ||
-          item.companyName.toLowerCase().includes(keyword) ||
-          item.productName.toLowerCase().includes(keyword) ||
-          item.agency.toLowerCase().includes(keyword);
-        return matchDate && matchCat && matchKey;
+          String(item.itemId).toLowerCase().includes(keyword) ||
+          String(item.manageNo).toLowerCase().includes(keyword) ||
+          String(item.subManageNo).toLowerCase().includes(keyword) ||
+          String(item.title).toLowerCase().includes(keyword) ||
+          String(item.companyName).toLowerCase().includes(keyword) ||
+          String(item.productName).toLowerCase().includes(keyword) ||
+          String(item.agency).toLowerCase().includes(keyword);
+        return matchCat && matchKey;
       });
 
       currentPage = 1;
@@ -856,25 +1187,29 @@
 
     function renderStats() {
       const count = filteredData.length;
-      const total = filteredData.reduce((sum, i) => sum + i.budget, 0);
-      const uniqueCompanies = new Set(filteredData.map(i => i.companyName)).size;
+      const isCatalog = currentTab === "catalog";
+      const total = isCatalog ? 0 : filteredData.reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+      const uniqueOrgs = new Set(filteredData.map(i => i.companyName || i.agency)).size;
 
       document.getElementById("resultCountText").textContent = `총 ${count.toLocaleString()}건 조회됨`;
       document.getElementById("statCount").textContent = `${count.toLocaleString()}건`;
-      document.getElementById("statTotalBudget").textContent = formatKRW(total);
-      document.getElementById("statAvgBudget").textContent = `${count.toLocaleString()}개 품목`;
-      document.getElementById("statCompanies").textContent = `${uniqueCompanies.toLocaleString()}개사`;
+      document.getElementById("statTotalBudget").textContent = isCatalog
+        ? `${new Set(filteredData.map(i => i.amount)).size.toLocaleString()}개 분류`
+        : formatKRW(total);
+      document.getElementById("statAvgBudget").textContent = `${count.toLocaleString()}건`;
+      document.getElementById("statCompanies").textContent = `${uniqueOrgs.toLocaleString()}개처`;
     }
 
     function renderTable() {
       const tbody = document.getElementById("orderTableBody");
       const pageBar = document.getElementById("paginationBar");
+      const isCatalog = currentTab === "catalog";
 
       if (filteredData.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="5" class="py-10 text-center text-slate-400">
-              지정하신 조건(날짜·식별번호)에 해당하는 발주계획 데이터가 없습니다.
+            <td colspan="5" class="py-12 text-center text-slate-400">
+              현재 필터 조건에 해당하는 데이터가 없습니다. 상단 [현재 화면 API 조회] 버튼을 클릭하거나 검색어를 초기화해 주세요.
             </td>
           </tr>
         `;
@@ -889,8 +1224,9 @@
       tbody.innerHTML = pageItems.map(item => {
         const isSelected = selectedItem && selectedItem.uid === item.uid;
         const badgeColor =
-          item.category === "물품" ? "bg-blue-100 text-blue-700" :
-          item.category === "용역" ? "bg-purple-100 text-purple-700" :
+          item.category.includes("물품") ? "bg-blue-100 text-blue-700" :
+          item.category.includes("용역") ? "bg-purple-100 text-purple-700" :
+          item.category.includes("쇼핑몰") ? "bg-emerald-100 text-emerald-700" :
           "bg-amber-100 text-amber-800";
 
         return `
@@ -904,10 +1240,14 @@
             </td>
             <td class="py-3 px-3 font-mono font-bold text-violet-700 whitespace-nowrap">${item.itemId}</td>
             <td class="py-3 px-3">
-              <div class="font-bold text-slate-800 line-clamp-1">${item.orderTitle}</div>
-              <div class="text-[11px] text-slate-500 mt-0.5">${item.companyName} · ${item.agency}</div>
+              <div class="font-bold text-slate-800 line-clamp-1">${item.title}</div>
+              <div class="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
+                <strong class="text-slate-700">${item.companyName}</strong> · ${item.agency}
+              </div>
             </td>
-            <td class="py-3 px-3 text-right font-bold text-slate-800 whitespace-nowrap">${formatKRW(item.budget)}</td>
+            <td class="py-3 px-3 text-right font-bold text-slate-800 whitespace-nowrap">
+              ${item.subAmountText || formatKRW(item.amount, isCatalog)}
+            </td>
           </tr>
         `;
       }).join("");
@@ -937,71 +1277,86 @@
       selectedItem = found;
       renderTable();
 
-      document.getElementById("detailBadgeId").textContent = `식별번호: ${found.itemId}`;
+      document.getElementById("detailBadgeId").textContent = `번호: ${found.manageNo}`;
       const container = document.getElementById("detailCardContent");
-      const apiBadges = (found.linkedApis || []).map(api =>
-        `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[11px] font-semibold">✓ ${api}</span>`
-      ).join(" ");
+
+      // 원본 API 응답 필드를 표 형태로 깔끔하게 렌더링
+      const rawEntries = Object.entries(found.rawFields || {})
+        .filter(([_, v]) => v !== null && v !== undefined && String(v).trim() !== "")
+        .slice(0, 18);
+
+      const rawHtml = rawEntries.map(([k, v]) => `
+        <div class="flex justify-between gap-2 py-1 border-b border-slate-100 text-[11px]">
+          <span class="font-mono text-slate-400 shrink-0">${k}</span>
+          <span class="font-medium text-slate-700 text-right break-all">${String(v)}</span>
+        </div>
+      `).join("");
 
       container.innerHTML = `
-        <div class="space-y-4">
-          <!-- 상단 발주건명 및 기관 -->
+        <div class="space-y-3.5">
+          <!-- 상단 건명 및 기관 -->
           <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
             <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
-              <span>발주계획번호: <strong class="font-mono text-slate-700">${found.orderPlanNo}</strong></span>
-              <span>입찰공고번호: <strong class="font-mono text-slate-700">${found.bidNtceNo}</strong></span>
+              <span>관리/식별번호: <strong class="font-mono text-slate-800">${found.manageNo}</strong></span>
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[11px]">${found.apiSource}</span>
             </div>
-            <h4 class="text-base font-extrabold text-slate-900">${found.orderTitle}</h4>
+            <div class="text-[11px] text-slate-500 mb-1">${found.subManageNo}</div>
+            <h4 class="text-base font-extrabold text-slate-900 leading-snug">${found.title}</h4>
             <div class="mt-2 flex flex-wrap gap-1.5 text-xs">
-              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded font-semibold">발주기관: ${found.agency}</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded font-semibold">기관: ${found.agency}</span>
               <span class="px-2 py-0.5 bg-slate-200 text-slate-700 rounded">${found.contractMethod}</span>
-              <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded font-bold">예산: ${found.budget.toLocaleString()}원</span>
-            </div>
-            <div class="mt-2 pt-2 border-t border-slate-200 flex flex-wrap gap-1">
-              ${apiBadges}
+              <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded font-bold">${found.subAmountText}</span>
             </div>
           </div>
 
           <!-- 핵심 조회 항목 3가지: 회사명 / 제품명 / 연락처 -->
-          <div class="space-y-3">
-            <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
-              <div class="text-[11px] font-bold text-emerald-700 uppercase">🏢 1. 회사명 (낙찰정보·쇼핑몰 공급업체)</div>
-              <div class="text-lg font-extrabold text-slate-900 mt-0.5">${found.companyName}</div>
-              <div class="text-xs text-slate-600 mt-1">대표자: <strong>${found.ceoName}</strong> | 소재지: ${found.address}</div>
+          <div class="space-y-2.5">
+            <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
+              <div class="text-[11px] font-bold text-emerald-700 uppercase">🏢 1. 회사명 / 대상기관 정보</div>
+              <div class="text-base font-extrabold text-slate-900 mt-0.5">${found.companyName}</div>
+              <div class="text-xs text-slate-600 mt-0.5">대표자/담당: <strong>${found.ceoName}</strong></div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200">
-              <div class="text-[11px] font-bold text-blue-700 uppercase">📦 2. 제품명 및 규격 (물품목록·쇼핑몰 품목정보)</div>
-              <div class="text-base font-extrabold text-slate-900 mt-0.5">${found.productName}</div>
-              <div class="text-xs text-slate-600 mt-1"><strong>계약/물품식별번호:</strong> <span class="font-mono font-bold text-violet-700">${found.itemId}</span> | <strong>규격:</strong> ${found.productSpec}</div>
-              <p class="text-xs text-slate-600 mt-2 bg-white p-2.5 rounded-lg border border-blue-100 leading-relaxed">
-                ${found.description}
-              </p>
+            <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
+              <div class="text-[11px] font-bold text-blue-700 uppercase">📦 2. 제품명 · 품명 · 상세규격</div>
+              <div class="text-sm font-extrabold text-slate-900 mt-0.5">${found.productName}</div>
+              <div class="text-xs text-slate-600 mt-1">${found.productSpec}</div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200">
-              <div class="text-[11px] font-bold text-amber-800 uppercase">📞 3. 연락처 정보 조회 (업체·발주처 담당)</div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1.5 text-xs">
-                <div class="bg-white p-2.5 rounded-lg border border-amber-200">
-                  <span class="text-slate-400 block text-[11px]">대표 전화번호</span>
-                  <strong class="text-sm text-slate-900 font-mono">${found.phone}</strong>
+            <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200">
+              <div class="text-[11px] font-bold text-amber-800 uppercase">📞 3. 연락처 · 담당자 정보 조회</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1 text-xs">
+                <div class="bg-white p-2 rounded-lg border border-amber-200">
+                  <span class="text-slate-400 block text-[10px]">전화번호</span>
+                  <strong class="text-xs text-slate-900 font-mono">${found.phone}</strong>
                 </div>
-                <div class="bg-white p-2.5 rounded-lg border border-amber-200">
-                  <span class="text-slate-400 block text-[11px]">기술·견적 문의 이메일</span>
-                  <strong class="text-sm text-blue-700 font-mono">${found.email}</strong>
+                <div class="bg-white p-2 rounded-lg border border-amber-200">
+                  <span class="text-slate-400 block text-[10px]">이메일 / 안내</span>
+                  <strong class="text-xs text-blue-700 font-mono break-all">${found.email}</strong>
                 </div>
               </div>
-              <div class="mt-2 text-xs text-slate-700">
-                <strong>담당부서/담당자:</strong> ${found.manager}
+              <div class="mt-1.5 text-xs text-slate-700">
+                <strong>담당자:</strong> ${found.manager}
               </div>
+            </div>
+          </div>
+
+          <!-- OpenAPI 실시간 응답 원본 데이터 필드 뷰어 -->
+          <div class="bg-white rounded-xl border border-slate-200 p-3">
+            <div class="text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+              <span>📡 OpenAPI 실시간 수신 원본 데이터 (Raw Fields)</span>
+              <span class="text-[10px] text-emerald-600 font-mono">JSON/XML Response</span>
+            </div>
+            <div class="max-h-40 overflow-y-auto pr-1">
+              ${rawHtml}
             </div>
           </div>
         </div>
 
-        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-          <span>조달청 OpenAPI 5종 데이터 연계 완료</span>
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+          <span>공공데이터포털 실시간 OpenAPI 검증 완료</span>
           <a href="https://www.g2b.go.kr" target="_blank" rel="noopener" class="text-emerald-700 font-bold hover:underline">
-            나라장터 상세 보기 ↗
+            나라장터 바로가기 ↗
           </a>
         </div>
       `;
@@ -1011,7 +1366,7 @@
       document.getElementById("detailBadgeId").textContent = "식별번호: 없음";
       document.getElementById("detailCardContent").innerHTML = `
         <div class="py-16 text-center text-slate-400 text-sm">
-          좌측 목록에서 발주·계약 항목을 선택해 주세요.
+          좌측 목록에서 항목을 선택해 주세요.
         </div>
       `;
     }
@@ -1019,61 +1374,71 @@
     function updateAnalysisChart() {
       const mode = document.getElementById("analysisType").value;
       const titleEl = document.getElementById("chartTitle");
+      const isCatalog = currentTab === "catalog";
       const groupMap = {};
 
-      if (mode === "category") {
-        titleEl.textContent = "업무구분별 발주·낙찰금액 분석 (단위: 백만 원)";
+      if (mode === "agency") {
+        titleEl.textContent = isCatalog
+          ? "제조업체/공급사별 등록 품목 건수 TOP 10"
+          : "기관 / 공급업체별 금액 상위 TOP 10 (단위: 백만 원)";
         filteredData.forEach(d => {
-          groupMap[d.category] = (groupMap[d.category] || 0) + Math.round(d.budget / 1000000);
+          const key = d.companyName && !d.companyName.includes("대상업체") ? d.companyName : d.agency;
+          groupMap[key] = (groupMap[key] || 0) + (isCatalog ? 1 : Math.round((Number(d.amount) || 0) / 1000000));
         });
-      } else if (mode === "agency") {
-        titleEl.textContent = "수요기관별 발주계획 예산 분석 TOP 10 (단위: 백만 원)";
+      } else if (mode === "category") {
+        titleEl.textContent = isCatalog
+          ? "품명별 등록 건수 분석"
+          : "업무구분별 금액/건수 분석 (단위: 백만 원)";
         filteredData.forEach(d => {
-          groupMap[d.agency] = (groupMap[d.agency] || 0) + Math.round(d.budget / 1000000);
+          const key = isCatalog ? d.productName : d.category;
+          groupMap[key] = (groupMap[key] || 0) + (isCatalog ? 1 : Math.round((Number(d.amount) || 0) / 1000000));
         });
       } else if (mode === "method") {
-        titleEl.textContent = "입찰·계약방법별 예산 규모 분석 (단위: 백만 원)";
+        titleEl.textContent = "계약방법 / 세부분류별 비중 분석";
         filteredData.forEach(d => {
-          groupMap[d.contractMethod] = (groupMap[d.contractMethod] || 0) + Math.round(d.budget / 1000000);
+          const key = d.contractMethod || "기타";
+          groupMap[key] = (groupMap[key] || 0) + (isCatalog ? 1 : Math.round((Number(d.amount) || 0) / 1000000));
         });
       } else {
-        titleEl.textContent = "월별 발주계획 예산 추이 분석 (단위: 백만 원)";
+        titleEl.textContent = "일자별/월별 데이터 추이 분석";
         [...filteredData].sort((a, b) => a.orderDate.localeCompare(b.orderDate)).forEach(d => {
-          const month = d.orderDate.slice(0, 7);
-          groupMap[month] = (groupMap[month] || 0) + Math.round(d.budget / 1000000);
+          const dt = d.orderDate || "2025-06";
+          groupMap[dt] = (groupMap[dt] || 0) + (isCatalog ? 1 : Math.round((Number(d.amount) || 0) / 1000000));
         });
       }
 
       let entries = Object.entries(groupMap);
-      if (mode === "agency" || mode === "method") {
+      if (mode !== "date") {
         entries = entries.sort((a, b) => b[1] - a[1]).slice(0, 10);
+      } else {
+        entries = entries.slice(-15);
       }
 
-      const labels = entries.map(e => e[0]);
+      const labels = entries.map(e => e[0].length > 14 ? e[0].slice(0, 14) + "…" : e[0]);
       const values = entries.map(e => e[1]);
 
       const ctx = document.getElementById("orderChart").getContext("2d");
       if (chartInstance) chartInstance.destroy();
 
       chartInstance = new Chart(ctx, {
-        type: mode === "month" ? "line" : "bar",
+        type: mode === "date" ? "line" : "bar",
         data: {
           labels,
           datasets: [{
-            label: "발주금액 (백만 원)",
+            label: isCatalog ? "건수" : "금액 (백만 원)",
             data: values,
             backgroundColor: [
-              "rgba(37, 99, 235, 0.8)",
-              "rgba(79, 70, 229, 0.8)",
-              "rgba(16, 185, 129, 0.8)",
-              "rgba(245, 158, 11, 0.8)",
-              "rgba(139, 92, 246, 0.8)",
-              "rgba(14, 165, 233, 0.8)"
+              "rgba(37, 99, 235, 0.82)",
+              "rgba(79, 70, 229, 0.82)",
+              "rgba(16, 185, 129, 0.82)",
+              "rgba(245, 158, 11, 0.82)",
+              "rgba(139, 92, 246, 0.82)",
+              "rgba(14, 165, 233, 0.82)"
             ],
             borderColor: "rgba(37, 99, 235, 1)",
             borderRadius: 6,
             tension: 0.3,
-            fill: mode === "month"
+            fill: mode === "date"
           }]
         },
         options: {
@@ -1090,15 +1455,16 @@
     }
 
     function resetFilters() {
-      document.getElementById("startDate").value = "2024-01-01";
-      document.getElementById("endDate").value = "2026-12-31";
       document.getElementById("categoryFilter").value = "ALL";
       document.getElementById("searchInput").value = "";
-      runSearch();
+      runLocalFilter();
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      runSearch();
+      const savedKey = localStorage.getItem("g2b_service_key") || DEFAULT_SERVICE_KEY;
+      document.getElementById("serviceKeyInput").value = savedKey;
+      // 첫 화면(발주계획) 즉시 실시간 API 호출 시작
+      switchTab("orderPlan");
     });
   </script>
 </body>
