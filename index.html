@@ -756,24 +756,29 @@
       function buildTabEndpoints(sVal, eVal) {
         const list = [];
         if (currentTab === "orderPlan") {
-          const wins = buildBackwardWindows(sVal, eVal, 28, 4, false);
+          // 조달청 OpenAPI 조회기간 단축(최대 7일) 규격에 맞춰 6일 단위 윈도우로 분할 호출
+          const wins = buildBackwardWindows(sVal, eVal, 6, 6, false);
           wins.forEach(w => {
-            [1, 2].forEach(pageNo => {
-              list.push({
-                label: `발주계획(물품 p.${pageNo})`,
-                category: "물품",
-                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-              });
-              list.push({
-                label: `발주계획(용역 p.${pageNo})`,
-                category: "용역",
-                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListServc?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-              });
-              list.push({
-                label: `발주계획(공사 p.${pageNo})`,
-                category: "공사",
-                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-              });
+            list.push({
+              label: `발주계획(물품 ${w.bgnDate})`,
+              category: "물품",
+              url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+            });
+            list.push({
+              label: `발주계획(용역 ${w.bgnDate})`,
+              category: "용역",
+              url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListServc?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+            });
+            list.push({
+              label: `발주계획(공사 ${w.bgnDate})`,
+              category: "공사",
+              url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+            });
+            // PPSSrch 오퍼레이션(발주년월+조회일시) 병행 호출로 수신율 극대화
+            list.push({
+              label: `발주계획검색(물품 ${w.bgnYm})`,
+              category: "물품",
+              url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThngPPSSrch?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&orderBgnYm=${w.bgnYm}&orderEndYm=${w.endYm}&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
             });
           });
         } else if (currentTab === "preSpecBid") {
