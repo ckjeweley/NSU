@@ -38,6 +38,24 @@
       font-weight: 800 !important;
       box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
     }
+    @keyframes progressStripe {
+      0% { background-position: 1rem 0; }
+      100% { background-position: 0 0; }
+    }
+    .progress-animated {
+      background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.2) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.2) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 1rem 1rem;
+      animation: progressStripe 0.6s linear infinite;
+    }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
@@ -49,9 +67,9 @@
         <div>
           <div class="flex items-center gap-2 mb-1">
             <span class="px-2.5 py-0.5 text-xs font-bold bg-emerald-500/20 border border-emerald-400/40 rounded-full text-emerald-300">
-              ✓ 공공데이터포털 조달청 OpenAPI 5종 공식 규격 연동 완료
+              ✓ 공공데이터포털 조달청 OpenAPI 5종 실시간 연동
             </span>
-            <span class="text-xs text-slate-400">OrderPlan · BidPublic02 · ShoppingMall · Scsbid · ThngList02</span>
+            <span class="text-xs text-slate-400">초기 0건 · 실시간 API 호출 시 프로그레스바 진행</span>
           </div>
           <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">
             나라장터 조달 데이터 통합 검색 · 분석 시스템
@@ -61,14 +79,14 @@
         <!-- OpenAPI 인증키 입력 박스 -->
         <div class="bg-slate-800 border-2 border-emerald-500/70 rounded-xl p-3 w-full lg:w-[500px] shrink-0 shadow-lg">
           <div class="flex items-center justify-between text-xs text-slate-200 mb-1.5">
-            <span class="font-bold text-emerald-300">🔑 공공데이터포털 일반 인증키 (64자리 전체 붙여넣기)</span>
-            <button onclick="clearSavedKey()" class="text-[11px] text-slate-400 hover:text-white underline">키 지우기</button>
+            <span class="font-bold text-emerald-300">🔑 공공데이터포털 일반 인증키 (64자리 전체 입력)</span>
+            <button onclick="clearSavedKey()" class="text-[11px] text-slate-400 hover:text-white underline">초기화(0건)</button>
           </div>
           <div class="flex gap-2">
             <input
               id="serviceKeyInput"
               type="text"
-              placeholder="여기에 공공데이터포털 인증키(64자리 전체)를 붙여넣으세요"
+              placeholder="공공데이터포털 인증키(64자리 전체)를 붙여넣으세요"
               class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-950 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-emerald-400 font-mono"
             />
             <button
@@ -94,7 +112,7 @@
           >
             <div class="flex items-center justify-between w-full">
               <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-600 text-white">화면 1</span>
-              <span id="count-badge-orderPlan" class="text-[11px] font-mono font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">대기</span>
+              <span id="count-badge-orderPlan" class="text-[11px] font-mono font-bold text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded">0건</span>
             </div>
             <div class="text-base font-extrabold mt-1.5">📋 나라장터 발주계획</div>
             <div class="text-[11px] opacity-75 mt-0.5">OrderPlanSttusService</div>
@@ -107,7 +125,7 @@
           >
             <div class="flex items-center justify-between w-full">
               <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-600 text-white">화면 2</span>
-              <span id="count-badge-preSpecBid" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">1개월</span>
+              <span id="count-badge-preSpecBid" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">0건</span>
             </div>
             <div class="text-base font-extrabold mt-1.5">📑 사전규격 · 입찰공고</div>
             <div class="text-[11px] opacity-75 mt-0.5">BidPublicInfoService02</div>
@@ -120,7 +138,7 @@
           >
             <div class="flex items-center justify-between w-full">
               <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-teal-600 text-white">화면 3</span>
-              <span id="count-badge-contractShop" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">1개월</span>
+              <span id="count-badge-contractShop" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">0건</span>
             </div>
             <div class="text-base font-extrabold mt-1.5">🤝 계약정보 (쇼핑몰)</div>
             <div class="text-[11px] opacity-75 mt-0.5">ShoppingMallPrdctInfoService</div>
@@ -133,7 +151,7 @@
           >
             <div class="flex items-center justify-between w-full">
               <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white">화면 4</span>
-              <span id="count-badge-award" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">1개월</span>
+              <span id="count-badge-award" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">0건</span>
             </div>
             <div class="text-base font-extrabold mt-1.5">🏆 낙찰정보</div>
             <div class="text-[11px] opacity-75 mt-0.5">ScsbidInfoService</div>
@@ -146,7 +164,7 @@
           >
             <div class="flex items-center justify-between w-full">
               <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-violet-600 text-white">화면 5</span>
-              <span id="count-badge-catalog" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">1개월</span>
+              <span id="count-badge-catalog" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">0건</span>
             </div>
             <div class="text-base font-extrabold mt-1.5">📦 목록정보 (물품목록)</div>
             <div class="text-[11px] opacity-75 mt-0.5">ThngListInfoService02</div>
@@ -167,8 +185,8 @@
           조달청_나라장터 발주계획현황서비스 (OrderPlanSttusService)
         </span>
       </div>
-      <div id="apiAlertBox" class="text-xs px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 font-medium">
-        🔑 상단 우측에 공공데이터포털 인증키(64자리 전체)를 붙여넣고 [실시간 API 조회]를 누르면 수백 건의 실시간 데이터를 수신합니다.
+      <div id="apiAlertBox" class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-300 text-slate-700 font-medium">
+        현재 조회된 데이터: <strong>0건</strong> — 상단에 인증키를 입력하고 <strong>[실시간 API 조회]</strong> 또는 <strong>[실시간 조회]</strong> 버튼을 눌러주세요.
       </div>
     </div>
   </div>
@@ -253,6 +271,7 @@
               />
             </div>
             <button
+              id="subFetchBtn"
               onclick="fetchCurrentTabOpenAPI(true)"
               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm transition self-end h-[38px] flex items-center gap-1.5 whitespace-nowrap"
             >
@@ -263,6 +282,33 @@
 
       </div>
 
+      <!-- ★ 실시간 OpenAPI 조회 프로그레스바 영역 (조회 중에만 표시됨) ★ -->
+      <div id="progressContainer" class="hidden mt-4 p-4 rounded-xl bg-blue-950 text-white border border-blue-700 shadow-inner">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <div class="flex items-center gap-2">
+            <svg class="animate-spin h-4 w-4 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span id="progressStatusText" class="font-bold text-blue-100">공공데이터포털 조달청 OpenAPI 서버에 연결 중...</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="progressCountText" class="text-emerald-300 font-mono font-bold">수신 건수: 0건</span>
+            <span id="progressPercentText" class="px-2 py-0.5 rounded bg-blue-800 text-white font-mono font-extrabold">0%</span>
+          </div>
+        </div>
+        <div class="w-full h-3.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+          <div
+            id="progressBarFill"
+            class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-400 progress-animated transition-all duration-200"
+            style="width: 0%"
+          ></div>
+        </div>
+        <div id="progressSubDetail" class="mt-1.5 text-[11px] text-blue-300 font-mono truncate">
+           대기 중...
+        </div>
+      </div>
+
       <!-- 현재 탭의 실제 REST OpenAPI 호출 URL 표시줄 -->
       <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg">
         <div class="flex items-center gap-2 overflow-x-auto">
@@ -271,7 +317,7 @@
             https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng
           </code>
         </div>
-        <span id="resultCountText" class="font-bold text-blue-700 whitespace-nowrap">조회 대기 중</span>
+        <span id="resultCountText" class="font-bold text-blue-700 whitespace-nowrap">총 0건 조회됨</span>
       </div>
     </section>
 
@@ -282,7 +328,7 @@
           <span class="text-xs font-semibold text-slate-500">현재 탭 조회 건수</span>
           <div class="mt-2 flex items-baseline justify-between">
             <span id="statCount" class="text-2xl font-extrabold text-slate-900">0건</span>
-            <span id="statSourceBadge" class="text-[11px] text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded">OpenAPI 연동</span>
+            <span id="statSourceBadge" class="text-[11px] text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded">조회 전 (0건)</span>
           </div>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
@@ -343,7 +389,7 @@
               <option value="99999">전체 보기</option>
             </select>
             <button onclick="resetFilters()" class="text-xs text-slate-600 hover:text-blue-600 border border-slate-300 bg-white px-2.5 py-1 rounded-lg">
-              초기화
+              검색초기화
             </button>
           </div>
         </div>
@@ -405,7 +451,6 @@
   </footer>
 
   <script>
-    // 이전에 잘못 저장되었을 수 있는 테스트 키를 localStorage에서 즉시 제거
     const BROKEN_DUMMY_KEY = "6f51e14ac40d711807b2b60f3aed76c9683d9d3e8d7740cf5a6760c13e6fb577";
     if (localStorage.getItem("g2b_service_key") === BROKEN_DUMMY_KEY) {
       localStorage.removeItem("g2b_service_key");
@@ -429,7 +474,7 @@
       };
     }
 
-    // 발주계획용 기본 조회기간 (최근 6개월 ~ 현재일)
+    // 발주계획 기본 조회기간 (최근 6개월 ~ 현재일)
     function getOrderPlanDefaultRange() {
       const end = new Date();
       const start = new Date(end);
@@ -491,193 +536,13 @@
       }
     };
 
-    // 인증키 입력 전에도 각 탭(화면 1~5)에서 30건씩 풍부하게 조회되도록 탭별 30건 초기 데이터 생성기
-    function generateInitialTabRecords(tabId) {
-      const agencies = [
-        "조달청 정보기획과", "행정안전부 디지털정부국", "서울특별시 스마트도시정책관", "한국전력공사 디지털변환처",
-        "교육부 스마트교육기반과", "환경부 국립환경과학원", "국토교통부 국토지리정보원", "과학기술정보통신부 정보보호과",
-        "소방청 장비기술국", "경기도청 자치행정국", "국민건강보험공단 빅데이터본부", "해양수산부 국립해양조사원",
-        "한국도로공사 스마트도로처", "문화체육관광부 국립중앙도서관", "농촌진흥청 디지털농업추진단", "기상청 수치모델링센터",
-        "관세청 정보데이터기획담당관", "한국수자원공사 물관리기획처", "한국철도공사 전기기술단", "대전광역시 교통정책과"
-      ];
-      const companies = [
-        { name: "(주)한국클라우드테크놀로지", ceo: "김태호", tel: "02-6240-8810", email: "gov@kcloudtech.co.kr", addr: "서울 금천구 가산디지털1로 168" },
-        { name: "(주)데이터브릿지솔루션", ceo: "박선영", tel: "042-488-7120", email: "contact@databridge.kr", addr: "대전 서구 둔산중로 78" },
-        { name: "한빛비전시스템(주)", ceo: "최동훈", tel: "031-709-3340", email: "sales@hanbitvision.com", addr: "경기 성남시 분당구 판교로 255" },
-        { name: "대한파워일렉트릭(주)", ceo: "윤성민", tel: "062-954-1190", email: "ups@dhpower.co.kr", addr: "광주 북구 첨단과기로 208번길 42" },
-        { name: "(주)네트웍스코리아정보통신", ceo: "장재영", tel: "02-3452-9080", email: "bid@networkskorea.co.kr", addr: "서울 강남구 테헤란로 311" },
-        { name: "에코센서테크(주)", ceo: "한지숙", tel: "032-581-4420", email: "eco@ecosensortech.kr", addr: "인천 연수구 송도미래로 30" },
-        { name: "(주)와이즈프롬프트AI", ceo: "서준혁", tel: "02-598-7700", email: "gov@wiseprompt.ai", addr: "서울 서초구 반포대로 58" },
-        { name: "스카이로보틱스(주)", ceo: "임도현", tel: "042-863-5090", email: "drone@skyrobotics.co.kr", addr: "대전 유성구 테크노2로 187" },
-        { name: "(주)시큐어퀀텀네트웍스", ceo: "정우성", tel: "02-2040-9100", email: "pqc@securequantum.co.kr", addr: "서울 송파구 법원로 114" },
-        { name: "코리아디펜스로보틱스(주)", ceo: "강철민", tel: "055-289-4500", email: "rescue@kdrobotics.com", addr: "경남 창원시 성산구 공단로 412" }
-      ];
-      const items = [
-        { prod: "KCT-AI Server Pro GX500 (GPU 8Way 서버)", cat: "물품", cls: 43211501, spec: "Intel Xeon Gold 2EA, 512GB DDR5, AI 가속기 8EA" },
-        { prod: "공공조달 빅데이터 분석 플랫폼 고도화 용역", cat: "용역", cls: 81111599, spec: "실시간 OpenAPI 수집·분석 대시보드 구축 일체" },
-        { prod: "HB-EdgeCam AI-9000 지능형 교통관제 영상분석기", cat: "물품", cls: 46171622, spec: "4K 60fps 8채널 실시간 객체인식, IP67 방수방진" },
-        { prod: "DPE-UPS 300KVA 친환경 고효율 무정전전원장치", cat: "물품", cls: 39121011, spec: "정격용량 300kVA, 리튬인산철 배터리팩, 효율 1등급" },
-        { prod: "초고속 정보통신망 광케이블 및 Wi-Fi 7 인프라 공사", cat: "공사", cls: 72151699, spec: "10Gbps 백본 스위치 12식, Wi-Fi 7 무선 AP 350식 시공" },
-        { prod: "EcoAir-PM2500 대기질 미세먼지 복합 자동측정기", cat: "물품", cls: 41113105, spec: "PM10/PM2.5/오존 동시측정, 환경부 형식승인 완료" },
-        { prod: "WiseGov LLM Assistant v2.0 생성형 AI 문서검토", cat: "용역", cls: 81111809, spec: "공공조달 법령·규격 특화 RAG 엔진 및 검증 모듈" },
-        { prod: "SkySurveyor X8-LiDAR 디지털트윈 정밀 측량 드론", cat: "물품", cls: 25131802, spec: "비행시간 55분, 고정밀 LiDAR 센서, KCMVP 암호모듈" },
-        { prod: "SQ-VPN 10G-PQC 행정망 양자내성암호 보안장비", cat: "물품", cls: 43222634, spec: "10Gbps 양자내성암호 처리, 국정원 보안적합성 검증" },
-        { prod: "FireBot-T800 재난현장 열화상 무인방수로봇", cat: "물품", cls: 46191601, spec: "내열 600℃, 분당 3,000L 방수, 열화상 인명탐지" }
-      ];
-
-      const list = [];
-      const baseEnd = new Date();
-      for (let i = 0; i < 30; i++) {
-        const ag = agencies[i % agencies.length];
-        const comp = companies[i % companies.length];
-        const it = items[i % items.length];
-        const d = new Date(baseEnd);
-        d.setDate(d.getDate() - (i % 28));
-        const dtStr = toDateInputString(d);
-        const idntNo = String(24891000 + i * 37);
-        const amt = (i % 9 + 2) * 85000000;
-
-        if (tabId === "orderPlan") {
-          const planNo = `1-1230000-2026-${String(10400 + i)}`;
-          list.push({
-            uid: `INIT-OP-${i}`,
-            tab: tabId,
-            orderDate: dtStr,
-            category: it.cat,
-            itemId: `${it.cls} (${planNo})`,
-            manageNo: planNo,
-            subManageNo: `물품분류번호: ${it.cls} | 발주계획통합번호: ${planNo}`,
-            title: `[발주계획] ${ag} ${it.prod} 도입 사업 (${i + 1}차)`,
-            agency: ag,
-            companyName: comp.name,
-            ceoName: comp.ceo,
-            productName: it.prod,
-            productSpec: it.spec,
-            amount: amt,
-            subAmountText: formatKRW(amt),
-            contractMethod: i % 2 === 0 ? "제한경쟁입찰" : "다수공급자계약(MAS)",
-            phone: comp.tel,
-            manager: `${ag} 발주담당관 (${comp.tel})`,
-            email: comp.email,
-            address: comp.addr,
-            apiSource: "조달청_나라장터 발주계획현황서비스",
-            rawFields: { orderPlanUntyNo: planNo, orderInsttNm: ag, bizNm: `${it.prod} 도입 사업`, sumOrderAmt: amt, prdctClsfcNo: it.cls, telNo: comp.tel }
-          });
-        } else if (tabId === "preSpecBid") {
-          const bidNo = `202611${String(10000 + i)}-00`;
-          list.push({
-            uid: `INIT-BID-${i}`,
-            tab: tabId,
-            orderDate: dtStr,
-            category: it.cat,
-            itemId: bidNo,
-            manageNo: bidNo,
-            subManageNo: `사전규격번호: BF-2026-${5000 + i} | 공고기관: 조달청`,
-            title: `[입찰공고·사전규격] ${ag} ${it.prod} 구매 공고`,
-            agency: ag,
-            companyName: comp.name,
-            ceoName: comp.ceo,
-            productName: it.prod,
-            productSpec: it.spec,
-            amount: amt,
-            subAmountText: formatKRW(amt),
-            contractMethod: i % 2 === 0 ? "일반경쟁(총액)" : "제한경쟁(규격가격분리)",
-            phone: comp.tel,
-            manager: `${ag} 입찰공고담당 (${comp.tel})`,
-            email: comp.email,
-            address: comp.addr,
-            apiSource: "조달청_나라장터 입찰공고정보서비스02",
-            rawFields: { bidNtceNo: bidNo, bidNtceNm: `${it.prod} 구매 공고`, dminsttNm: ag, presmptPrce: amt, ntceInsttOfclTelNo: comp.tel, ntceInsttOfclEmailAdrs: comp.email }
-          });
-        } else if (tabId === "contractShop") {
-          const unitPrice = Math.round(amt / 10);
-          list.push({
-            uid: `INIT-SHOP-${i}`,
-            tab: tabId,
-            orderDate: dtStr,
-            category: "쇼핑몰품목",
-            itemId: idntNo,
-            manageNo: idntNo,
-            subManageNo: `쇼핑계약번호: MAS-2026-${300 + i} | 물품분류: ${it.cls}`,
-            title: `[나라장터쇼핑몰] ${it.prod}`,
-            agency: "나라장터 종합쇼핑몰 단가계약",
-            companyName: comp.name,
-            ceoName: comp.ceo,
-            productName: it.prod,
-            productSpec: it.spec,
-            amount: unitPrice,
-            subAmountText: `단가 ${formatKRW(unitPrice)}`,
-            contractMethod: "제3자단가계약(MAS)",
-            phone: comp.tel,
-            manager: `${comp.name} 쇼핑몰계약팀 (${comp.tel})`,
-            email: comp.email,
-            address: comp.addr,
-            apiSource: "조달청_나라장터쇼핑몰 품목정보 서비스",
-            rawFields: { prdctIdntNo: idntNo, prdctClsfcNo: it.cls, prdctSpecNm: it.prod, cntrctCorpNm: comp.name, prdctUnitPrce: unitPrice }
-          });
-        } else if (tabId === "award") {
-          const bidNo = `202611${String(20000 + i)}-00`;
-          const rate = (88 + (i % 10) * 0.85).toFixed(2);
-          list.push({
-            uid: `INIT-AWD-${i}`,
-            tab: tabId,
-            orderDate: dtStr,
-            category: it.cat,
-            itemId: bidNo,
-            manageNo: bidNo,
-            subManageNo: `낙찰자 사업자번호: ${108 + i}-81-${40192 + i} | 낙찰률: ${rate}%`,
-            title: `[최종낙찰] ${ag} ${it.prod} 계약 낙찰`,
-            agency: ag,
-            companyName: comp.name,
-            ceoName: comp.ceo,
-            productName: `${it.prod} (낙찰률: ${rate}%)`,
-            productSpec: `최종낙찰업체: ${comp.name} | 대표자: ${comp.ceo} | 참가업체수: ${(i % 12) + 3}개사`,
-            amount: amt,
-            subAmountText: `${formatKRW(amt)} (${rate}%)`,
-            contractMethod: `낙찰률 ${rate}%`,
-            phone: comp.tel,
-            manager: `${comp.name} ${comp.ceo} 대표 (${comp.tel})`,
-            email: comp.email,
-            address: comp.addr,
-            apiSource: "조달청_나라장터 낙찰정보서비스",
-            rawFields: { bidNtceNo: bidNo, bidwinnrNm: comp.name, bidwinnrCeoNm: comp.ceo, sucsfbidAmt: amt, sucsfbidRate: rate, bidwinnrTelNo: comp.tel, bidwinnrAdrs: comp.addr }
-          });
-        } else {
-          list.push({
-            uid: `INIT-CAT-${i}`,
-            tab: tabId,
-            orderDate: dtStr,
-            category: "물품목록",
-            itemId: idntNo,
-            manageNo: idntNo,
-            subManageNo: `물품분류번호(8자리): ${it.cls} | 세부품명번호(10자리): ${it.cls}01`,
-            title: `[물품목록] ${it.prod}`,
-            agency: "조달청 목록정보시스템 정식 등록",
-            companyName: comp.name,
-            ceoName: comp.ceo,
-            productName: it.prod,
-            productSpec: it.spec,
-            amount: it.cls,
-            subAmountText: `분류 ${it.cls}`,
-            contractMethod: "조달청 목록화 완료",
-            phone: comp.tel,
-            manager: `${comp.name} 제조사 연락처 (${comp.tel})`,
-            email: comp.email,
-            address: comp.addr,
-            apiSource: "조달청_물품목록정보서비스02",
-            rawFields: { prdctIdntNo: idntNo, prdctClsfcNo: it.cls, dtilPrdctClsfcNo: `${it.cls}01`, krnPrdctNm: it.prod, mnfctrNm: comp.name }
-          });
-        }
-      }
-      return list;
-    }
-
+    // ★ 처음 들어갔을 때 모든 탭의 기본 데이터는 0건([])으로 시작 ★
     const tabDataStore = {
-      orderPlan: generateInitialTabRecords("orderPlan"),
-      preSpecBid: generateInitialTabRecords("preSpecBid"),
-      contractShop: generateInitialTabRecords("contractShop"),
-      award: generateInitialTabRecords("award"),
-      catalog: generateInitialTabRecords("catalog")
+      orderPlan: [],
+      preSpecBid: [],
+      contractShop: [],
+      award: [],
+      catalog: []
     };
 
     const tabLoadedLive = {
@@ -689,16 +554,16 @@
     };
 
     let currentTab = "orderPlan";
-    let currentData = tabDataStore.orderPlan;
-    let filteredData = [...currentData];
-    let selectedItem = currentData[0];
+    let currentData = [];
+    let filteredData = [];
+    let selectedItem = null;
     let chartInstance = null;
     let currentPage = 1;
     let pageSize = 100;
 
     function formatKRW(num, isCatalog = false) {
-      if (isCatalog) return `분류 ${num}`;
-      if (!num || num <= 0) return "금액미상(0원)";
+      if (isCatalog) return num ? `분류 ${num}` : "0";
+      if (!num || num <= 0) return "0원";
       if (num >= 100000000) return (num / 100000000).toFixed(2) + "억 원";
       if (num >= 10000) return Math.round(num / 10000).toLocaleString() + "만 원";
       return num.toLocaleString() + "원";
@@ -714,11 +579,45 @@
       box.innerHTML = msg;
     }
 
+    // 프로그레스바 표시 및 상태 업데이트 함수
+    function updateProgressBar(visible, completed = 0, total = 1, fetchedCount = 0, detailText = "") {
+      const container = document.getElementById("progressContainer");
+      if (!visible) {
+        container.classList.add("hidden");
+        return;
+      }
+      container.classList.remove("hidden");
+      const pct = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+      document.getElementById("progressBarFill").style.width = `${pct}%`;
+      document.getElementById("progressPercentText").textContent = `${pct}% (${completed}/${total})`;
+      document.getElementById("progressCountText").textContent = `실시간 누적 수신: ${fetchedCount.toLocaleString()}건`;
+      document.getElementById("progressStatusText").textContent =
+        pct < 100
+          ? `[${TAB_CONFIGS[currentTab].badge}] OpenAPI 실시간 데이터 수집 중...`
+          : `✅ [${TAB_CONFIGS[currentTab].badge}] 데이터 수신 완료!`;
+      if (detailText) {
+        document.getElementById("progressSubDetail").textContent = detailText;
+      }
+    }
+
     function clearSavedKey() {
       localStorage.removeItem("g2b_service_key");
       document.getElementById("serviceKeyInput").value = "";
-      document.getElementById("serviceKeyInput").focus();
-      showApiAlert("🔑 저장된 키를 지웠습니다. 공공데이터포털 일반 인증키(64자리 전체)를 붙여넣고 [실시간 API 조회]를 눌러주세요.", false);
+      Object.keys(tabDataStore).forEach(k => {
+        tabDataStore[k] = [];
+        tabLoadedLive[k] = false;
+        const badge = document.getElementById(`count-badge-${k}`);
+        if (badge) {
+          badge.textContent = "0건";
+          badge.className = "text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded";
+        }
+      });
+      currentData = [];
+      filteredData = [];
+      selectedItem = null;
+      updateProgressBar(false);
+      runLocalFilter();
+      showApiAlert("🔄 초기 상태(0건)로 초기화되었습니다. 인증키를 입력하고 [실시간 API 조회]를 눌러주세요.", false);
     }
 
     function onDateInputChanged() {
@@ -728,7 +627,7 @@
       };
     }
 
-    async function switchTab(tabId) {
+    async function switchTab(tabId, autoFetchIfKeyPresent = true) {
       currentTab = tabId;
       const cfg = TAB_CONFIGS[tabId];
 
@@ -776,13 +675,13 @@
       currentPage = 1;
       runLocalFilter();
 
+      // 이미 인증키로 조회한 적이 있는 상태에서 다른 탭을 누르면 해당 탭도 실시간 조회 실행
       const currentKey = document.getElementById("serviceKeyInput").value.trim();
-      if (currentKey && !tabLoadedLive[tabId]) {
+      if (autoFetchIfKeyPresent && currentKey && !tabLoadedLive[tabId] && Object.values(tabLoadedLive).some(v => v)) {
         await fetchCurrentTabOpenAPI(false);
       }
     }
 
-    // 종료일(endStr)부터 역순으로 윈도우 생성 (capYesterday=true이면 쇼핑몰 API 규격에 맞춰 어제 날짜를 상한으로 설정)
     function buildBackwardWindows(startStr, endStr, windowDays = 6, maxWindows = 5, capYesterday = false) {
       const start = startStr ? new Date(startStr) : new Date();
       let end = endStr ? new Date(endStr) : new Date();
@@ -827,7 +726,7 @@
       return windows;
     }
 
-    // ★ 공공데이터포털 공식 명세 페이지(data.go.kr)에서 검증한 5개 서비스의 정확한 Base URL 및 파라미터 호출 ★
+    // ★ 실시간 프로그레스바와 연동된 OpenAPI 호출 함수 ★
     async function fetchCurrentTabOpenAPI(isManualClick = false) {
       const rawKey = document.getElementById("serviceKeyInput").value.trim();
       const cfg = TAB_CONFIGS[currentTab];
@@ -836,7 +735,7 @@
         document.getElementById("serviceKeyInput").value = "";
         document.getElementById("serviceKeyInput").focus();
         showApiAlert(
-          `🔑 <strong>우측 상단 입력창에 공공데이터포털 일반 인증키(64자리 전체)를 붙여넣고 [실시간 API 조회]를 눌러주세요!</strong> (현재는 시연 데이터 ${currentData.length}건이 표시 중입니다)`,
+          `🔑 <strong>우측 상단 입력창에 공공데이터포털 일반 인증키(64자리 전체)를 붙여넣고 [실시간 API 조회]를 눌러주세요!</strong>`,
           false
         );
         return;
@@ -844,9 +743,11 @@
 
       const encodedKey = rawKey.includes("%") ? rawKey : encodeURIComponent(rawKey);
       const btn = document.getElementById("apiFetchBtn");
+      const subBtn = document.getElementById("subFetchBtn");
 
-      btn.textContent = "수신 중...";
+      btn.textContent = "조회 중...";
       btn.disabled = true;
+      subBtn.disabled = true;
 
       const startVal = document.getElementById("startDate").value;
       const endVal = document.getElementById("endDate").value;
@@ -855,101 +756,90 @@
       function buildTabEndpoints(sVal, eVal) {
         const list = [];
         if (currentTab === "orderPlan") {
-          // 1. 조달청_나라장터 발주계획현황서비스 (https://www.data.go.kr/data/15129462/openapi.do)
-          // 필수/옵션: serviceKey, pageNo, numOfRows=99, inqryDiv=1, orderBgnYm, orderEndYm, inqryBgnDt, inqryEndDt
           const wins = buildBackwardWindows(sVal, eVal, 28, 4, false);
           wins.forEach(w => {
             [1, 2].forEach(pageNo => {
               list.push({
-                label: "발주계획현황(물품)",
+                label: `발주계획(물품 p.${pageNo})`,
                 category: "물품",
-                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&orderBgnYm=${w.bgnYm}&orderEndYm=${w.endYm}&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
               });
               list.push({
-                label: "발주계획현황(용역)",
+                label: `발주계획(용역 p.${pageNo})`,
                 category: "용역",
-                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListServc?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&orderBgnYm=${w.bgnYm}&orderEndYm=${w.endYm}&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListServc?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
               });
               list.push({
-                label: "발주계획현황(공사)",
+                label: `발주계획(공사 p.${pageNo})`,
                 category: "공사",
-                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&orderBgnYm=${w.bgnYm}&orderEndYm=${w.endYm}&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
+                url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
               });
             });
           });
         } else if (currentTab === "preSpecBid") {
-          // 2. 조달청_나라장터 입찰공고정보서비스 (https://www.data.go.kr/data/15129394/openapi.do)
-          // 공식 Base URL: apis.data.go.kr/1230000/ad/BidPublicInfoService02 / 오퍼레이션: getBidPblancListInfoThng02 (최대 조회기간 7일!)
           const wins = buildBackwardWindows(sVal, eVal, 6, 5, false);
           wins.forEach(w => {
             list.push({
-              label: "입찰공고정보02(물품)",
+              label: `입찰공고02(물품 ${w.bgnDate})`,
               category: "물품",
               url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService02/getBidPblancListInfoThng02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
             });
             list.push({
-              label: "입찰공고정보02(용역)",
+              label: `입찰공고02(용역 ${w.bgnDate})`,
               category: "용역",
               url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService02/getBidPblancListInfoServc02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
             });
             list.push({
-              label: "입찰공고정보02(공사)",
+              label: `입찰공고02(공사 ${w.bgnDate})`,
               category: "공사",
               url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService02/getBidPblancListInfoCnstwk02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
             });
           });
         } else if (currentTab === "contractShop") {
-          // 3. 조달청_나라장터쇼핑몰 품목정보 서비스 (https://www.data.go.kr/data/15129471/openapi.do)
-          // 공식 규격: "현재일로부터 등록일자 하루전 데이터 제공" -> capYesterday=true!
           const wins = buildBackwardWindows(sVal, eVal, 6, 5, true);
           wins.forEach((w) => {
             list.push({
-              label: "나라장터쇼핑몰 품목정보",
+              label: `쇼핑몰품목(${w.bgnDate}~${w.endDate})`,
               category: "물품",
               url: `https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getShoppingMallPrdctInfoList?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDate=${w.bgnDate}&inqryEndDate=${w.endDate}`
             });
             list.push({
-              label: "다수공급자계약 품목정보",
+              label: `MAS계약품목(${w.bgnDate}~${w.endDate})`,
               category: "물품",
               url: `https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getMASCntrctPrdctInfoList?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDate=${w.bgnDate}&inqryEndDate=${w.endDate}`
             });
           });
         } else if (currentTab === "award") {
-          // 4. 조달청_나라장터 낙찰정보서비스 (https://www.data.go.kr/data/15129458/openapi.do)
-          // 공식 규격: "요청 파라미터 조회 기간이 기존 1개월에서 7일로 단축" -> 6일 단위 분할!
           const wins = buildBackwardWindows(sVal, eVal, 6, 5, false);
           wins.forEach(w => {
             list.push({
-              label: "낙찰정보서비스(물품)",
+              label: `낙찰정보(물품 ${w.bgnDate})`,
               category: "물품",
               url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusThng?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
             });
             list.push({
-              label: "낙찰정보서비스(용역)",
+              label: `낙찰정보(용역 ${w.bgnDate})`,
               category: "용역",
               url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusServc?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
             });
             list.push({
-              label: "낙찰정보서비스(공사)",
+              label: `낙찰정보(공사 ${w.bgnDate})`,
               category: "공사",
               url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
             });
           });
         } else if (currentTab === "catalog") {
-          // 5. 조달청_물품목록정보서비스 (https://www.data.go.kr/data/15129417/openapi.do)
-          // 공식 Base URL: apis.data.go.kr/1230000/ao/ThngListInfoService02
-          // 공식 오퍼레이션: getThngPrdnmLocplcAccotListInfoInfoPrdlstSearch02 & getPrdctClsfcNoUnit8Info02
           const wins = buildBackwardWindows(sVal, eVal, 5, 5, true);
           wins.forEach((w) => {
             list.push({
-              label: "물품목록 품목조회02",
+              label: `물품목록조회02(${w.bgnDate})`,
               category: "물품목록",
               url: `https://apis.data.go.kr/1230000/ao/ThngListInfoService02/getThngPrdnmLocplcAccotListInfoInfoPrdlstSearch02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
             });
           });
           [1, 2, 3].forEach(pageNo => {
             list.push({
-              label: "물품분류8단위조회02",
+              label: `물품분류8단위02(p.${pageNo})`,
               category: "물품목록",
               url: `https://apis.data.go.kr/1230000/ao/ThngListInfoService02/getPrdctClsfcNoUnit8Info02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&prdctClsfcNoBgnNo=43000000&prdctClsfcNoEndNo=46999999`
             });
@@ -966,79 +856,100 @@
       let lastApiError = "";
       let isKeyError = false;
 
-      async function executeEndpoints(epList) {
+      // 프로그레스바 시작 (0%)
+      updateProgressBar(true, 0, primaryEndpoints.length, 0, "조달청 OpenAPI 엔드포인트 병렬 요청 시작...");
+
+      async function executeEndpointsWithProgress(epList) {
         const rows = [];
-        const results = await Promise.allSettled(
-          epList.map(async (ep) => {
+        let completed = 0;
+        const total = epList.length;
+
+        const promises = epList.map(async (ep) => {
+          try {
             const res = await fetch(ep.url);
             const text = await res.text();
-            return { ep, text, status: res.status };
-          })
-        );
 
-        results.forEach((r) => {
-          if (r.status !== "fulfilled") return;
-          const { ep, text } = r.value;
+            if (text.includes("SERVICE_KEY_IS_NOT_REGISTERED_ERROR") || text.includes("등록되지 않은 서비스키")) {
+              isKeyError = true;
+              lastApiError = "등록되지 않은 서비스키 (인증키 64자리 전체를 확인해 주세요)";
+            } else {
+              let parsedJson = false;
+              try {
+                const json = JSON.parse(text);
+                parsedJson = true;
+                const errHeader = json?.response?.header || json?.["nkoneps.com.response.ResponseError"]?.header;
+                if (errHeader && errHeader.resultCode && errHeader.resultCode !== "00") {
+                  lastApiError = `${errHeader.resultCode}: ${errHeader.resultMsg}`;
+                }
+                const rawItems = json?.response?.body?.items;
+                const list = Array.isArray(rawItems)
+                  ? rawItems
+                  : Array.isArray(rawItems?.item)
+                  ? rawItems.item
+                  : rawItems?.item
+                  ? [rawItems.item]
+                  : [];
 
-          if (text.includes("SERVICE_KEY_IS_NOT_REGISTERED_ERROR") || text.includes("등록되지 않은 서비스키")) {
-            isKeyError = true;
-            lastApiError = "등록되지 않은 서비스키 (인증키 64자리 전체를 다시 확인해 주세요)";
-            return;
+                list.forEach((itemObj) => {
+                  rows.push(normalizeApiRow(itemObj, rows.length, currentTab, ep.category, ep.label));
+                });
+              } catch (_) {}
+
+              if (!parsedJson) {
+                try {
+                  const parser = new DOMParser();
+                  const xml = parser.parseFromString(text, "text/xml");
+                  const errMsg = xml.querySelector("returnAuthMsg, resultMsg")?.textContent;
+                  if (errMsg && errMsg !== "정상" && errMsg !== "NORMAL SERVICE.") {
+                    lastApiError = errMsg;
+                  }
+                  const itemNodes = xml.querySelectorAll("item");
+                  itemNodes.forEach((node) => {
+                    const obj = {};
+                    node.childNodes.forEach((child) => {
+                      if (child.nodeType === 1) obj[child.nodeName] = child.textContent;
+                    });
+                    rows.push(normalizeApiRow(obj, rows.length, currentTab, ep.category, ep.label));
+                  });
+                } catch (_) {}
+              }
+            }
+          } catch (err) {
+            lastApiError = err.message || "네트워크 요청 오류";
+          } finally {
+            completed++;
+            updateProgressBar(
+              true,
+              completed,
+              total,
+              rows.length,
+              `수신 완료 (${completed}/${total}): ${ep.label}`
+            );
           }
-
-          try {
-            const json = JSON.parse(text);
-            const errHeader = json?.response?.header || json?.["nkoneps.com.response.ResponseError"]?.header;
-            if (errHeader && errHeader.resultCode && errHeader.resultCode !== "00") {
-              lastApiError = `${errHeader.resultCode}: ${errHeader.resultMsg}`;
-            }
-            const rawItems = json?.response?.body?.items;
-            const list = Array.isArray(rawItems)
-              ? rawItems
-              : Array.isArray(rawItems?.item)
-              ? rawItems.item
-              : rawItems?.item
-              ? [rawItems.item]
-              : [];
-
-            list.forEach((itemObj) => {
-              rows.push(normalizeApiRow(itemObj, rows.length, currentTab, ep.category, ep.label));
-            });
-            return;
-          } catch (_) {}
-
-          try {
-            const parser = new DOMParser();
-            const xml = parser.parseFromString(text, "text/xml");
-            const errMsg = xml.querySelector("returnAuthMsg, resultMsg")?.textContent;
-            if (errMsg && errMsg !== "정상" && errMsg !== "NORMAL SERVICE.") {
-              lastApiError = errMsg;
-            }
-            const itemNodes = xml.querySelectorAll("item");
-            itemNodes.forEach((node) => {
-              const obj = {};
-              node.childNodes.forEach((child) => {
-                if (child.nodeType === 1) obj[child.nodeName] = child.textContent;
-              });
-              rows.push(normalizeApiRow(obj, rows.length, currentTab, ep.category, ep.label));
-            });
-          } catch (_) {}
         });
+
+        await Promise.allSettled(promises);
         return rows;
       }
 
-      let fetchedRows = await executeEndpoints(primaryEndpoints);
+      let fetchedRows = await executeEndpointsWithProgress(primaryEndpoints);
 
       if (!isKeyError && fetchedRows.length === 0) {
         const verifiedEndpoints = buildTabEndpoints("2025-06-01", "2025-06-30");
-        fetchedRows = await executeEndpoints(verifiedEndpoints);
+        updateProgressBar(true, 0, verifiedEndpoints.length, 0, "추가 기간 데이터 확인 중...");
+        fetchedRows = await executeEndpointsWithProgress(verifiedEndpoints);
       }
 
       btn.textContent = "실시간 API 조회";
       btn.disabled = false;
+      subBtn.disabled = false;
+
+      // 완료 후 0.7초 뒤 프로그레스바 숨김
+      setTimeout(() => {
+        updateProgressBar(false);
+      }, 700);
 
       if (fetchedRows.length > 0) {
-        // 인증키가 실제로 정상 동작함이 검증되었을 때만 localStorage에 저장!
         localStorage.setItem("g2b_service_key", rawKey);
 
         tabDataStore[currentTab] = fetchedRows;
@@ -1062,12 +973,12 @@
         localStorage.removeItem("g2b_service_key");
         document.getElementById("serviceKeyInput").focus();
         showApiAlert(
-          `⚠️ <strong>인증키 확인 필요:</strong> 입력된 인증키가 공공데이터포털에서 <code>등록되지 않은 서비스키</code>로 응답되었습니다. 공공데이터포털 마이페이지에서 <strong>일반 인증키(Encoding 또는 Decoding 64자리 전체)</strong>를 복사하여 우측 상단 입력창에 다시 붙여넣어 주세요! (아래는 기본 30건 데이터가 표시됩니다)`,
+          `⚠️ <strong>인증키 오류:</strong> 입력하신 인증키가 공공데이터포털에서 <code>등록되지 않은 서비스키</code>로 응답되었습니다. 공공데이터포털 마이페이지에서 <strong>일반 인증키(64자리 전체)</strong>를 다시 복사해 붙여넣어 주세요!`,
           false
         );
       } else {
         showApiAlert(
-          `ℹ️ [${cfg.badge}] API 응답 상태: ${lastApiError || "해당 조건 0건"} (현재 화면에는 기본 ${currentData.length}건이 표시됩니다)`,
+          `ℹ️ [${cfg.badge}] 조회 결과 0건 (${lastApiError || "선택한 기간 내 데이터 없음"}). 날짜 범위를 조정한 후 다시 조회해 보세요.`,
           false
         );
       }
@@ -1232,7 +1143,6 @@
         };
       }
 
-      // 5. catalog (ThngListInfoService02)
       const idntNo = it.prdctIdntNo || it.dtilPrdctClsfcNo || it.prdctClsfcNo || String(24000000 + idx);
       const clsNo = Number(it.prdctClsfcNo || it.dtilPrdctClsfcNo || 43211500);
       const prodNm = it.krnPrdctNm || it.prdctClsfcNoNm || it.dtilPrdctClsfcNoNm || it.prdctNm || "조달 등록 물품";
@@ -1333,8 +1243,9 @@
       if (filteredData.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="5" class="py-12 text-center text-slate-400">
-              조건에 해당하는 항목이 없습니다. 검색어를 초기화하거나 [실시간 조회] 버튼을 클릭해 주세요.
+            <td colspan="5" class="py-16 text-center text-slate-400">
+              <div class="text-sm font-bold text-slate-500 mb-1">현재 조회된 데이터가 없습니다 (0건)</div>
+              <div class="text-xs text-slate-400">상단에 공공데이터포털 일반 인증키를 입력하고 <strong>[실시간 API 조회]</strong> 또는 <strong>[실시간 조회]</strong> 버튼을 클릭해 주세요.</div>
             </td>
           </tr>
         `;
@@ -1484,10 +1395,11 @@
     }
 
     function renderEmptyDetail() {
-      document.getElementById("detailBadgeId").textContent = "식별번호: 없음";
+      document.getElementById("detailBadgeId").textContent = "식별번호: -";
       document.getElementById("detailCardContent").innerHTML = `
-        <div class="py-16 text-center text-slate-400 text-sm">
-          좌측 목록에서 항목을 선택해 주세요.
+        <div class="py-20 text-center text-slate-400 text-sm space-y-1">
+          <div class="font-bold text-slate-500">선택된 항목이 없습니다 (0건)</div>
+          <div class="text-xs">API 실시간 조회 후 좌측 목록에서 항목을 클릭하면 상세 정보가 표시됩니다.</div>
         </div>
       `;
     }
@@ -1595,11 +1507,8 @@
       if (savedKey && savedKey !== BROKEN_DUMMY_KEY) {
         document.getElementById("serviceKeyInput").value = savedKey;
       }
-      Object.keys(TAB_CONFIGS).forEach(id => {
-        const el = document.getElementById(`count-badge-${id}`);
-        if (el) el.textContent = `${tabDataStore[id].length}건`;
-      });
-      switchTab("orderPlan");
+      // 첫 진입 시 자동 API 호출 없이 0건 상태로 시작
+      switchTab("orderPlan", false);
     });
   </script>
 </body>
