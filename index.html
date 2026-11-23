@@ -69,28 +69,26 @@
           </p>
         </div>
 
-        <!-- OpenAPI 인증키 입력 박스 (기본 내장 완료) -->
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 w-full lg:w-[460px] shrink-0">
-          <div class="flex items-center justify-between text-xs text-slate-300 mb-1.5">
-            <span class="font-bold text-emerald-300">🔑 공공데이터포털 일반 인증키 (적용됨)</span>
-            <button onclick="clearAllData()" class="text-[11px] text-slate-400 hover:text-white underline">초기화(0건)</button>
-          </div>
-          <div class="flex gap-2">
-            <input
-              id="serviceKeyInput"
-              type="text"
-              value="6f51e14ac40d711807b2b60f3aed76c9683d9d3ec3040d77aa7ddcad70542495"
-              placeholder="공공데이터포털 인증키(64자리)를 붙여넣으세요"
-              class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-950 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 font-mono"
-            />
-            <button
-              id="apiFetchBtn"
-              onclick="fetchOrderPlanOpenAPI()"
-              class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-extrabold rounded-lg whitespace-nowrap transition"
-            >
-              실시간 API 조회
-            </button>
-          </div>
+        <!-- OpenAPI 실시간 조회 및 초기화 버튼 (API키는 화면에 노출되지 않도록 숨김 처리) -->
+        <div class="flex items-center gap-2 shrink-0">
+          <input
+            id="serviceKeyInput"
+            type="hidden"
+            value="6f51e14ac40d711807b2b60f3aed76c9683d9d3ec3040d77aa7ddcad70542495"
+          />
+          <button
+            id="apiFetchBtn"
+            onclick="fetchOrderPlanOpenAPI()"
+            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-extrabold rounded-xl whitespace-nowrap transition shadow-md"
+          >
+            🔄 실시간 발주계획 조회
+          </button>
+          <button
+            onclick="clearAllData()"
+            class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-semibold text-slate-300 hover:text-white rounded-xl whitespace-nowrap transition"
+          >
+            초기화(0건)
+          </button>
         </div>
       </div>
     </div>
@@ -1012,7 +1010,7 @@
         fetchedRows = await executeWithProgress(fallbackEndpoints);
       }
 
-      btn.textContent = "실시간 API 조회";
+      btn.textContent = "🔄 실시간 발주계획 조회";
       btn.disabled = false;
       subBtn.disabled = false;
 
