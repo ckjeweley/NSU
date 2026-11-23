@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>나라장터 발주계획을 이용한 조달물품 사진 비교 검색 및 분석·소개페이지</title>
+  <title>나라장터 발주계획을 이용한 조달물품 사진 비교 · 총수요 분석 · 소개페이지</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
@@ -48,27 +48,28 @@
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
 
-  <!-- 상단 헤더 (서비스 목적을 누구나 3초 만에 이해할 수 있도록 직관적으로 안내) -->
+  <!-- 상단 헤더: 조달업체(납품·입찰 기업) 입장에서 총수요·영업타깃·예상매출을 즉시 파악하는 목적 명시 -->
   <header class="bg-slate-900 text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div class="space-y-1.5">
           <div class="flex flex-wrap items-center gap-2">
             <span class="px-2.5 py-0.5 text-xs font-bold bg-blue-500/30 border border-blue-400/40 rounded-full text-blue-200">
-              과제주제 : 발주계획을 이용한 조달물품 검색 · 분석 · 소개페이지
+              과제주제 : 발주계획을 이용한 조달물품 총수요 분석 및 소개페이지
             </span>
             <span class="px-2.5 py-0.5 text-xs font-bold bg-emerald-500/25 border border-emerald-400/40 rounded-full text-emerald-200">
-              📸 사진 비교 매칭 + 📊 발주예산 심층 분석 + 🎯 발주계획 활용 시뮬레이션
+              🏢 조달업체 전용 : 내 납품 물품 사진 등록 ➔ 전국 발주계획 총수요 · 예상 납품수량 · 영업 타깃 기관 즉시 분석
             </span>
           </div>
           <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">
-            나라장터 발주계획 기반 조달물품 사진 매칭 · 예산 시뮬레이션 · 기관 소통 플랫폼
+            나라장터 발주계획 기반 조달업체 물품 총수요 분석 · 수주 시뮬레이션 · 기관 소통 플랫폼
           </h1>
           <p class="text-xs text-slate-300 leading-relaxed">
-            <strong>💡 이 사이트로 무엇을 하나요?</strong>
-            ① <strong>내 물품 사진</strong>을 올리면 현재 그 물품을 구매하려는 <strong>행정기관들의 발주계획</strong>을 찾아주고,
-            ② <strong>예산 규모·계약방식·발주처 TOP 10</strong>을 분석하며,
-            ③ <strong>🎯 발주계획 활용 시뮬레이션</strong>으로 도입 가능 수량·예산 적정성을 검증하고 <strong>회사명·제품명·연락처 및 행정기관 선호도·의견</strong>을 소통합니다.
+            <strong>💡 조달업체가 이 사이트로 무엇을 하나요?</strong>
+            예를 들어 <strong>"내가 나라장터에 노트북을 올릴 예정"</strong>이라면 사진을 올리거나 품목을 클릭하세요!
+            ① <strong>전국 공공기관 총 발주수요(총 예산·총 몇 대 규모인지)</strong>를 1초 만에 계산하고,
+            ② <strong>수의계약 즉시 영업 가능 건수 vs 경쟁입찰 건수 및 최대 수요기관 TOP 3</strong>를 찾아주며,
+            ③ <strong>🎯 수주·납품 시뮬레이션</strong>으로 우리 회사의 예상 매출·수량과 발주기관 담당자 연락처·선호도를 확인해 바로 영업·소통할 수 있습니다.
           </p>
         </div>
 
@@ -101,10 +102,10 @@
   <div class="bg-white border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
       <div class="text-xs font-semibold text-slate-700">
-        📌 <strong>활용 순서:</strong> ① 물품 사진 업로드(또는 날짜 선택 후 실시간 조회) ➔ ② 예산·기관 분석 리포트 확인 ➔ ③ 식별번호 검색 ➔ ④ 발주계획 시뮬레이션 · 업체 연락처 · 기관 선호도 소통
+        📌 <strong>조달업체 활용 시나리오:</strong> ① 납품할 물품 사진/품목(예: 노트북) 선택 및 날짜 지정 ➔ ② 총수요·영업타깃 분석 선택 ➔ ③ 식별번호 검색 ➔ ④ 수주 시뮬레이션·담당자 연락처·기관 소통
       </div>
       <div id="apiAlertBox" class="text-xs px-3 py-1 rounded-lg bg-slate-100 border border-slate-300 text-slate-700 font-medium">
-        현재 조회된 데이터: <strong>0건</strong> — <strong>물품 사진을 업로드</strong>하거나 <strong>[실시간 조회]</strong> 버튼을 눌러주세요.
+        현재 조회된 데이터: <strong>0건</strong> — <strong>우측 품목 사진(예: 💻 노트북·PC)을 클릭</strong>하거나 <strong>내 물품 사진을 업로드</strong>해 보세요!
       </div>
     </div>
   </div>
@@ -112,58 +113,58 @@
   <!-- 메인 컨텐츠 -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
 
-    <!-- ★ 핵심 기능 1: 물품 사진을 올리면 비슷한 유형의 발주계획을 자동으로 찾아주는 이미지 검색 섹션 ★ -->
-    <section class="bg-gradient-to-r from-indigo-950 via-blue-950 to-slate-900 text-white rounded-2xl shadow-md p-5 border border-indigo-800/60">
+    <!-- ★ 핵심 기능 1: 조달업체가 올릴 물품 사진 업로드 & 원클릭 품목 총수요 진단 섹션 ★ -->
+    <section class="bg-gradient-to-r from-indigo-950 via-blue-950 to-slate-900 text-white rounded-2xl shadow-md p-5 border border-indigo-800/60 space-y-4">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
 
-        <!-- 좌측: 내 물품 사진 업로드 드롭존 & 미리보기 -->
+        <!-- 좌측: 내가 등록·납품할 물품 사진 업로드 & 기준 단가 설정 -->
         <div class="lg:col-span-5">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="px-2.5 py-0.5 bg-emerald-500 text-slate-950 font-extrabold rounded-full text-xs">사진 비교 검색</span>
-            <h2 class="text-base font-extrabold">📸 내 물품 사진으로 유사한 발주계획 찾기</h2>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="px-2.5 py-0.5 bg-emerald-500 text-slate-950 font-extrabold rounded-full text-xs">조달업체 물품 등록 테스트</span>
+            <h2 class="text-base font-extrabold">📸 내가 납품할 물품 사진으로 전국 총수요 분석</h2>
           </div>
           <p class="text-xs text-blue-200 mb-3">
-            조달물품 사진을 올리면 이미지 특징을 분석하여 <strong>현재 해당 유형의 물품을 발주할 계획인 행정기관 목록과 계약정보(회사명·제품명·연락처)</strong>를 유사도 순으로 찾아줍니다.
+            조달청에 등록·납품하려는 <strong>내 제품 사진(예: 노트북, 서버, 냉난방기 등)</strong>을 올리면, 현재 전국 행정기관의 <strong>유사 발주계획 총수요(총 예산·총 납품 대수·수요기관)</strong>를 즉시 계산합니다.
           </p>
 
           <div class="flex items-center gap-3 bg-white/10 border-2 border-dashed border-blue-400/60 hover:border-emerald-400 rounded-xl p-3.5 transition">
             <div id="uploadedPreviewBox" class="w-20 h-20 rounded-xl bg-slate-900/80 border border-white/20 flex items-center justify-center overflow-hidden shrink-0">
-              <span id="uploadedPlaceholderText" class="text-[11px] text-slate-400 text-center px-1">사진 미등록<br/>(전체 조회)</span>
+              <span id="uploadedPlaceholderText" class="text-[11px] text-slate-400 text-center px-1">내 제품 사진<br/>미등록</span>
               <img id="uploadedPreviewImg" src="" alt="업로드 사진" class="hidden w-full h-full object-cover" />
             </div>
             <div class="flex-1 space-y-2">
               <div class="flex flex-wrap gap-2">
                 <label class="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold shadow transition">
-                  <span>📷 내 물품 사진 업로드하기</span>
+                  <span>📷 내 납품 예정 사진 올리기</span>
                   <input type="file" id="photoFileInput" accept="image/*" class="hidden" onchange="onPhotoFileSelected(event)" />
                 </label>
                 <button id="clearPhotoBtn" onclick="clearPhotoFilter()" class="hidden px-3 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs font-semibold transition">
-                  전체 발주계획 보기
+                  전체 품목 보기
                 </button>
               </div>
               <div id="photoAnalysisBadge" class="text-[11px] text-blue-200">
-                파일(JPG, PNG 등)을 선택하면 실시간 발주계획과 즉시 비교합니다.
+                사진을 올리거나 우측의 <strong>[💻 노트북 · PC · 전산]</strong> 등 샘플 품목을 클릭하세요.
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 우측: 사진 파일이 없어도 원클릭으로 테스트할 수 있는 샘플 물품 사진 & 유형 선택기 -->
+        <!-- 우측: 조달업체 주요 납품 품목 원클릭 선택기 (노트북·PC가 1번 대표 예시로 배치됨) -->
         <div class="lg:col-span-7 bg-white/5 border border-white/10 rounded-xl p-4">
-          <div class="flex items-center justify-between mb-2.5">
-            <span class="text-xs font-bold text-blue-200">💡 비교할 조달물품 샘플 사진을 클릭하면 해당 유형의 발주계획만 즉시 추출합니다:</span>
-            <span id="matchedCategoryPill" class="px-2.5 py-0.5 rounded-full bg-blue-500/30 border border-blue-400/40 text-[11px] font-bold text-blue-100">
-              현재 선택: 전체 유형
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+            <span class="text-xs font-bold text-amber-300">💡 내가 납품할 품목 사진을 클릭하면 전국 발주계획 총수요와 예상 매출을 즉시 분석합니다:</span>
+            <span id="matchedCategoryPill" class="px-2.5 py-0.5 rounded-full bg-emerald-500/30 border border-emerald-400/40 text-[11px] font-bold text-emerald-100">
+              선택 품목: 전체 조달품목
             </span>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             <button onclick="selectSamplePhotoType('IT_SW')" id="sample-btn-IT_SW"
               class="sample-type-btn flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/70 hover:bg-blue-900/70 border border-white/15 text-left transition">
-              <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=150&q=80" alt="전산/서버" class="w-11 h-11 rounded-lg object-cover shrink-0" />
+              <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=150&q=80" alt="노트북/PC/전산" class="w-11 h-11 rounded-lg object-cover shrink-0" />
               <div class="overflow-hidden">
-                <div class="text-xs font-extrabold text-white truncate">전산 · 서버 · SW</div>
-                <div class="text-[10px] text-blue-300 truncate">서버, PC, 라이선스, 전산</div>
+                <div class="text-xs font-extrabold text-amber-300 truncate">💻 노트북 · PC · 전산</div>
+                <div class="text-[10px] text-blue-200 truncate">노트북, PC, 서버, SW (단가 180만)</div>
               </div>
             </button>
 
@@ -171,8 +172,8 @@
               class="sample-type-btn flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/70 hover:bg-blue-900/70 border border-white/15 text-left transition">
               <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=150&q=80" alt="기계/냉난방" class="w-11 h-11 rounded-lg object-cover shrink-0" />
               <div class="overflow-hidden">
-                <div class="text-xs font-extrabold text-white truncate">기계 · 냉난방 · 장비</div>
-                <div class="text-[10px] text-blue-300 truncate">냉난방기, 펌프, 측정장비</div>
+                <div class="text-xs font-extrabold text-white truncate">❄️ 냉난방기 · 기계장비</div>
+                <div class="text-[10px] text-blue-300 truncate">냉난방기, 공조기, 펌프 (단가 450만)</div>
               </div>
             </button>
 
@@ -180,8 +181,8 @@
               class="sample-type-btn flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/70 hover:bg-blue-900/70 border border-white/15 text-left transition">
               <img src="https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=150&q=80" alt="전기/통신/CCTV" class="w-11 h-11 rounded-lg object-cover shrink-0" />
               <div class="overflow-hidden">
-                <div class="text-xs font-extrabold text-white truncate">전기 · 제어 · CCTV</div>
-                <div class="text-[10px] text-blue-300 truncate">자동제어, 배전반, 카메라</div>
+                <div class="text-xs font-extrabold text-white truncate">📹 CCTV · 전기 · 제어</div>
+                <div class="text-[10px] text-blue-300 truncate">CCTV, LED, 배전반 (단가 320만)</div>
               </div>
             </button>
 
@@ -189,8 +190,8 @@
               class="sample-type-btn flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/70 hover:bg-blue-900/70 border border-white/15 text-left transition">
               <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=150&q=80" alt="사무비품/가구" class="w-11 h-11 rounded-lg object-cover shrink-0" />
               <div class="overflow-hidden">
-                <div class="text-xs font-extrabold text-white truncate">사무비품 · 가구 · 피복</div>
-                <div class="text-[10px] text-blue-300 truncate">비품, 가구, 교구, 유니폼</div>
+                <div class="text-xs font-extrabold text-white truncate">🪑 사무가구 · 비품 · 피복</div>
+                <div class="text-[10px] text-blue-300 truncate">책상, 의자, 복합기 (단가 85만)</div>
               </div>
             </button>
 
@@ -198,8 +199,8 @@
               class="sample-type-btn flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/70 hover:bg-blue-900/70 border border-white/15 text-left transition">
               <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=150&q=80" alt="식자재/약품" class="w-11 h-11 rounded-lg object-cover shrink-0" />
               <div class="overflow-hidden">
-                <div class="text-xs font-extrabold text-white truncate">급식자재 · 의약 · 위생</div>
-                <div class="text-[10px] text-blue-300 truncate">식자재, 급식, 의약품, 의료</div>
+                <div class="text-xs font-extrabold text-white truncate">🍱 급식자재 · 의약 · 위생</div>
+                <div class="text-[10px] text-blue-300 truncate">식자재, 의약품, 방역 (단가 250만)</div>
               </div>
             </button>
 
@@ -207,13 +208,81 @@
               class="sample-type-btn flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/70 hover:bg-blue-900/70 border border-white/15 text-left transition">
               <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=150&q=80" alt="시설/공사자재" class="w-11 h-11 rounded-lg object-cover shrink-0" />
               <div class="overflow-hidden">
-                <div class="text-xs font-extrabold text-white truncate">시설공사 · 건축자재</div>
-                <div class="text-[10px] text-blue-300 truncate">관급자재, 시설개보수, 공사</div>
+                <div class="text-xs font-extrabold text-white truncate">🏗️ 관급자재 · 시설공사</div>
+                <div class="text-[10px] text-blue-300 truncate">관급자재, 시설개보수 (단가 1,200만)</div>
               </div>
             </button>
           </div>
         </div>
+      </div>
 
+      <!-- ★ 조달업체 전용: 내 제품 단가 & 목표 점유율 기반 전국 총수요 즉시 브리핑 바 ★ -->
+      <div class="bg-slate-900/90 border border-emerald-500/40 rounded-xl p-4">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 text-xs font-extrabold">
+              📈 조달업체 시장수요 계산기
+            </span>
+            <span id="vendorDemandTitle" class="text-sm font-extrabold text-white">
+              내가 올릴 품목의 전국 공공기관 발주계획 총수요 & 예상 수주 매출
+            </span>
+          </div>
+
+          <!-- 내 제품 1대(식) 납품 단가 및 목표 시장수주율 직접 조절 -->
+          <div class="flex flex-wrap items-center gap-3 text-xs bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+            <label class="flex items-center gap-1.5">
+              <span class="text-blue-200 font-semibold">내 제품 기준단가(원):</span>
+              <input
+                id="vendorUnitPriceInput"
+                type="number"
+                step="100000"
+                value="1800000"
+                onchange="onVendorParamChange()"
+                class="w-28 px-2 py-1 rounded bg-slate-800 border border-slate-600 text-emerald-300 font-mono font-bold text-right"
+              />
+            </label>
+            <label class="flex items-center gap-1.5">
+              <span class="text-blue-200 font-semibold">목표 수주점유율(%):</span>
+              <select
+                id="vendorShareSelect"
+                onchange="onVendorParamChange()"
+                class="px-2 py-1 rounded bg-slate-800 border border-slate-600 text-amber-300 font-bold"
+              >
+                <option value="10">10% 수주 목표</option>
+                <option value="20" selected>20% 수주 목표</option>
+                <option value="30">30% 수주 목표</option>
+                <option value="50">50% 수주 목표</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <!-- 4대 핵심 시장수요 지표 (총 수요예산 / 전국 예상 납품대수 / 즉시 수의계약 가능 시장 / 우리 회사 목표 수주매출) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
+          <div class="bg-white/5 border border-white/10 rounded-xl p-3">
+            <div class="text-[11px] text-blue-200 font-semibold">① 해당 품목 전국 총 발주수요</div>
+            <div id="vdTotalBudget" class="text-xl font-extrabold text-white mt-0.5">0원 (0건)</div>
+            <div id="vdAvgBudgetSub" class="text-[11px] text-slate-300 mt-0.5">건당 평균 발주액: 0원</div>
+          </div>
+
+          <div class="bg-white/5 border border-white/10 rounded-xl p-3">
+            <div class="text-[11px] text-emerald-300 font-semibold">② 전국 예상 총 납품 수요량 (단가 환산)</div>
+            <div id="vdTotalUnits" class="text-xl font-extrabold text-emerald-300 mt-0.5">약 0대 (식)</div>
+            <div id="vdUnitPriceSub" class="text-[11px] text-slate-300 mt-0.5">기준단가 180만 원/대 기준</div>
+          </div>
+
+          <div class="bg-white/5 border border-white/10 rounded-xl p-3">
+            <div class="text-[11px] text-amber-300 font-semibold">③ 수의계약·쇼핑몰 즉시 납품 가능 수요</div>
+            <div id="vdDirectMarket" class="text-xl font-extrabold text-amber-300 mt-0.5">0건 (0원)</div>
+            <div id="vdCompeteSub" class="text-[11px] text-slate-300 mt-0.5">경쟁입찰·MAS 2단계: 0건</div>
+          </div>
+
+          <div class="bg-emerald-950/60 border border-emerald-400/50 rounded-xl p-3">
+            <div class="text-[11px] text-emerald-200 font-bold">④ 우리 회사 예상 수주 매출 (목표 점유 시)</div>
+            <div id="vdMyExpectedRev" class="text-xl font-extrabold text-emerald-300 mt-0.5">0원</div>
+            <div id="vdMyExpectedUnits" class="text-[11px] text-emerald-200 mt-0.5">예상 납품량: 약 0대 (수주율 20%)</div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -225,7 +294,7 @@
         <div class="lg:col-span-4 space-y-1.5">
           <label class="flex items-center gap-1.5 text-sm font-bold text-slate-800">
             <span class="step-badge bg-blue-600 text-white">1</span>
-            날짜 선택 (발주계획 조회 기간)
+            날짜 선택 (발주계획 수요 분석 기간)
           </label>
           <div class="grid grid-cols-2 gap-2">
             <div>
@@ -241,22 +310,22 @@
           </div>
         </div>
 
-        <!-- 2단계: 분석 종류 선택 -->
+        <!-- 2단계: 분석 종류 선택 (조달업체 영업·입찰 관점) -->
         <div class="lg:col-span-4 space-y-1.5">
           <label class="flex items-center gap-1.5 text-sm font-bold text-slate-800">
             <span class="step-badge bg-indigo-600 text-white">2</span>
-            분석 종류 선택 (실무 맞춤형 분석)
+            분석 종류 선택 (조달업체 시장·수요 분석)
           </label>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <span class="text-[11px] font-semibold text-slate-600 block mb-1">분석 차트 종류</span>
+              <span class="text-[11px] font-semibold text-slate-600 block mb-1">조달시장 분석 기준</span>
               <select id="analysisType" onchange="updateAnalysisChart()"
                 class="w-full px-3 py-2 text-sm font-medium text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <option value="budgetTier">예산 규모대별 입찰·수의 분석</option>
-                <option value="photoType">물품사진 유형별 예산 분석</option>
-                <option value="agency">발주기관별 예산 TOP 10</option>
-                <option value="method">계약방법별(경쟁/수의) 비중</option>
-                <option value="category">물품·용역·공사 구분별 분석</option>
+                <option value="photoType">품목유형별 총수요 예산 분석</option>
+                <option value="agency">최대 발주 행정기관 TOP 10 (영업타깃)</option>
+                <option value="budgetTier">예산규모별 수의계약 vs 경쟁입찰 건수</option>
+                <option value="method">계약방법별(일반/제한/수의) 수요 비중</option>
+                <option value="category">물품·용역·공사 구분별 수요 분석</option>
               </select>
             </div>
             <div>
@@ -277,17 +346,17 @@
           <label class="flex items-center justify-between text-sm font-bold text-slate-800">
             <span class="flex items-center gap-1.5">
               <span class="step-badge bg-violet-600 text-white">3</span>
-              계약정보 (식별번호) 검색
+              계약정보 (식별번호) · 품목 검색
             </span>
             <span id="resultCountText" class="text-xs font-extrabold text-blue-700">총 0건 조회됨</span>
           </label>
           <div class="flex gap-2">
             <div class="flex-1">
-              <span class="text-[11px] font-semibold text-slate-600 block mb-1">식별번호, 발주번호, 제품명, 회사명, 기관명</span>
+              <span class="text-[11px] font-semibold text-slate-600 block mb-1">식별번호, 품목명(예: 노트북, 서버), 기관명, 회사명</span>
               <input
                 type="text"
                 id="searchInput"
-                placeholder="식별번호(예: 43211503), 제품명, 기관명 입력..."
+                placeholder="품목명(예: 노트북, 전산), 식별번호, 기관명 입력..."
                 onkeyup="runLocalFilter()"
                 class="w-full px-3 py-2 text-sm font-medium text-slate-900 bg-slate-50 border border-slate-300 rounded-lg placeholder-slate-400 focus:ring-2 focus:ring-violet-500 focus:outline-none"
               />
@@ -304,7 +373,7 @@
 
       </div>
 
-      <!-- ★ 실시간 조회 프로그레스바 (조회 중에만 표시, 불필요한 HTTP URL 표시줄은 완전 제거) ★ -->
+      <!-- 실시간 조회 프로그레스바 (조회 중에만 표시) -->
       <div id="progressContainer" class="hidden mt-4 p-4 rounded-xl bg-blue-950 text-white border border-blue-700">
         <div class="flex items-center justify-between text-xs mb-2">
           <span id="progressStatusText" class="font-bold text-blue-100">나라장터 발주계획 OpenAPI 실시간 데이터 수집 중...</span>
@@ -326,83 +395,72 @@
       </div>
     </section>
 
-    <!-- ★ 2단계: 직관적인 발주계획 분석 리포트 & 시각화 대시보드 ★ -->
+    <!-- ★ 2단계: 조달업체 맞춤형 총수요 진단 리포트 & 시각화 대시보드 ★ -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <!-- 좌측: 핵심 KPI + 자동 분석 인사이트 요약 리포트 -->
-      <div class="lg:col-span-5 flex flex-col justify-between gap-4">
-        <div class="grid grid-cols-2 gap-3">
-          <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
-            <span class="text-xs font-semibold text-slate-500">매칭된 발주계획 건수</span>
-            <div class="mt-1 flex items-baseline justify-between">
-              <span id="statCount" class="text-2xl font-extrabold text-slate-900">0건</span>
-              <span id="statTotalSub" class="text-[11px] text-slate-500">전체 0건</span>
+      <!-- 좌측: 조달업체 핵심 영업 진단 리포트 (총수요 요약 + 영업 타깃 기관 TOP 3 + 공략 전략) -->
+      <div class="lg:col-span-5 flex flex-col justify-between gap-3">
+        <div class="bg-gradient-to-br from-indigo-50 via-blue-50 to-emerald-50/40 p-4 rounded-2xl border-2 border-indigo-200 shadow-sm space-y-3 h-full flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-extrabold text-indigo-950 flex items-center gap-1.5">
+                📊 조달업체 맞춤형 총수요 & 영업타깃 분석 리포트
+              </span>
+              <span class="px-2 py-0.5 bg-indigo-600 text-white rounded text-[10px] font-bold">조달업체 관점</span>
+            </div>
+            <div id="insightReportBox" class="text-xs text-slate-700 space-y-2 leading-relaxed">
+              <div class="p-3 bg-white rounded-xl border border-indigo-100">
+                • <strong>빠른 시작 안내:</strong> 상단에서 <strong>[💻 노트북 · PC · 전산]</strong> 등 납품할 품목 사진을 클릭하거나 내 제품 사진을 업로드하면, <strong>전국 총 발주수요(예산·수량), 수의계약 즉시 납품 가능 건수, 최우선 영업 타깃 행정기관 TOP 3</strong>를 즉시 분석해 드립니다.
+              </div>
             </div>
           </div>
-          <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
-            <span class="text-xs font-semibold text-slate-500">총 발주예산 규모</span>
-            <div class="mt-1 flex items-baseline justify-between">
-              <span id="statTotalBudget" class="text-2xl font-extrabold text-blue-600">0원</span>
-              <span class="text-[11px] text-emerald-600 font-bold">예산 합계</span>
-            </div>
-          </div>
-          <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
-            <span class="text-xs font-semibold text-slate-500">건당 평균 발주예산</span>
-            <div class="mt-1 flex items-baseline justify-between">
-              <span id="statAvgBudget" class="text-lg font-extrabold text-slate-800">0원</span>
-              <span class="text-[11px] text-violet-600 font-semibold">평균 규모</span>
-            </div>
-          </div>
-          <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
-            <span class="text-xs font-semibold text-slate-500">발주 참여 행정기관</span>
-            <div class="mt-1 flex items-baseline justify-between">
-              <span id="statCompanies" class="text-lg font-extrabold text-indigo-600">0개 기관</span>
-              <span class="text-[11px] text-indigo-600 font-semibold">수요처</span>
-            </div>
-          </div>
-        </div>
 
-        <!-- ★ 자동 분석 인사이트 요약 박스 (사용자가 데이터로 무엇을 알 수 있는지 직관적 해설 제공) ★ -->
-        <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-4 rounded-2xl border border-indigo-200 shadow-sm space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-indigo-900">📊 발주계획 핵심 분석 리포트 (실무 인사이트)</span>
-            <span class="px-2 py-0.5 bg-indigo-600 text-white rounded text-[10px] font-bold">자동 진단</span>
-          </div>
-          <div id="insightReportBox" class="text-xs text-slate-700 space-y-1.5 leading-relaxed">
-            <div>• <strong>조회 안내:</strong> 상단에서 물품 사진을 선택하거나 <strong>[실시간 조회]</strong>를 클릭하면 최대 발주처, 예산 규모별 수의계약/경쟁입찰 비중, 추천 조달 전략을 자동으로 분석해 드립니다.</div>
+          <!-- 원클릭 영업 필터 버튼 (조달업체가 가장 많이 찾는 조건) -->
+          <div class="pt-2 border-t border-indigo-200/70">
+            <div class="text-[11px] font-bold text-indigo-900 mb-1.5">⚡ 조달업체 빠른 영업 타깃 필터:</div>
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="filterByBudgetRange('ALL')" id="bfilter-ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-indigo-600 text-white">
+                전체 수요 보기
+              </button>
+              <button onclick="filterByBudgetRange('DIRECT')" id="bfilter-DIRECT" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-emerald-700 border border-emerald-300 hover:bg-emerald-50">
+                🟢 5천만 이하 (수의계약·쇼핑몰 즉시납품)
+              </button>
+              <button onclick="filterByBudgetRange('COMPETE')" id="bfilter-COMPETE" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-blue-700 border border-blue-300 hover:bg-blue-50">
+                🔵 5천만 초과 (경쟁입찰·MAS 2단계)
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 우측: 분석 차트 + 빠른 예산 규모 필터 버튼 -->
+      <!-- 우측: 조달시장 분석 차트 + 빠른 차트 전환 버튼 -->
       <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <h2 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
             <span class="w-2.5 h-4 bg-indigo-600 rounded-sm"></span>
-            <span id="chartTitle">예산 규모대별 발주계획 분포 분석 (단위: 건수)</span>
+            <span id="chartTitle">품목유형별 전국 발주계획 총수요 예산 (단위: 백만 원)</span>
           </h2>
-          <!-- 원클릭 실무 분석 전환 탭 -->
           <div class="flex flex-wrap gap-1">
-            <button onclick="setQuickAnalysis('budgetTier')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200">
-              💰 예산규모(수의/경쟁)
-            </button>
             <button onclick="setQuickAnalysis('photoType')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200">
-              📸 물품유형별 예산
+              📸 품목별 총수요 예산
             </button>
             <button onclick="setQuickAnalysis('agency')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200">
-              🏛️ 발주기관 TOP 10
+              🏛️ 영업타깃 기관 TOP 10
+            </button>
+            <button onclick="setQuickAnalysis('budgetTier')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200">
+              💰 수의계약 vs 경쟁입찰
             </button>
             <button onclick="setQuickAnalysis('method')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200">
-              📑 계약방법별 비중
+              📑 계약방식별 수요
             </button>
           </div>
         </div>
-        <div class="h-48">
+        <div class="h-52">
           <canvas id="orderChart"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- ★ 3단계 (좌측 사진 유사도순 발주계획 검색 목록) & 4단계 (우측 🎯 발주계획 활용 시뮬레이션 · 물품사진 비교 · 회사명/제품명/연락처 · 행정기관 선호도/의견 소통) ★ -->
+    <!-- ★ 3단계 (좌측 사진 유사도순 발주계획 수요처 목록) & 4단계 (우측 🎯 조달업체 수주·납품 시뮬레이션 · 물품사진 비교 · 회사명/제품명/연락처 · 행정기관 선호도/의견 소통) ★ -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
       <!-- 좌측: 3단계 발주계획 및 식별번호 검색 목록 -->
@@ -411,9 +469,9 @@
           <div>
             <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
               <span class="step-badge bg-violet-600 text-white text-xs">3</span>
-              <span id="listSectionTitle">나라장터 발주계획 및 계약정보(식별번호) 검색 목록</span>
+              <span id="listSectionTitle">나라장터 발주계획 수요기관 및 계약정보(식별번호) 목록</span>
             </h3>
-            <p class="text-xs text-slate-500 mt-0.5">목록에서 발주계획을 클릭하면 우측에서 <strong>🎯 발주계획 활용 시뮬레이션, 사진 비교, 회사명·제품명·연락처, 기관 소통</strong>을 수행합니다.</p>
+            <p class="text-xs text-slate-500 mt-0.5">발주건을 클릭하면 우측에서 <strong>🎯 내 제품 예상 납품수량·수주매출 시뮬레이션, 사진 비교, 발주처 연락처, 기관 소통</strong>을 확인합니다.</p>
           </div>
           <div class="flex items-center gap-2">
             <select id="pageSizeSelect" onchange="changePageSize()" class="text-xs border border-slate-300 rounded-lg px-2 py-1 bg-white">
@@ -432,10 +490,10 @@
             <thead class="sticky top-0 bg-slate-100 shadow-sm z-10">
               <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase">
                 <th class="py-2.5 px-3">매칭 물품사진 / 유사도</th>
-                <th class="py-2.5 px-3">물품유형</th>
+                <th class="py-2.5 px-3">품목유형 / 영업구분</th>
                 <th class="py-2.5 px-3">계약정보(식별/발주번호)</th>
-                <th class="py-2.5 px-3">발주건명(제품명) / 발주기관</th>
-                <th class="py-2.5 px-3 text-right">발주예산 / 선호도</th>
+                <th class="py-2.5 px-3">발주건명(수요품목) / 발주행정기관</th>
+                <th class="py-2.5 px-3 text-right">발주예산 / 예상납품량</th>
               </tr>
             </thead>
             <tbody id="orderTableBody" class="divide-y divide-slate-200 text-xs">
@@ -448,14 +506,14 @@
         </div>
       </div>
 
-      <!-- 우측: 4단계 🎯 발주계획 활용 시뮬레이션 + 회사명, 제품명, 연락처 정보조회 + 조달물품 사진 비교 + 행정기관 선호도/의견 소통 -->
+      <!-- 우측: 4단계 🎯 조달업체 발주계획 수주·납품 시뮬레이션 + 회사명, 제품명, 연락처 정보조회 + 조달물품 사진 비교 + 행정기관 선호도/의견 소통 -->
       <div class="lg:col-span-5 bg-white rounded-2xl border-2 border-emerald-500/80 shadow-md overflow-hidden flex flex-col">
         <div class="px-5 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="step-badge bg-white text-emerald-700">4</span>
             <div>
-              <h3 class="text-base font-bold">발주계획 시뮬레이션 · 업체정보 · 물품사진 비교</h3>
-              <p class="text-[11px] text-emerald-100">예산·수량 시뮬레이션 + 사진 비교 + 회사명·제품명·연락처 + 기관 선호도 소통</p>
+              <h3 class="text-base font-bold">조달업체 수주 시뮬레이션 · 연락처 · 사진 비교</h3>
+              <p class="text-[11px] text-emerald-100">예상 납품대수·수주매출 계산 + 물품사진 비교 + 회사명·제품명·연락처 + 기관 소통</p>
             </div>
           </div>
           <span id="detailBadgeId" class="px-2.5 py-1 bg-black/20 rounded-lg text-xs font-mono">
@@ -490,76 +548,83 @@
   <script>
     const DEFAULT_SERVICE_KEY = "6f51e14ac40d711807b2b60f3aed76c9683d9d3ec3040d77aa7ddcad70542495";
 
-    // 6대 조달물품 사진 유형 및 매칭 단가/공급업체 정의
+    // 조달업체 관점 6대 핵심 납품 품목군 정의 (노트북·PC·전산장비가 대표 1번)
     const PHOTO_TYPES = {
       IT_SW: {
         id: "IT_SW",
-        name: "전산 · 서버 · SW",
+        name: "💻 노트북 · PC · 전산",
+        unitName: "대",
+        defaultUnitPrice: 1800000, // 노트북/업무용PC 1대 기준단가 180만원
         clsPrefixes: ["43", "81"],
-        keywords: ["서버", "컴퓨터", "pc", "노트북", "스위치", "네트워크", "클라우드", "소프트웨어", "sw", "시스템", "플랫폼", "데이터", "정보", "유지보수", "전산", "라이선스", "가상화", "구축", "보안", "웹", "통신망"],
-        mainPhoto: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80",
-        comparePhoto: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80",
+        keywords: ["노트북", "컴퓨터", "pc", "서버", "모니터", "태블릿", "스위치", "네트워크", "클라우드", "소프트웨어", "sw", "시스템", "플랫폼", "데이터", "정보", "유지보수", "전산", "라이선스", "가상화", "구축", "보안", "웹", "통신망", "디지털"],
+        mainPhoto: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80",
+        comparePhoto: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80",
         company: "(주)한국클라우드테크놀로지",
         ceo: "김태호",
-        product: "KCT-AI Server Pro GX500 및 전산장비 (식별번호: 24891023)",
-        unitPrice: 28000000,
+        product: "행정업무용 고성능 노트북 KCT-Book Pro 16 및 전산장비 (식별번호: 24891023)",
         phone: "02-6240-8810"
       },
       EQUIP_HVAC: {
         id: "EQUIP_HVAC",
-        name: "기계 · 냉난방 · 장비",
+        name: "❄️ 냉난방기 · 기계장비",
+        unitName: "대",
+        defaultUnitPrice: 4500000, // 냉난방기/기계장비 기준단가 450만원
         clsPrefixes: ["40", "41", "42", "23", "24", "25", "26", "46", "47"],
         keywords: ["냉난방", "에어컨", "공조", "보일러", "히트펌프", "기계", "펌프", "모터", "측정", "센서", "분석", "실험", "로봇", "차량", "드론", "장비", "기구", "설비", "승강기", "챔버", "검사"],
         mainPhoto: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80",
         company: "대한기계공조시스템(주)",
         ceo: "윤성민",
-        product: "고효율 스마트 냉난방기·산업장비 (식별번호: 24110854)",
-        unitPrice: 18500000,
+        product: "고효율 인버터 냉난방기·산업공조장비 (식별번호: 24110854)",
         phone: "062-954-1190"
       },
       ELEC_CNTRL: {
         id: "ELEC_CNTRL",
-        name: "전기 · 제어 · CCTV",
+        name: "📹 CCTV · 전기 · 제어",
+        unitName: "대",
+        defaultUnitPrice: 3200000, // CCTV/제어장비 기준단가 320만원
         clsPrefixes: ["39", "32", "45"],
         keywords: ["자동제어", "제어", "전기", "배전반", "분전반", "변압기", "발전기", "ups", "케이블", "전선", "조명", "led", "가로등", "cctv", "카메라", "영상", "방송", "음향", "전광판", "관제", "태양광"],
         mainPhoto: "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=600&q=80",
         company: "한빛비전일렉트릭(주)",
         ceo: "최동훈",
-        product: "지능형 자동제어반 및 CCTV 영상장비 (식별번호: 23984110)",
-        unitPrice: 15000000,
+        product: "AI 객체인식 방범용 CCTV 및 자동제어반 (식별번호: 23984110)",
         phone: "031-709-3340"
       },
       OFFICE_EDU: {
         id: "OFFICE_EDU",
-        name: "사무비품 · 가구 · 피복",
+        name: "🪑 사무가구 · 비품 · 피복",
+        unitName: "조",
+        defaultUnitPrice: 850000, // 사무용 가구/비품 세트 85만원
         clsPrefixes: ["44", "52", "53", "56", "55", "14", "60"],
         keywords: ["비품", "가구", "책상", "의자", "사물함", "교구", "교복", "피복", "근무복", "운동복", "침구", "인쇄", "도서", "복합기", "프린터", "세단기", "용지", "문구", "사무", "물품"],
         mainPhoto: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=600&q=80",
         company: "(주)스마트오피스조달",
         ceo: "이정훈",
-        product: "나라장터 친환경 인증 사무비품·가구 (식별번호: 24778120)",
-        unitPrice: 3500000,
+        product: "친환경 인증 사무용 데스크·의자·비품 패키지 (식별번호: 24778120)",
         phone: "02-719-5540"
       },
       FOOD_MED: {
         id: "FOOD_MED",
-        name: "급식자재 · 의약 · 위생",
+        name: "🍱 급식자재 · 의약 · 위생",
+        unitName: "식",
+        defaultUnitPrice: 2500000,
         clsPrefixes: ["50", "51", "10", "12", "48"],
         keywords: ["식자재", "급식", "부식", "식품", "육류", "농산물", "공산품", "우유", "도시락", "약품", "의약", "마약", "백신", "시약", "의료", "병원", "소독", "방역", "위생", "폐기물"],
         mainPhoto: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80",
         company: "(주)그린푸드앤메디컬",
         ceo: "한지숙",
-        product: "공공기관 단체급식 식자재·의약물품 (식별번호: 25104920)",
-        unitPrice: 12000000,
+        product: "공공기관 단체급식 식자재·방역의약물품 (식별번호: 25104920)",
         phone: "032-581-4420"
       },
       CONST_MAT: {
         id: "CONST_MAT",
-        name: "시설공사 · 건축자재",
+        name: "🏗️ 관급자재 · 시설공사",
+        unitName: "식",
+        defaultUnitPrice: 12000000,
         clsPrefixes: ["30", "31", "72", "73", "80"],
         keywords: ["공사", "관급자재", "자재", "개보수", "시설", "건축", "토목", "도로", "아스콘", "레미콘", "철근", "시멘트", "블록", "방수", "도장", "창호", "배관", "밸브", "교량", "하수도", "조경", "설계", "감리"],
         mainPhoto: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80",
@@ -567,20 +632,21 @@
         company: "(주)대한건설자재산업",
         ceo: "장재영",
         product: "공공시설 개보수 표준 관급자재·시공 (식별번호: 25301920)",
-        unitPrice: 32000000,
         phone: "02-3452-9080"
       }
     };
 
     let userUploadedPhotoUrl = null;
     let activePhotoTypeFilter = "ALL";
+    let activeBudgetRangeFilter = "ALL"; // ALL | DIRECT (5천만 이하) | COMPETE (5천만 초과)
     let currentData = [];
     let filteredData = [];
     let selectedItem = null;
     let chartInstance = null;
     let currentPage = 1;
     let pageSize = 100;
-    let simBidRate = 88; // 발주계획 시뮬레이션 목표 낙찰률(%) 기본값
+    let simBidRate = 88; // 조달업체 투찰률/공급가율(%) 기본값
+    let simMarginRate = 18; // 조달업체 예상 마진율(%) 기본값
 
     function classifyOrderPlanItem(titleText, clsNoText, categoryText) {
       const text = `${titleText || ""}`.toLowerCase();
@@ -612,7 +678,7 @@
           return pt.id;
         }
       }
-      if (fname.includes("server") || fname.includes("pc") || fname.includes("laptop") || fname.includes("computer") || fname.includes("tech")) return "IT_SW";
+      if (fname.includes("note") || fname.includes("laptop") || fname.includes("mac") || fname.includes("pc") || fname.includes("server") || fname.includes("computer") || fname.includes("tech")) return "IT_SW";
       if (fname.includes("cctv") || fname.includes("cam") || fname.includes("led") || fname.includes("elec")) return "ELEC_CNTRL";
       if (fname.includes("air") || fname.includes("hvac") || fname.includes("machine") || fname.includes("equip")) return "EQUIP_HVAC";
       if (fname.includes("food") || fname.includes("med") || fname.includes("meal")) return "FOOD_MED";
@@ -644,7 +710,7 @@
         if (gAvg > rAvg + 8 && gAvg > bAvg + 8) return "FOOD_MED";
         if (rAvg > bAvg + 25 && gAvg > bAvg + 15) return "OFFICE_EDU";
         if (brightPixels > pixelCount * 0.45) return "EQUIP_HVAC";
-        return "CONST_MAT";
+        return "IT_SW";
       } catch (_) {
         return "IT_SW";
       }
@@ -669,8 +735,9 @@
           const detectedTypeId = analyzeUploadedPhotoType(file, tempImg);
           const pt = PHOTO_TYPES[detectedTypeId];
 
+          document.getElementById("vendorUnitPriceInput").value = pt.defaultUnitPrice;
           document.getElementById("photoAnalysisBadge").innerHTML =
-            `✅ 사진 분석 완료: <strong class="text-emerald-300">[${pt.name}]</strong> 유형 감지됨 (우측 버튼으로 유형 변경 가능)`;
+            `✅ 사진 분석 완료: <strong class="text-emerald-300">[${pt.name}]</strong> 품목군 감지됨 — 전국 총수요를 계산합니다.`;
 
           if (currentData.length === 0) {
             await fetchOrderPlanOpenAPI();
@@ -695,8 +762,9 @@
       placeholder.classList.add("hidden");
       document.getElementById("clearPhotoBtn").classList.remove("hidden");
 
+      document.getElementById("vendorUnitPriceInput").value = pt.defaultUnitPrice;
       document.getElementById("photoAnalysisBadge").innerHTML =
-        `✅ 선택된 비교 사진 유형: <strong class="text-emerald-300">[${pt.name}]</strong> — 유사한 발주계획을 매칭합니다.`;
+        `✅ 납품 품목 선택됨: <strong class="text-emerald-300">[${pt.name}]</strong> (기준단가 ${formatKRW(pt.defaultUnitPrice)})`;
 
       if (currentData.length === 0) {
         await fetchOrderPlanOpenAPI();
@@ -717,16 +785,19 @@
         activeBtn.className = "sample-type-btn flex items-center gap-2.5 p-2 rounded-xl bg-emerald-600/40 border-2 border-emerald-400 text-left transition shadow-lg";
       }
 
-      document.getElementById("matchedCategoryPill").textContent = `사진 매칭 유형: ${pt ? pt.name : "전체"}`;
+      document.getElementById("matchedCategoryPill").textContent = `선택 품목: ${pt ? pt.name : "전체 조달품목"}`;
       document.getElementById("listSectionTitle").textContent = pt
-        ? `📸 [${pt.name}] 사진과 비슷한 유형의 나라장터 발주계획 매칭 목록`
-        : "나라장터 발주계획 및 계약정보(식별번호) 검색 목록";
+        ? `📸 [${pt.name}] 납품 가능 나라장터 발주계획 수요기관 목록`
+        : "나라장터 발주계획 수요기관 및 계약정보(식별번호) 목록";
 
       runLocalFilter();
 
       if (pt) {
+        const totalAmt = filteredData.reduce((s, i) => s + (Number(i.amount) || 0), 0);
+        const unitPrice = Number(document.getElementById("vendorUnitPriceInput").value) || pt.defaultUnitPrice;
+        const totalUnits = Math.max(1, Math.round(totalAmt / unitPrice));
         showApiAlert(
-          `📸 ${isUserFile ? `업로드 사진(<code>${fileName}</code>)` : `선택한 물품 사진`}과 비슷한 <strong>[${pt.name}]</strong> 유형의 발주계획 <strong>${filteredData.length.toLocaleString()}건</strong>이 유사도 순으로 조회되었습니다!`,
+          `📈 <strong>[${pt.name}]</strong> 총수요 분석 완료: 전국 <strong>${filteredData.length.toLocaleString()}건</strong>, 총 발주예산 <strong>${formatKRW(totalAmt)}</strong> (예상 납품수요 <strong>약 ${totalUnits.toLocaleString()}${pt.unitName}</strong>)`,
           true
         );
       }
@@ -734,21 +805,60 @@
 
     function clearPhotoFilter() {
       activePhotoTypeFilter = "ALL";
+      activeBudgetRangeFilter = "ALL";
       userUploadedPhotoUrl = null;
       document.getElementById("uploadedPreviewImg").classList.add("hidden");
       document.getElementById("uploadedPlaceholderText").classList.remove("hidden");
       document.getElementById("clearPhotoBtn").classList.add("hidden");
       document.getElementById("photoFileInput").value = "";
-      document.getElementById("matchedCategoryPill").textContent = "현재 선택: 전체 유형";
-      document.getElementById("listSectionTitle").textContent = "나라장터 발주계획 및 계약정보(식별번호) 검색 목록";
-      document.getElementById("photoAnalysisBadge").textContent = "파일(JPG, PNG 등)을 선택하면 실시간 발주계획과 즉시 비교합니다.";
+      document.getElementById("matchedCategoryPill").textContent = "선택 품목: 전체 조달품목";
+      document.getElementById("listSectionTitle").textContent = "나라장터 발주계획 수요기관 및 계약정보(식별번호) 목록";
+      document.getElementById("photoAnalysisBadge").innerHTML = "사진을 올리거나 우측의 <strong>[💻 노트북 · PC · 전산]</strong> 등 샘플 품목을 클릭하세요.";
 
       document.querySelectorAll(".sample-type-btn").forEach(btn => {
         btn.className = "sample-type-btn flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/70 hover:bg-blue-900/70 border border-white/15 text-left transition";
       });
 
+      updateBudgetRangeButtons();
       runLocalFilter();
-      showApiAlert(`전체 발주계획 <strong>${filteredData.length.toLocaleString()}건</strong>을 표시합니다.`, true);
+      showApiAlert(`전체 발주계획 수요 <strong>${filteredData.length.toLocaleString()}건</strong>을 표시합니다.`, true);
+    }
+
+    function filterByBudgetRange(rangeMode) {
+      activeBudgetRangeFilter = rangeMode;
+      updateBudgetRangeButtons();
+      runLocalFilter();
+    }
+
+    function updateBudgetRangeButtons() {
+      const modes = ["ALL", "DIRECT", "COMPETE"];
+      modes.forEach(m => {
+        const el = document.getElementById(`bfilter-${m}`);
+        if (!el) return;
+        if (m === activeBudgetRangeFilter) {
+          el.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-indigo-600 text-white shadow-sm";
+        } else if (m === "DIRECT") {
+          el.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-emerald-700 border border-emerald-300 hover:bg-emerald-50";
+        } else if (m === "COMPETE") {
+          el.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-blue-700 border border-blue-300 hover:bg-blue-50";
+        } else {
+          el.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-50";
+        }
+      });
+    }
+
+    function filterByAgencyName(agencyName) {
+      document.getElementById("searchInput").value = agencyName;
+      runLocalFilter();
+      showApiAlert(`🏛️ 영업 타깃 기관 <strong>[${agencyName}]</strong>의 발주계획만 필터링했습니다.`, true);
+    }
+
+    function onVendorParamChange() {
+      renderStatsAndInsights();
+      renderTable();
+      if (selectedItem) {
+        selectOrderItem(selectedItem.uid);
+      }
     }
 
     function setQuickAnalysis(mode) {
@@ -785,7 +895,7 @@
             {
               agency: defaultAgency || "조달청 발주협의지원팀",
               type: "발주계획 협의",
-              text: "조달물품 사진 및 규격 비교 결과 발주계획 예산 대비 적합하며 행정기관 선호도가 우수함.",
+              text: "조달업체 등록 물품 사진 및 사양 검토 결과 발주계획 예산에 부합하여 도입 선호도가 높음.",
               date: "2026-11-18"
             }
           ]
@@ -815,15 +925,15 @@
       const store = getFeedbackStore();
       const fb = getItemFeedback(uid, selectedItem?.agency);
       fb.comments.unshift({
-        agency: (agencyEl?.value || "").trim() || "수요행정기관 담당자",
-        type: "발주계획 협의",
+        agency: (agencyEl?.value || "").trim() || "조달업체 영업담당자",
+        type: "제품 제안 · 발주 협의",
         text: textEl.value.trim(),
         date: toDateInputString(new Date())
       });
       store[uid] = fb;
       localStorage.setItem("g2b_agency_feedback", JSON.stringify(store));
       selectOrderItem(uid);
-      showApiAlert(`💬 행정기관 의견이 등록되었습니다.`, true);
+      showApiAlert(`💬 제품 제안 및 행정기관 소통 의견이 등록되었습니다.`, true);
     }
 
     function toDateInputString(d) {
@@ -878,7 +988,7 @@
       clearPhotoFilter();
       updateProgressBar(false);
       runLocalFilter();
-      showApiAlert("현재 조회된 데이터: <strong>0건</strong> — <strong>물품 사진을 업로드</strong>하거나 <strong>[실시간 조회]</strong> 버튼을 눌러주세요.", false);
+      showApiAlert("현재 조회된 데이터: <strong>0건</strong> — <strong>우측 품목 사진(예: 💻 노트북·PC)을 클릭</strong>하거나 <strong>내 물품 사진을 업로드</strong>해 보세요!", false);
     }
 
     function buildBackwardWindows(startStr, endStr, windowDays = 6, maxWindows = 6) {
@@ -934,7 +1044,7 @@
 
       const startVal = document.getElementById("startDate").value;
       const endVal = document.getElementById("endDate").value;
-      showApiAlert(`⏳ 발주계획 조회기간(<code>${startVal} ~ ${endVal}</code>) 실시간 OpenAPI 데이터를 불러오는 중입니다...`, true);
+      showApiAlert(`⏳ 발주계획 조회기간(<code>${startVal} ~ ${endVal}</code>) 전국 행정기관 발주계획 데이터를 불러오는 중입니다...`, true);
 
       function buildEndpoints(sVal, eVal) {
         const list = [];
@@ -1054,7 +1164,7 @@
         currentData = fetchedRows;
 
         showApiAlert(
-          `✅ 실시간 OpenAPI 조회 완료! 총 <strong>${fetchedRows.length.toLocaleString()}건</strong>의 나라장터 발주계획 데이터를 수신했습니다.`,
+          `✅ 실시간 조회 완료! 전국 <strong>${fetchedRows.length.toLocaleString()}건</strong>의 발주계획 데이터를 불러왔습니다. 상단에서 <strong>납품할 품목(예: 💻 노트북·PC)</strong>을 클릭해 총수요를 확인하세요!`,
           true
         );
       } else if (isKeyError) {
@@ -1103,6 +1213,7 @@
         category,
         photoTypeId: pt.id,
         photoTypeName: pt.name,
+        unitName: pt.unitName || "대",
         similarityScore: simScore,
         matchRate: `${simScore}%`,
         itemId: `${clsNo} (${planNo})`,
@@ -1115,7 +1226,7 @@
         productName: it.prdctNm || pt.product,
         productSpec: it.specNm || `물품분류번호: ${clsNo} | 계약방법: ${it.cntrctMthdNm || "경쟁입찰"}`,
         amount: amt,
-        unitPrice: pt.unitPrice,
+        unitPrice: pt.defaultUnitPrice,
         subAmountText: formatKRW(amt),
         contractMethod: it.cntrctMthdNm || "일반경쟁",
         phone: tel,
@@ -1143,9 +1254,18 @@
       const cat = document.getElementById("categoryFilter").value;
       const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
 
+      // 사용자가 검색창에 "노트북", "pc", "컴퓨터" 등을 쳤을 때 IT_SW 품목군도 함께 매칭되도록 스마트 검색 지원
+      const isLaptopQuery = ["노트북", "랩탑", "pc", "컴퓨터", "전산", "모니터", "태블릿"].some(k => keyword.includes(k));
+
       let list = currentData.filter(item => {
         const matchCat = cat === "ALL" || item.category.includes(cat);
         const matchPhotoType = activePhotoTypeFilter === "ALL" || item.photoTypeId === activePhotoTypeFilter;
+        const amt = Number(item.amount) || 0;
+        const matchBudget =
+          activeBudgetRangeFilter === "ALL" ||
+          (activeBudgetRangeFilter === "DIRECT" && amt > 0 && amt <= 50000000) ||
+          (activeBudgetRangeFilter === "COMPETE" && amt > 50000000);
+
         const matchKey = !keyword ||
           String(item.itemId).toLowerCase().includes(keyword) ||
           String(item.manageNo).toLowerCase().includes(keyword) ||
@@ -1153,11 +1273,13 @@
           String(item.companyName).toLowerCase().includes(keyword) ||
           String(item.productName).toLowerCase().includes(keyword) ||
           String(item.agency).toLowerCase().includes(keyword) ||
-          String(item.photoTypeName).toLowerCase().includes(keyword);
-        return matchCat && matchPhotoType && matchKey;
+          String(item.photoTypeName).toLowerCase().includes(keyword) ||
+          (isLaptopQuery && item.photoTypeId === "IT_SW");
+
+        return matchCat && matchPhotoType && matchBudget && matchKey;
       });
 
-      if (activePhotoTypeFilter !== "ALL") {
+      if (activePhotoTypeFilter !== "ALL" || isLaptopQuery) {
         list.sort((a, b) => b.similarityScore - a.similarityScore);
       }
 
@@ -1184,50 +1306,94 @@
       const avg = count > 0 ? Math.round(total / count) : 0;
       const uniqueOrgs = new Set(filteredData.map(i => i.agency)).size;
 
+      const activePt = activePhotoTypeFilter !== "ALL" ? PHOTO_TYPES[activePhotoTypeFilter] : null;
+      const unitName = activePt ? activePt.unitName : "대(식)";
+      const userUnitPrice = Math.max(10000, Number(document.getElementById("vendorUnitPriceInput")?.value) || 1800000);
+      const targetSharePct = Number(document.getElementById("vendorShareSelect")?.value) || 20;
+
+      // 전국 예상 납품 대수(수량) & 우리 회사 목표 수주 매출
+      const totalEstUnits = count > 0 ? Math.max(count, Math.round(total / userUnitPrice)) : 0;
+      const myExpectedRev = Math.round(total * (targetSharePct / 100));
+      const myExpectedUnits = Math.round(totalEstUnits * (targetSharePct / 100));
+
+      // 수의계약(5천만 이하) vs 경쟁입찰(5천만 초과) 시장 분해
+      const directItems = filteredData.filter(d => d.amount > 0 && d.amount <= 50000000);
+      const directSum = directItems.reduce((s, i) => s + (Number(i.amount) || 0), 0);
+      const competeItems = filteredData.filter(d => d.amount > 50000000);
+      const competeSum = competeItems.reduce((s, i) => s + (Number(i.amount) || 0), 0);
+
+      // 상단 조달업체 시장수요 계산기 배너 업데이트
+      document.getElementById("vendorDemandTitle").textContent = activePt
+        ? `[${activePt.name}] 전국 공공기관 발주계획 총수요 & 우리 회사 예상 수주 매출`
+        : `전체 조회 품목 전국 공공기관 발주계획 총수요 & 우리 회사 예상 수주 매출`;
+
+      document.getElementById("vdTotalBudget").textContent = `${formatKRW(total)} (${count.toLocaleString()}건)`;
+      document.getElementById("vdAvgBudgetSub").textContent = `건당 평균 발주예산: ${formatKRW(avg)} (수요처 ${uniqueOrgs}개 기관)`;
+
+      document.getElementById("vdTotalUnits").textContent = `약 ${totalEstUnits.toLocaleString()}${unitName}`;
+      document.getElementById("vdUnitPriceSub").textContent = `내 제품 단가 ${formatKRW(userUnitPrice)}/${unitName} 환산 기준`;
+
+      document.getElementById("vdDirectMarket").textContent = `${directItems.length.toLocaleString()}건 (${formatKRW(directSum)})`;
+      document.getElementById("vdCompeteSub").textContent = `경쟁입찰·MAS 2단계(5천만 초과): ${competeItems.length.toLocaleString()}건 (${formatKRW(competeSum)})`;
+
+      document.getElementById("vdMyExpectedRev").textContent = formatKRW(myExpectedRev);
+      document.getElementById("vdMyExpectedUnits").textContent = `예상 납품량: 약 ${myExpectedUnits.toLocaleString()}${unitName} (시장점유 ${targetSharePct}% 달성 시)`;
+
       document.getElementById("resultCountText").textContent =
         activePhotoTypeFilter === "ALL"
           ? `총 ${count.toLocaleString()}건 조회됨`
-          : `사진 유사 발주계획 ${count.toLocaleString()}건 매칭됨`;
-      document.getElementById("statCount").textContent = `${count.toLocaleString()}건`;
-      document.getElementById("statTotalSub").textContent = `전체 ${currentData.length.toLocaleString()}건 중`;
-      document.getElementById("statTotalBudget").textContent = formatKRW(total);
-      document.getElementById("statAvgBudget").textContent = formatKRW(avg);
-      document.getElementById("statCompanies").textContent = `${uniqueOrgs.toLocaleString()}개 기관`;
+          : `내 물품 매칭 수요 ${count.toLocaleString()}건`;
 
       const insightBox = document.getElementById("insightReportBox");
       if (count === 0) {
         insightBox.innerHTML = `
-          <div>• <strong>조회 안내:</strong> 상단에서 물품 사진을 선택하거나 <strong>[실시간 조회]</strong>를 클릭하면 최대 발주처, 예산 규모별 수의계약/경쟁입찰 비중, 추천 조달 전략을 자동으로 분석해 드립니다.</div>
+          <div class="p-3 bg-white rounded-xl border border-indigo-100">
+            • <strong>빠른 시작 안내:</strong> 상단에서 <strong>[💻 노트북 · PC · 전산]</strong> 등 납품할 품목 사진을 클릭하거나 내 제품 사진을 업로드하면, <strong>전국 총 발주수요(예산·수량), 수의계약 즉시 납품 가능 건수, 최우선 영업 타깃 행정기관 TOP 3</strong>를 즉시 분석해 드립니다.
+          </div>
         `;
         return;
       }
 
-      // 1) 예산 규모별 건수 계산 (실무 조달 기준)
-      const smallUnder20M = filteredData.filter(d => d.amount > 0 && d.amount <= 20000000).length;
-      const under50M = filteredData.filter(d => d.amount > 20000000 && d.amount <= 50000000).length;
-      const over50M = filteredData.filter(d => d.amount > 50000000).length;
-      const suuiRatio = Math.round(((smallUnder20M + under50M) / count) * 100);
-
-      // 2) 최대 예산 발주기관 추출
-      const agencySum = {};
+      // 최대 발주 행정기관 TOP 3 추출
+      const agencyMap = {};
       filteredData.forEach(d => {
-        agencySum[d.agency] = (agencySum[d.agency] || 0) + (Number(d.amount) || 0);
+        if (!agencyMap[d.agency]) agencyMap[d.agency] = { sum: 0, cnt: 0 };
+        agencyMap[d.agency].sum += Number(d.amount) || 0;
+        agencyMap[d.agency].cnt += 1;
       });
-      const topAgencyEntry = Object.entries(agencySum).sort((a, b) => b[1] - a[1])[0];
-      const topAgencyName = topAgencyEntry ? topAgencyEntry[0] : "-";
-      const topAgencyAmt = topAgencyEntry ? formatKRW(topAgencyEntry[1]) : "0원";
+      const top3Agencies = Object.entries(agencyMap)
+        .sort((a, b) => b[1].sum - a[1].sum)
+        .slice(0, 3);
 
-      // 3) 최다 물품 유형 추출
-      const typeCount = {};
-      filteredData.forEach(d => {
-        typeCount[d.photoTypeName] = (typeCount[d.photoTypeName] || 0) + 1;
-      });
-      const topTypeEntry = Object.entries(typeCount).sort((a, b) => b[1] - a[1])[0];
+      const top3ButtonsHtml = top3Agencies.map((entry, idx) => {
+        const agName = entry[0];
+        const agInfo = entry[1];
+        const safeName = agName.replace(/'/g, "\\'");
+        return `
+          <button onclick="filterByAgencyName('${safeName}')"
+            class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-white hover:bg-indigo-50 border border-indigo-200 text-left transition">
+            <span class="font-bold text-slate-800 truncate">${idx + 1}위. ${agName} <span class="text-[11px] text-slate-500 font-normal">(${agInfo.cnt}건)</span></span>
+            <span class="font-extrabold text-blue-700 shrink-0">${formatKRW(agInfo.sum)}</span>
+          </button>
+        `;
+      }).join("");
+
+      const itemLabel = activePt ? activePt.name : "현재 조회 품목";
 
       insightBox.innerHTML = `
-        <div>• <strong>최대 발주 수요처:</strong> 현재 조건에서 예산 규모 1위 기관은 <strong class="text-indigo-800">[${topAgencyName}]</strong> (총 <strong class="text-blue-700">${topAgencyAmt}</strong>)입니다.</div>
-        <div>• <strong>수의계약 vs 경쟁입찰 진단:</strong> 5천만 원 이하(소액수의·쇼핑몰 직접구매 적합) 건이 <strong>${(smallUnder20M + under50M).toLocaleString()}건(${suuiRatio}%)</strong>, 5천만 원 초과(경쟁입찰·MAS 2단계 대상) 건이 <strong>${over50M.toLocaleString()}건(${100 - suuiRatio}%)</strong>입니다.</div>
-        <div>• <strong>주요 발주 품목군:</strong> <strong class="text-emerald-800">[${topTypeEntry ? topTypeEntry[0] : "-"}]</strong> 유형이 <strong>${topTypeEntry ? topTypeEntry[1] : 0}건</strong>으로 가장 활발하게 발주되고 있습니다.</div>
+        <div class="p-2.5 bg-white rounded-xl border border-indigo-100 space-y-1">
+          <div class="font-extrabold text-indigo-950">① [${itemLabel}] 전국 총수요 진단</div>
+          <div>현재 전국 <strong>${uniqueOrgs}개 행정기관</strong>에서 총 <strong class="text-blue-700">${count.toLocaleString()}건 / ${formatKRW(total)}</strong> 규모의 발주계획이 등록되어 있으며, 단가(${formatKRW(userUnitPrice)}) 기준 <strong>총 약 ${totalEstUnits.toLocaleString()}${unitName}</strong>의 납품 수요가 존재합니다.</div>
+        </div>
+        <div class="p-2.5 bg-white rounded-xl border border-emerald-200 space-y-1">
+          <div class="font-extrabold text-emerald-900">② 조달업체 영업 공략 포인트 (수의 vs 경쟁)</div>
+          <div>• <strong>즉시 영업(5천만 이하 수의·쇼핑몰):</strong> <strong class="text-emerald-700">${directItems.length.toLocaleString()}건 (${formatKRW(directSum)})</strong> — 담당부서에 제품 카탈로그·식별번호 제안 시 빠른 수주 가능</div>
+          <div>• <strong>입찰 타깃(5천만 초과 경쟁·MAS 2단계):</strong> <strong class="text-blue-700">${competeItems.length.toLocaleString()}건 (${formatKRW(competeSum)})</strong> — 사전규격 공개 전 스펙 협의 필요</div>
+        </div>
+        <div class="p-2.5 bg-white rounded-xl border border-indigo-100 space-y-1.5">
+          <div class="font-extrabold text-indigo-950">③ 최우선 영업 타깃 행정기관 TOP 3 (클릭 시 필터)</div>
+          <div class="space-y-1">${top3ButtonsHtml}</div>
+        </div>
       `;
     }
 
@@ -1239,8 +1405,8 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="py-16 text-center text-slate-400">
-              <div class="text-sm font-bold text-slate-500 mb-1">현재 표시할 발주계획 데이터가 없습니다 (0건)</div>
-              <div class="text-xs text-slate-400">상단에서 <strong>물품 사진을 업로드(또는 샘플 사진 클릭)</strong>하거나 <strong>[실시간 조회]</strong> 버튼을 클릭해 주세요.</div>
+              <div class="text-sm font-bold text-slate-500 mb-1">현재 표시할 발주계획 수요 데이터가 없습니다 (0건)</div>
+              <div class="text-xs text-slate-400">상단에서 <strong>[💻 노트북 · PC · 전산] 등 품목 사진을 클릭</strong>하거나 <strong>[실시간 조회]</strong> 버튼을 클릭해 주세요.</div>
             </td>
           </tr>
         `;
@@ -1248,13 +1414,19 @@
         return;
       }
 
+      const userUnitPrice = Math.max(10000, Number(document.getElementById("vendorUnitPriceInput")?.value) || 1800000);
       const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
       const startIdx = (currentPage - 1) * pageSize;
       const pageItems = filteredData.slice(startIdx, startIdx + pageSize);
 
       tbody.innerHTML = pageItems.map(item => {
         const isSelected = selectedItem && selectedItem.uid === item.uid;
-        const fb = getItemFeedback(item.uid, item.agency);
+        const amt = Number(item.amount) || 0;
+        const estUnits = Math.max(1, Math.round(amt / userUnitPrice));
+        const isDirect = amt > 0 && amt <= 50000000;
+        const salesBadge = isDirect
+          ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">🟢 수의·쇼핑몰 타깃</span>`
+          : `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">🔵 경쟁·MAS2단계</span>`;
 
         return `
           <tr
@@ -1270,19 +1442,20 @@
                 </div>
               </div>
             </td>
-            <td class="py-2.5 px-3 whitespace-nowrap">
-              <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">${item.photoTypeName}</span>
+            <td class="py-2.5 px-3 whitespace-nowrap space-y-1">
+              <div><span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">${item.photoTypeName}</span></div>
+              <div>${salesBadge}</div>
             </td>
             <td class="py-2.5 px-3 font-mono font-bold text-violet-700 whitespace-nowrap">${item.itemId}</td>
             <td class="py-2.5 px-3">
               <div class="font-bold text-slate-800 line-clamp-1">${item.title}</div>
               <div class="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
-                <strong class="text-slate-700">${item.companyName}</strong> · ${item.agency}
+                수요기관: <strong class="text-slate-800">${item.agency}</strong> · ${item.companyName}
               </div>
             </td>
             <td class="py-2.5 px-3 text-right whitespace-nowrap">
-              <div class="font-bold text-slate-800">${item.subAmountText}</div>
-              <div class="text-[10px] text-amber-600 font-bold">★ ${fb.rating} (선호도 ${fb.preferPct}%)</div>
+              <div class="font-bold text-slate-900">${item.subAmountText}</div>
+              <div class="text-[11px] text-emerald-700 font-extrabold">예상 약 ${estUnits.toLocaleString()}${item.unitName}</div>
             </td>
           </tr>
         `;
@@ -1290,7 +1463,7 @@
 
       pageBar.innerHTML = `
         <div>
-          매칭 결과 <strong>${filteredData.length.toLocaleString()}건</strong> 중
+          매칭 수요 <strong>${filteredData.length.toLocaleString()}건</strong> 중
           <strong>${(startIdx + 1).toLocaleString()} ~ ${Math.min(startIdx + pageSize, filteredData.length).toLocaleString()}번째</strong> 표시
         </div>
         <div class="flex items-center gap-1.5">
@@ -1318,37 +1491,39 @@
       const fb = getItemFeedback(found.uid, found.agency);
       const refPhoto = userUploadedPhotoUrl || found.comparePhoto;
 
-      // ★ 🎯 발주계획 활용 시뮬레이션 계산 (발주예산 대비 예상 도입 수량, 목표 낙찰금액, 예상 절감액, 권장 조달방식) ★
+      // ★ 🎯 조달업체 입장의 발주계획 수주·납품 시뮬레이션 계산 ★
       const planBudget = Number(found.amount) || 50000000;
-      const unitPrice = Number(found.unitPrice) || 15000000;
-      const estQty = Math.max(1, Math.round(planBudget / unitPrice));
-      const estContractAmt = Math.round(planBudget * (simBidRate / 100));
-      const estSavingAmt = Math.max(0, planBudget - estContractAmt);
+      const userUnitPrice = Math.max(10000, Number(document.getElementById("vendorUnitPriceInput")?.value) || found.unitPrice || 1800000);
+      const estQty = Math.max(1, Math.round(planBudget / userUnitPrice));
+      const estOrderRevenue = Math.round(planBudget * (simBidRate / 100)); // 우리 회사 예상 수주 매출액
+      const estProfit = Math.round(estOrderRevenue * (simMarginRate / 100)); // 우리 회사 예상 영업이익(마진 18% 기준)
 
-      // 동일 유형 평균 예산 대비 비교
+      // 동일 품목군 내 발주규모 순위/비교
       const sameTypeList = currentData.filter(d => d.photoTypeId === found.photoTypeId && d.amount > 0);
       const sameTypeAvg = sameTypeList.length > 0
         ? Math.round(sameTypeList.reduce((s, i) => s + i.amount, 0) / sameTypeList.length)
         : planBudget;
       const diffPct = sameTypeAvg > 0 ? Math.round(((planBudget - sameTypeAvg) / sameTypeAvg) * 100) : 0;
-      const diffText = diffPct >= 0 ? `동일유형 평균(${formatKRW(sameTypeAvg)}) 대비 +${diffPct}%` : `동일유형 평균(${formatKRW(sameTypeAvg)}) 대비 ${diffPct}%`;
+      const diffText = diffPct >= 0
+        ? `동일품목 평균(${formatKRW(sameTypeAvg)}) 대비 +${diffPct}% 대형 건`
+        : `동일품목 평균(${formatKRW(sameTypeAvg)}) 대비 ${diffPct}% 소형 건`;
 
-      // 예산 규모별 최적 발주·계약 전략 자동 추천
-      let recommendedStrategy = "";
+      // 조달업체 맞춤형 영업·입찰 액션플랜 추천
+      let vendorActionPlan = "";
       if (planBudget <= 20000000) {
-        recommendedStrategy = "2천만 원 이하 소액 발주건 → 나라장터 종합쇼핑몰(MAS) 직접 구매 또는 1인 견적 수의계약 추진 권장";
+        vendorActionPlan = `🟢 [즉시 납품 타깃 - 2천만 원 이하] 나라장터 종합쇼핑몰(MAS) 직접구매 또는 1인 수의견적 가능 건입니다. 발주담당관(${found.manager})에게 자사 제품 식별번호(${found.clsNo})와 카탈로그를 즉시 제안하세요.`;
       } else if (planBudget <= 50000000) {
-        recommendedStrategy = "5천만 원 이하 중소규모 발주건 → 소액수의계약(2인 이상 견적) 또는 쇼핑몰 단가계약 구매 권장";
+        vendorActionPlan = `🟢 [소액수의 영업 타깃 - 5천만 원 이하] 소액수의계약 또는 쇼핑몰 단가계약 대상입니다. 입찰공고 전 수요기관 담당부서에 제품 규격서와 비교 견적서를 선제 제안하세요.`;
       } else if (planBudget <= 210000000) {
-        recommendedStrategy = "2.1억 원 이하 중규모 발주건 → 중소기업자간 경쟁입찰 또는 다수공급자계약(MAS) 2단계 경쟁 권장";
+        vendorActionPlan = `🔵 [MAS 2단계 / 중소경쟁 타깃 - 2.1억 이하] 다수공급자계약(MAS) 2단계 경쟁 또는 중소기업자간 경쟁입찰 대상입니다. 약 ${estQty.toLocaleString()}${found.unitName} 대량 납품을 위해 목표 투찰률(${simBidRate}%)로 가격 제안서를 준비하세요.`;
       } else {
-        recommendedStrategy = "2.1억 원 초과 대형 발주건 → 사전규격 공개(5일 이상) 후 일반/제한경쟁입찰 및 적격심사 추진 권장";
+        vendorActionPlan = `🔵 [대형 경쟁입찰 타깃 - 2.1억 초과] 사전규격 공개 시 자사 제품의 핵심 스펙이 규격서에 반영되도록 아래 '행정기관 소통창'을 통해 의견을 제출하고 적격심사 컨소시엄을 준비하세요.`;
       }
 
       const commentsHtml = fb.comments.map(c => `
         <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-1">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-800">🏛️ ${c.agency}</span>
+            <span class="font-bold text-slate-800">🏢 ${c.agency}</span>
             <span class="text-[10px] text-slate-400 font-mono">${c.date}</span>
           </div>
           <p class="text-slate-700 leading-relaxed">${c.text}</p>
@@ -1357,11 +1532,11 @@
 
       container.innerHTML = `
         <div class="space-y-3.5">
-          <!-- ★ 1. 🎯 발주계획 활용 시뮬레이션 (복원 및 인터랙티브 고도화) ★ -->
+          <!-- ★ 1. 🎯 조달업체 발주계획 활용 시뮬레이션 (예상 납품수량 · 예상 수주매출 · 예상 순이익 · 영업전략) ★ -->
           <div class="p-4 rounded-xl bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white space-y-2.5 shadow">
             <div class="flex items-center justify-between">
               <span class="text-xs font-extrabold text-amber-300 flex items-center gap-1">
-                🎯 발주계획 활용 시뮬레이션 (예산·수량·계약방식 진단)
+                🎯 발주계획 활용 시뮬레이션 (조달업체 수주·납품 분석)
               </span>
               <span class="px-2 py-0.5 bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 rounded text-[10px] font-bold">
                 ${diffText}
@@ -1370,24 +1545,27 @@
 
             <div class="grid grid-cols-3 gap-2 text-center bg-white/10 p-2.5 rounded-lg border border-white/10">
               <div>
-                <div class="text-[10px] text-blue-200">발주계획 예산</div>
-                <div class="text-xs font-extrabold text-white mt-0.5">${formatKRW(planBudget)}</div>
+                <div class="text-[10px] text-blue-200">이 발주건 예상 납품량</div>
+                <div class="text-xs font-extrabold text-emerald-300 mt-0.5">약 ${estQty.toLocaleString()}${found.unitName}</div>
+                <div class="text-[9px] text-slate-300">단가 ${formatKRW(userUnitPrice)} 기준</div>
               </div>
               <div class="border-x border-white/15">
-                <div class="text-[10px] text-blue-200">예상 도입 가능수량</div>
-                <div class="text-xs font-extrabold text-emerald-300 mt-0.5">약 ${estQty.toLocaleString()}식(대)</div>
+                <div class="text-[10px] text-blue-200">예상 수주 매출(${simBidRate}%)</div>
+                <div class="text-xs font-extrabold text-white mt-0.5">${formatKRW(estOrderRevenue)}</div>
+                <div class="text-[9px] text-slate-300">발주예산 ${formatKRW(planBudget)}</div>
               </div>
               <div>
-                <div class="text-[10px] text-blue-200">예상 예산절감액(${simBidRate}%)</div>
-                <div class="text-xs font-extrabold text-amber-300 mt-0.5">${formatKRW(estSavingAmt)} 절감</div>
+                <div class="text-[10px] text-blue-200">예상 영업이익(마진 ${simMarginRate}%)</div>
+                <div class="text-xs font-extrabold text-amber-300 mt-0.5">${formatKRW(estProfit)}</div>
+                <div class="text-[9px] text-slate-300">수주 성공 시 순수익</div>
               </div>
             </div>
 
-            <!-- 목표 낙찰률/계약률 시뮬레이션 슬라이더 -->
+            <!-- 목표 투찰률/공급가율 조절 슬라이더 -->
             <div class="bg-slate-900/70 px-3 py-2 rounded-lg border border-white/10 space-y-1">
               <div class="flex items-center justify-between text-[11px]">
-                <span class="text-blue-200 font-semibold">시뮬레이션 적용 낙찰·계약률 조절: <strong class="text-white">${simBidRate}%</strong></span>
-                <span class="text-emerald-300 font-mono">예상 계약액: ${formatKRW(estContractAmt)}</span>
+                <span class="text-blue-200 font-semibold">내 목표 투찰·납품가율 조절: <strong class="text-white">${simBidRate}%</strong></span>
+                <span class="text-emerald-300 font-mono">예상 수주액: ${formatKRW(estOrderRevenue)}</span>
               </div>
               <input
                 type="range"
@@ -1399,91 +1577,91 @@
               />
             </div>
 
-            <div class="text-[11px] text-blue-100 bg-blue-900/50 px-2.5 py-1.5 rounded border border-blue-400/30 leading-snug">
-              💡 <strong>권장 조달전략:</strong> ${recommendedStrategy}
+            <div class="text-[11px] text-blue-100 bg-blue-900/50 px-2.5 py-2 rounded border border-blue-400/30 leading-snug">
+              💡 <strong>조달업체 맞춤 영업전략:</strong> ${vendorActionPlan}
             </div>
           </div>
 
-          <!-- 2. 내가 올린 사진 vs 조달물품 사진 비교 -->
+          <!-- 2. 내 납품 예정 물품 사진 vs 발주계획 매칭 물품 사진 비교 -->
           <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-extrabold text-indigo-900">📸 물품 사진 비교 (${found.photoTypeName} · 유사도 ${found.matchRate})</span>
+              <span class="text-xs font-extrabold text-indigo-900">📸 내 등록 물품 vs 발주계획 품목 사진 비교 (유사도 ${found.matchRate})</span>
               <label class="cursor-pointer px-2 py-0.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[11px] font-bold">
-                📷 다른 사진 올리기
+                📷 내 사진 변경
                 <input type="file" accept="image/*" class="hidden" onchange="onPhotoFileSelected(event)" />
               </label>
             </div>
             <div class="grid grid-cols-2 gap-2.5">
               <div class="bg-white p-2 rounded-lg border-2 border-indigo-400 text-center">
-                <img src="${refPhoto}" alt="내 비교 물품 사진" class="w-full h-24 object-cover rounded-md mb-1" />
-                <div class="text-[11px] font-extrabold text-indigo-700">${userUploadedPhotoUrl ? "내가 올린 물품 사진" : "비교 기준 물품 사진"}</div>
-                <div class="text-[10px] text-slate-500 truncate">유형: ${found.photoTypeName}</div>
+                <img src="${refPhoto}" alt="내 납품 예정 물품 사진" class="w-full h-24 object-cover rounded-md mb-1" />
+                <div class="text-[11px] font-extrabold text-indigo-700">${userUploadedPhotoUrl ? "내가 올릴 조달물품 사진" : "내 납품 품목 기준 사진"}</div>
+                <div class="text-[10px] text-slate-500 truncate">품목군: ${found.photoTypeName}</div>
               </div>
               <div class="bg-white p-2 rounded-lg border border-indigo-100 text-center">
                 <img src="${found.mainPhoto}" alt="조달물품 사진" class="w-full h-24 object-cover rounded-md mb-1" />
-                <div class="text-[11px] font-bold text-slate-800">매칭된 발주계획 물품 사진</div>
+                <div class="text-[11px] font-bold text-slate-800">행정기관 발주계획 매칭 품목</div>
                 <div class="text-[10px] text-slate-500 truncate">발주번호: ${found.manageNo}</div>
               </div>
             </div>
           </div>
 
-          <!-- 3. 회사명, 제품명, 연락처 정보조회 -->
+          <!-- 3. 회사명, 제품명, 연락처 정보조회 (영업 타깃 발주기관 담당자 & 대표 공급업체) -->
           <div class="space-y-2">
             <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
-              <div class="text-[11px] font-bold text-emerald-700">🏢 회사명 (매칭 공급업체 및 발주기관)</div>
+              <div class="text-[11px] font-bold text-emerald-700">🏢 회사명 (동일품목 기준 공급업체 및 수요 행정기관)</div>
               <div class="text-base font-extrabold text-slate-900 mt-0.5">${found.companyName}</div>
-              <div class="text-xs text-slate-600 mt-0.5">대표자: <strong>${found.ceoName}</strong> | 발주기관: <strong>${found.agency}</strong></div>
+              <div class="text-xs text-slate-600 mt-0.5">대표자: <strong>${found.ceoName}</strong> | 발주 수요기관: <strong class="text-indigo-700">${found.agency}</strong></div>
             </div>
 
             <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
               <div class="text-[11px] font-bold text-blue-700">📦 제품명 및 계약정보(식별번호)</div>
               <div class="text-sm font-extrabold text-slate-900 mt-0.5">${found.title}</div>
-              <div class="text-xs text-indigo-700 font-semibold mt-0.5">매칭 제품명: ${found.productName}</div>
-              <div class="text-xs text-slate-600 mt-0.5">${found.productSpec} | 예산: <strong class="text-blue-700">${found.subAmountText}</strong></div>
+              <div class="text-xs text-indigo-700 font-semibold mt-0.5">매칭 표준제품: ${found.productName}</div>
+              <div class="text-xs text-slate-600 mt-0.5">${found.productSpec} | 발주예산: <strong class="text-blue-700">${found.subAmountText}</strong></div>
             </div>
 
             <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200">
-              <div class="text-[11px] font-bold text-amber-800">📞 연락처 정보 조회</div>
+              <div class="text-[11px] font-bold text-amber-800">📞 발주기관 영업 담당자 & 업체 연락처 정보</div>
               <div class="grid grid-cols-2 gap-2 mt-1 text-xs">
                 <div class="bg-white p-2 rounded-lg border border-amber-200">
-                  <span class="text-slate-400 block text-[10px]">발주처 / 업체 연락처</span>
+                  <span class="text-slate-400 block text-[10px]">발주부서 / 업체 전화번호</span>
                   <strong class="text-xs text-slate-900 font-mono">${found.phone} / ${found.companyPhone}</strong>
                 </div>
                 <div class="bg-white p-2 rounded-lg border border-amber-200">
-                  <span class="text-slate-400 block text-[10px]">이메일</span>
+                  <span class="text-slate-400 block text-[10px]">발주협의 이메일</span>
                   <strong class="text-xs text-blue-700 font-mono break-all">${found.email}</strong>
                 </div>
               </div>
               <div class="mt-1.5 text-xs text-slate-700">
-                <strong>담당자:</strong> ${found.manager}
+                <strong>영업 컨택 담당관:</strong> ${found.manager}
               </div>
             </div>
           </div>
 
-          <!-- 4. 행정기관 물품 선호도 및 의견 소통 -->
+          <!-- 4. 조달업체 제품 제안 · 행정기관 물품 선호도 및 의견 소통 -->
           <div class="p-3.5 rounded-xl bg-white border-2 border-slate-200 space-y-2.5">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-extrabold text-slate-900">💬 물품 관련 의견 · 선호도 행정기관 소통</span>
-              <span class="text-xs font-extrabold text-amber-600">★ ${fb.rating} / 5.0 (선호도 ${fb.preferPct}%)</span>
+              <span class="text-xs font-extrabold text-slate-900">💬 해당 물품 관련 의견 · 선호도 행정기관 소통</span>
+              <span class="text-xs font-extrabold text-amber-600">★ ${fb.rating} / 5.0 (기관 선호도 ${fb.preferPct}%)</span>
             </div>
 
             <div class="flex items-center justify-between bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-xs">
-              <span class="font-semibold text-slate-700">선호도 선택:</span>
+              <span class="font-semibold text-slate-700">물품 적합·선호도 평가:</span>
               <div class="flex items-center gap-1">
-                <button onclick="voteItemPreference('${found.uid}', 5)" class="px-2 py-1 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px]">★5 선호</button>
-                <button onclick="voteItemPreference('${found.uid}', 4)" class="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px]">★4 적합</button>
+                <button onclick="voteItemPreference('${found.uid}', 5)" class="px-2 py-1 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px]">★5 매우선호</button>
+                <button onclick="voteItemPreference('${found.uid}', 4)" class="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px]">★4 규격적합</button>
                 <button onclick="voteItemPreference('${found.uid}', 3)" class="px-2 py-1 rounded bg-slate-600 hover:bg-slate-700 text-white font-bold text-[11px]">★3 보통</button>
               </div>
             </div>
 
             <div class="flex gap-1.5">
-              <input id="opinionAgencyInput" type="text" placeholder="행정기관명" value="${found.agency}"
+              <input id="opinionAgencyInput" type="text" placeholder="작성자(업체/기관)" value="조달업체 영업팀"
                 class="w-28 px-2 py-1.5 text-xs border border-slate-300 rounded-lg" />
-              <input id="opinionTextInput" type="text" placeholder="물품 관련 의견 또는 발주 협의 내용 입력..."
+              <input id="opinionTextInput" type="text" placeholder="행정기관에 전달할 자사 제품 규격 의견·제안 입력..."
                 class="flex-1 px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg" />
               <button onclick="submitAgencyOpinion('${found.uid}')"
                 class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg whitespace-nowrap">
-                등록
+                의견 전달
               </button>
             </div>
 
@@ -1499,8 +1677,8 @@
       document.getElementById("detailBadgeId").textContent = "식별번호: -";
       document.getElementById("detailCardContent").innerHTML = `
         <div class="py-20 text-center text-slate-400 text-sm space-y-1">
-          <div class="font-bold text-slate-500">선택된 항목이 없습니다 (0건)</div>
-          <div class="text-xs">상단에서 <strong>물품 사진을 업로드(또는 샘플 사진 클릭)</strong>하거나 <strong>[실시간 조회]</strong>를 누르면 <strong>🎯 발주계획 활용 시뮬레이션, 물품 사진 비교, 회사명·제품명·연락처, 행정기관 소통창</strong>이 표시됩니다.</div>
+          <div class="font-bold text-slate-500">선택된 발주계획이 없습니다 (0건)</div>
+          <div class="text-xs">상단에서 <strong>[💻 노트북 · PC · 전산] 등 품목 사진을 클릭</strong>하거나 내 물품 사진을 올리면 <strong>🎯 조달업체 수주·납품 시뮬레이션, 물품 사진 비교, 회사명·제품명·연락처, 행정기관 소통창</strong>이 표시됩니다.</div>
         </div>
       `;
     }
@@ -1509,39 +1687,39 @@
       const mode = document.getElementById("analysisType").value;
       const titleEl = document.getElementById("chartTitle");
       const groupMap = {};
-      let unitLabel = "예산 (백만 원)";
+      let unitLabel = "총수요 예산 (백만 원)";
 
       if (mode === "budgetTier") {
-        titleEl.textContent = "예산 규모대별 발주계획 분포 (수의계약 vs 경쟁입찰 건수)";
+        titleEl.textContent = "예산 규모대별 발주 건수 (수의계약 즉시영업 vs 경쟁입찰)";
         unitLabel = "발주 건수";
-        groupMap["2천만 이하 (소액/쇼핑몰)"] = 0;
-        groupMap["2천만~5천만 (수의계약)"] = 0;
-        groupMap["5천만~2.1억 (중소경쟁/MAS)"] = 0;
+        groupMap["2천만 이하 (쇼핑몰/1인수의)"] = 0;
+        groupMap["2천만~5천만 (소액수의 타깃)"] = 0;
+        groupMap["5천만~2.1억 (MAS2단계/중소경쟁)"] = 0;
         groupMap["2.1억 초과 (대형 경쟁입찰)"] = 0;
         filteredData.forEach(d => {
           const amt = Number(d.amount) || 0;
-          if (amt <= 20000000) groupMap["2천만 이하 (소액/쇼핑몰)"]++;
-          else if (amt <= 50000000) groupMap["2천만~5천만 (수의계약)"]++;
-          else if (amt <= 210000000) groupMap["5천만~2.1억 (중소경쟁/MAS)"]++;
+          if (amt <= 20000000) groupMap["2천만 이하 (쇼핑몰/1인수의)"]++;
+          else if (amt <= 50000000) groupMap["2천만~5천만 (소액수의 타깃)"]++;
+          else if (amt <= 210000000) groupMap["5천만~2.1억 (MAS2단계/중소경쟁)"]++;
           else groupMap["2.1억 초과 (대형 경쟁입찰)"]++;
         });
       } else if (mode === "photoType") {
-        titleEl.textContent = "물품사진 유형별 발주예산 분석 (단위: 백만 원)";
+        titleEl.textContent = "품목유형별 전국 발주계획 총수요 예산 (단위: 백만 원)";
         filteredData.forEach(d => {
           groupMap[d.photoTypeName] = (groupMap[d.photoTypeName] || 0) + Math.round((Number(d.amount) || 0) / 1000000);
         });
       } else if (mode === "agency") {
-        titleEl.textContent = "발주기관별 예산 분석 TOP 10 (단위: 백만 원)";
+        titleEl.textContent = "최대 발주 행정기관 TOP 10 — 조달업체 최우선 영업 타깃 (단위: 백만 원)";
         filteredData.forEach(d => {
           groupMap[d.agency] = (groupMap[d.agency] || 0) + Math.round((Number(d.amount) || 0) / 1000000);
         });
       } else if (mode === "category") {
-        titleEl.textContent = "물품·용역·공사 구분별 예산 분석 (단위: 백만 원)";
+        titleEl.textContent = "물품·용역·공사 구분별 총수요 예산 (단위: 백만 원)";
         filteredData.forEach(d => {
           groupMap[d.category] = (groupMap[d.category] || 0) + Math.round((Number(d.amount) || 0) / 1000000);
         });
       } else {
-        titleEl.textContent = "계약방법별 발주예산 분석 (단위: 백만 원)";
+        titleEl.textContent = "계약방법별 발주계획 총수요 예산 (단위: 백만 원)";
         filteredData.forEach(d => {
           groupMap[d.contractMethod] = (groupMap[d.contractMethod] || 0) + Math.round((Number(d.amount) || 0) / 1000000);
         });
@@ -1566,8 +1744,8 @@
             data: values,
             backgroundColor: [
               "rgba(37, 99, 235, 0.85)",
-              "rgba(79, 70, 229, 0.85)",
               "rgba(16, 185, 129, 0.85)",
+              "rgba(79, 70, 229, 0.85)",
               "rgba(245, 158, 11, 0.85)",
               "rgba(139, 92, 246, 0.85)",
               "rgba(14, 165, 233, 0.85)"
