@@ -76,6 +76,7 @@
             <input
               id="serviceKeyInput"
               type="text"
+              value="6f51e14ac40d711807b2b60f3aed76c9683d9d3ec3040d77aa7ddcad70542495"
               placeholder="공공데이터포털 인증키(64자리)를 붙여넣으세요"
               class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-950 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 font-mono"
             />
@@ -349,6 +350,7 @@
   </footer>
 
   <script>
+    const DEFAULT_SERVICE_KEY = "6f51e14ac40d711807b2b60f3aed76c9683d9d3ec3040d77aa7ddcad70542495";
     const BROKEN_DUMMY_KEY = "6f51e14ac40d711807b2b60f3aed76c9683d9d3e8d7740cf5a6760c13e6fb577";
     if (localStorage.getItem("g2b_service_key") === BROKEN_DUMMY_KEY) {
       localStorage.removeItem("g2b_service_key");
@@ -554,14 +556,13 @@
     }
 
     function clearAllData() {
-      localStorage.removeItem("g2b_service_key");
-      document.getElementById("serviceKeyInput").value = "";
+      document.getElementById("serviceKeyInput").value = DEFAULT_SERVICE_KEY;
       currentData = [];
       filteredData = [];
       selectedItem = null;
       updateProgressBar(false);
       runLocalFilter();
-      showApiAlert("현재 조회된 데이터: <strong>0건</strong> — 인증키를 입력하고 <strong>[실시간 조회]</strong>를 눌러주세요.", false);
+      showApiAlert("현재 조회된 데이터: <strong>0건</strong> — <strong>[실시간 조회]</strong> 버튼을 눌러주세요.", false);
     }
 
     function buildBackwardWindows(startStr, endStr, windowDays = 6, maxWindows = 6) {
@@ -601,13 +602,10 @@
 
     // 나라장터 발주계획현황서비스 실시간 호출
     async function fetchOrderPlanOpenAPI() {
-      const rawKey = document.getElementById("serviceKeyInput").value.trim();
-
+      let rawKey = document.getElementById("serviceKeyInput").value.trim();
       if (!rawKey || rawKey === BROKEN_DUMMY_KEY) {
-        document.getElementById("serviceKeyInput").value = "";
-        document.getElementById("serviceKeyInput").focus();
-        showApiAlert("🔑 우측 상단에 공공데이터포털 일반 인증키(64자리 전체)를 입력하고 [실시간 조회]를 눌러주세요!", false);
-        return;
+        rawKey = DEFAULT_SERVICE_KEY;
+        document.getElementById("serviceKeyInput").value = rawKey;
       }
 
       const encodedKey = rawKey.includes("%") ? rawKey : encodeURIComponent(rawKey);
@@ -1158,10 +1156,8 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      const savedKey = localStorage.getItem("g2b_service_key") || "";
-      if (savedKey && savedKey !== BROKEN_DUMMY_KEY) {
-        document.getElementById("serviceKeyInput").value = savedKey;
-      }
+      const savedKey = localStorage.getItem("g2b_service_key") || DEFAULT_SERVICE_KEY;
+      document.getElementById("serviceKeyInput").value = (savedKey && savedKey !== BROKEN_DUMMY_KEY) ? savedKey : DEFAULT_SERVICE_KEY;
       resetFilters();
     });
   </script>
