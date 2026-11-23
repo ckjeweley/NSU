@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>발주계획을 이용한 조달물품 사진 비교 및 행정기관 소통형 물품검색·소개페이지</title>
+  <title>나라장터 발주계획을 이용한 조달물품 검색 및 소개페이지</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-      background-color: #f1f5f9;
+      background-color: #f4f7fb;
     }
     .step-badge {
       display: inline-flex;
@@ -25,18 +25,6 @@
     .row-selected {
       background-color: #eff6ff !important;
       border-left: 4px solid #2563eb;
-    }
-    .nav-tab {
-      position: relative;
-      transition: all 0.18s ease;
-      border-bottom: 4px solid transparent;
-    }
-    .nav-tab-active {
-      background-color: #ffffff !important;
-      color: #1d4ed8 !important;
-      border-bottom: 4px solid #2563eb !important;
-      font-weight: 800 !important;
-      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
     }
     @keyframes progressStripe {
       0% { background-position: 1rem 0; }
@@ -60,171 +48,58 @@
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
 
-  <!-- 상단 타이틀 & 발주계획 활용 목적 명확화 헤더 -->
-  <header class="bg-slate-900 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-3">
+  <!-- 상단 심플 헤더 -->
+  <header class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div class="space-y-1.5">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="px-2.5 py-0.5 text-xs font-bold bg-blue-500/30 border border-blue-400/50 rounded-full text-blue-200">
-              과제주제 : 발주계획을 이용한 조달물품 비교 · 소개페이지
-            </span>
-            <span class="px-2.5 py-0.5 text-xs font-bold bg-emerald-500/20 border border-emerald-400/40 rounded-full text-emerald-300">
-              관련업무 : 발주계획의 수립 · 조정 및 행정기관 협의 · 지원
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 text-xs font-bold bg-blue-500/30 border border-blue-400/40 rounded-full text-blue-200">
+              조달청 나라장터 발주계획현황서비스 OpenAPI
             </span>
           </div>
           <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">
-            나라장터 발주계획 기반 조달물품 사진 비교 및 계약 매칭 · 행정기관 소통 시스템
+            발주계획을 이용한 조달물품 검색 및 소개 페이지
           </h1>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            <strong>[발주계획 활용 핵심]</strong> 아직 계약 업체와 세부 물품이 확정되지 않은 <strong>나라장터 발주계획(예산·품목분류)</strong>을 기준으로,
-            <strong>조달물품 실제 사진과 기존 계약·낙찰·목록 데이터를 비교 매칭</strong>하여 최적의 공급업체(회사명·제품명·연락처)를 찾고 행정기관 간 <strong>물품 선호도 및 발주계획 조정 의견을 소통</strong>합니다.
+          <p class="text-xs text-slate-300">
+            <strong>① 날짜 선택 → ② 분석 종류 선택 → ③ 계약정보(식별번호) 검색 → ④ 회사명·제품명·연락처 조회</strong> (물품사진 비교 및 행정기관 선호도·의견 소통)
           </p>
         </div>
 
         <!-- OpenAPI 인증키 입력 박스 -->
-        <div class="bg-slate-800 border-2 border-emerald-500/70 rounded-xl p-3 w-full lg:w-[480px] shrink-0 shadow-lg">
-          <div class="flex items-center justify-between text-xs text-slate-200 mb-1.5">
-            <span class="font-bold text-emerald-300">🔑 공공데이터포털 일반 인증키 (OpenAPI 자동 연동)</span>
-            <button onclick="clearSavedKey()" class="text-[11px] text-slate-400 hover:text-white underline">초기화(0건)</button>
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 w-full lg:w-[460px] shrink-0">
+          <div class="flex items-center justify-between text-xs text-slate-300 mb-1.5">
+            <span class="font-bold text-emerald-300">🔑 공공데이터포털 일반 인증키</span>
+            <button onclick="clearAllData()" class="text-[11px] text-slate-400 hover:text-white underline">초기화(0건)</button>
           </div>
           <div class="flex gap-2">
             <input
               id="serviceKeyInput"
               type="text"
-              placeholder="공공데이터포털 일반 인증키(64자리 전체) 입력"
-              class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-950 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-emerald-400 font-mono"
+              placeholder="공공데이터포털 인증키(64자리)를 붙여넣으세요"
+              class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-950 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 font-mono"
             />
             <button
               id="apiFetchBtn"
-              onclick="fetchCurrentTabOpenAPI(true)"
-              class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-extrabold rounded-lg whitespace-nowrap transition shadow"
+              onclick="fetchOrderPlanOpenAPI()"
+              class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-extrabold rounded-lg whitespace-nowrap transition"
             >
               실시간 API 조회
             </button>
           </div>
         </div>
       </div>
-
-      <!-- ★ 발주계획 정보로 무엇을 하는지 한눈에 보여주는 4단계 핵심 워크플로우 배너 ★ -->
-      <div class="mt-4 p-3 rounded-xl bg-slate-800/90 border border-slate-700 grid grid-cols-1 sm:grid-cols-4 gap-2.5 text-xs">
-        <div class="flex items-start gap-2.5 bg-blue-950/60 border border-blue-500/30 p-2.5 rounded-lg">
-          <span class="px-2 py-0.5 bg-blue-600 text-white font-extrabold rounded text-[11px] shrink-0">STEP 1</span>
-          <div>
-            <div class="font-bold text-blue-200">발주계획 조회·선택</div>
-            <div class="text-[11px] text-slate-300 mt-0.5">기관별 발주예정 사업명, 발주예산액, 물품분류 확인</div>
-          </div>
-        </div>
-        <div class="flex items-start gap-2.5 bg-indigo-950/60 border border-indigo-500/30 p-2.5 rounded-lg">
-          <span class="px-2 py-0.5 bg-indigo-600 text-white font-extrabold rounded text-[11px] shrink-0">STEP 2</span>
-          <div>
-            <div class="font-bold text-indigo-200">조달물품 사진·예산 비교</div>
-            <div class="text-[11px] text-slate-300 mt-0.5">발주계획 품목에 맞는 조달물품 사진과 계약단가 비교</div>
-          </div>
-        </div>
-        <div class="flex items-start gap-2.5 bg-violet-950/60 border border-violet-500/30 p-2.5 rounded-lg">
-          <span class="px-2 py-0.5 bg-violet-600 text-white font-extrabold rounded text-[11px] shrink-0">STEP 3</span>
-          <div>
-            <div class="font-bold text-violet-200">계약(식별번호)·업체 매칭</div>
-            <div class="text-[11px] text-slate-300 mt-0.5">해당 물품의 계약식별번호, 회사명, 제품명, 연락처 도출</div>
-          </div>
-        </div>
-        <div class="flex items-start gap-2.5 bg-emerald-950/60 border border-emerald-500/30 p-2.5 rounded-lg">
-          <span class="px-2 py-0.5 bg-emerald-600 text-white font-extrabold rounded text-[11px] shrink-0">STEP 4</span>
-          <div>
-            <div class="font-bold text-emerald-200">행정기관 선호도·발주조정 소통</div>
-            <div class="text-[11px] text-slate-300 mt-0.5">물품 선호도 평가 및 발주계획 수립·조정·협의 의견 공유</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ★ 데이터구분 5종 탭: 나라장터 발주계획, 사전규격, 계약정보, 낙찰, 목록정보 ★ -->
-    <div class="bg-slate-800 border-t border-slate-700 mt-2">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-2.5" aria-label="Tabs">
-          <button
-            onclick="switchTab('orderPlan')"
-            id="tab-orderPlan"
-            class="nav-tab nav-tab-active rounded-t-xl px-4 py-3.5 text-left bg-slate-700/70 text-slate-200 hover:bg-slate-700 flex flex-col justify-between"
-          >
-            <div class="flex items-center justify-between w-full">
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-600 text-white">화면 1 (기준)</span>
-              <span id="count-badge-orderPlan" class="text-[11px] font-mono font-bold text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded">0건</span>
-            </div>
-            <div class="text-base font-extrabold mt-1.5">📋 나라장터 발주계획</div>
-            <div class="text-[11px] opacity-75 mt-0.5">발주예산 대비 물품사진·계약 시뮬레이션</div>
-          </button>
-
-          <button
-            onclick="switchTab('preSpecBid')"
-            id="tab-preSpecBid"
-            class="nav-tab rounded-t-xl px-4 py-3.5 text-left bg-slate-700/70 text-slate-200 hover:bg-slate-700 flex flex-col justify-between"
-          >
-            <div class="flex items-center justify-between w-full">
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-600 text-white">화면 2 (연계)</span>
-              <span id="count-badge-preSpecBid" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">0건</span>
-            </div>
-            <div class="text-base font-extrabold mt-1.5">📑 사전규격 · 입찰공고</div>
-            <div class="text-[11px] opacity-75 mt-0.5">발주계획 후속 사전규격·공고 검증</div>
-          </button>
-
-          <button
-            onclick="switchTab('contractShop')"
-            id="tab-contractShop"
-            class="nav-tab rounded-t-xl px-4 py-3.5 text-left bg-slate-700/70 text-slate-200 hover:bg-slate-700 flex flex-col justify-between"
-          >
-            <div class="flex items-center justify-between w-full">
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-teal-600 text-white">화면 3 (연계)</span>
-              <span id="count-badge-contractShop" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">0건</span>
-            </div>
-            <div class="text-base font-extrabold mt-1.5">🤝 계약정보 (쇼핑몰)</div>
-            <div class="text-[11px] opacity-75 mt-0.5">발주계획 매칭 쇼핑몰 물품·단가 비교</div>
-          </button>
-
-          <button
-            onclick="switchTab('award')"
-            id="tab-award"
-            class="nav-tab rounded-t-xl px-4 py-3.5 text-left bg-slate-700/70 text-slate-200 hover:bg-slate-700 flex flex-col justify-between"
-          >
-            <div class="flex items-center justify-between w-full">
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white">화면 4 (연계)</span>
-              <span id="count-badge-award" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">0건</span>
-            </div>
-            <div class="text-base font-extrabold mt-1.5">🏆 낙찰정보</div>
-            <div class="text-[11px] opacity-75 mt-0.5">발주예산 대비 실제 낙찰업체·낙찰률</div>
-          </button>
-
-          <button
-            onclick="switchTab('catalog')"
-            id="tab-catalog"
-            class="nav-tab rounded-t-xl px-4 py-3.5 text-left bg-slate-700/70 text-slate-200 hover:bg-slate-700 flex flex-col justify-between"
-          >
-            <div class="flex items-center justify-between w-full">
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-violet-600 text-white">화면 5 (연계)</span>
-              <span id="count-badge-catalog" class="text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded">0건</span>
-            </div>
-            <div class="text-base font-extrabold mt-1.5">📦 목록정보 (물품목록)</div>
-            <div class="text-[11px] opacity-75 mt-0.5">물품식별번호·사진·표준규격 목록</div>
-          </button>
-        </nav>
-      </div>
     </div>
   </header>
 
-  <!-- 현재 활성화된 탭(화면 1~5) 상태 안내 바 -->
-  <div class="bg-white border-b border-slate-200 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-      <div class="flex items-center gap-2.5">
-        <span id="activeScreenBadge" class="px-3 py-1 rounded-lg bg-blue-600 text-white text-xs font-extrabold">
-          화면 1 : 나라장터 발주계획
-        </span>
-        <span id="activeScreenDesc" class="text-xs sm:text-sm font-bold text-slate-800">
-          발주계획을 선택하여 후보 조달물품 사진을 비교하고 예산 조정 및 행정기관 협의 의견을 소통합니다.
-        </span>
+  <!-- 상단 상태 안내줄 -->
+  <div class="bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div class="text-xs font-semibold text-slate-600">
+        📌 <strong>활용 시나리오:</strong> 원하는 날짜 지정 후 [실시간 조회] → 분석 종류 및 물품사진 비교 → 식별번호 검색 → 회사명·제품명·연락처 및 행정기관 선호도 확인
       </div>
-      <div id="apiAlertBox" class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-300 text-slate-700 font-medium">
-        현재 조회된 데이터: <strong>0건</strong> — 상단에 인증키를 입력하고 <strong>[실시간 API 조회]</strong> 또는 <strong>[실시간 조회]</strong> 버튼을 눌러주세요.
+      <div id="apiAlertBox" class="text-xs px-3 py-1 rounded-lg bg-slate-100 border border-slate-300 text-slate-700 font-medium">
+        현재 조회된 데이터: <strong>0건</strong> — 인증키를 입력하고 <strong>[실시간 조회]</strong>를 눌러주세요.
       </div>
     </div>
   </div>
@@ -232,30 +107,25 @@
   <!-- 메인 컨텐츠 -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
 
-    <!-- ★ 사용법 및 활용 시나리오: 날짜선택 > 분석 종류 선택 > 계약정보(식별번호)검색 > 회사명, 제품명, 연락처 정보조회 ★ -->
+    <!-- ★ 시나리오 1단계 · 2단계 · 3단계 검색 컨트롤 패널 ★ -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-end">
 
         <!-- 1단계: 날짜 선택 -->
         <div class="lg:col-span-4 space-y-1.5">
-          <label class="flex items-center justify-between text-sm font-bold text-slate-800">
-            <span class="flex items-center gap-1.5">
-              <span class="step-badge bg-blue-600 text-white">1</span>
-              날짜 선택 (조회 기간 지정)
-            </span>
-            <span id="dateRuleBadge" class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-              발주계획 조회기간
-            </span>
+          <label class="flex items-center gap-1.5 text-sm font-bold text-slate-800">
+            <span class="step-badge bg-blue-600 text-white">1</span>
+            날짜 선택 (발주계획 조회 기간)
           </label>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <span class="text-[11px] text-slate-500 block mb-0.5">시작일자 (inqryBgnDt)</span>
-              <input type="date" id="startDate" onchange="onDateInputChanged()"
+              <span class="text-[11px] text-slate-500 block mb-0.5">시작일자</span>
+              <input type="date" id="startDate"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
             </div>
             <div>
-              <span class="text-[11px] text-slate-500 block mb-0.5">종료일자 (inqryEndDt)</span>
-              <input type="date" id="endDate" onchange="onDateInputChanged()"
+              <span class="text-[11px] text-slate-500 block mb-0.5">종료일자</span>
+              <input type="date" id="endDate"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
             </div>
           </div>
@@ -265,21 +135,21 @@
         <div class="lg:col-span-4 space-y-1.5">
           <label class="flex items-center gap-1.5 text-sm font-bold text-slate-800">
             <span class="step-badge bg-indigo-600 text-white">2</span>
-            분석 종류 선택 (발주·계약 분석)
+            분석 종류 선택
           </label>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <span class="text-[11px] text-slate-500 block mb-0.5">분석 종류 선택</span>
+              <span class="text-[11px] text-slate-500 block mb-0.5">분석 기준</span>
               <select id="analysisType" onchange="updateAnalysisChart()"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <option value="agency">기관/업체별 발주·계약 분석</option>
-                <option value="category">조달물품 사진분류별 예산 분석</option>
-                <option value="method">계약방법/발주방식별 분석</option>
-                <option value="date">일자별 발주·계약 추이</option>
+                <option value="agency">발주기관별 예산 TOP 10</option>
+                <option value="category">물품·용역·공사 구분별 분석</option>
+                <option value="method">계약방법별 발주 분석</option>
+                <option value="date">일자별 발주계획 추이</option>
               </select>
             </div>
             <div>
-              <span class="text-[11px] text-slate-500 block mb-0.5">업무 구분 필터</span>
+              <span class="text-[11px] text-slate-500 block mb-0.5">업무 구분</span>
               <select id="categoryFilter" onchange="runLocalFilter()"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 <option value="ALL">전체 (물품+용역+공사)</option>
@@ -299,104 +169,31 @@
           </label>
           <div class="flex gap-2">
             <div class="flex-1">
-              <span class="text-[11px] text-slate-500 block mb-0.5">계약정보(식별번호), 회사명, 제품명 입력</span>
+              <span class="text-[11px] text-slate-500 block mb-0.5">식별번호, 발주번호, 제품명, 회사명</span>
               <input
                 type="text"
                 id="searchInput"
-                placeholder="식별번호, 계약/발주번호, 제품명, 회사명..."
+                placeholder="식별번호, 제품명, 기관명 검색..."
                 onkeyup="runLocalFilter()"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:outline-none"
               />
             </div>
             <button
               id="subFetchBtn"
-              onclick="fetchCurrentTabOpenAPI(true)"
-              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm transition self-end h-[38px] flex items-center gap-1.5 whitespace-nowrap"
+              onclick="fetchOrderPlanOpenAPI()"
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm transition self-end h-[38px] whitespace-nowrap"
             >
-              <span>실시간 조회</span>
+              실시간 조회
             </button>
           </div>
         </div>
 
       </div>
 
-      <!-- ★ 과제개요 핵심 기능 1: 조달물품 사진 비교 검색 바 (비정형 데이터 사진 비교로 해당 계약 찾기) ★ -->
-      <div class="mt-4 pt-3.5 border-t border-slate-200">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 font-extrabold rounded text-xs">📸 조달물품 사진 비교 검색기</span>
-            <span class="text-xs text-slate-600">
-              발주계획 품목과 비교할 <strong>조달물품 사진 카테고리</strong>를 선택하거나 <strong>비교할 물품 사진을 업로드</strong>하면 해당하는 계약·물품 정보를 필터링합니다.
-            </span>
-          </div>
-          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold shrink-0">
-            <span>📷 비교할 물품 사진 업로드</span>
-            <input type="file" accept="image/*" class="hidden" onchange="handleUserPhotoUpload(event)" />
-          </label>
-        </div>
-
-        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" id="photoCategoryBar">
-          <button onclick="filterByPhotoCategory('ALL')" id="photocat-ALL"
-            class="photo-cat-btn flex items-center gap-2 p-2 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition">
-            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=120&q=80" alt="전체" class="w-9 h-9 rounded-lg object-cover shrink-0" />
-            <div class="overflow-hidden">
-              <div class="text-xs font-extrabold text-slate-900 truncate">전체 사진비교</div>
-              <div class="text-[10px] text-blue-700 truncate">모든 조달품목</div>
-            </div>
-          </button>
-          <button onclick="filterByPhotoCategory('전산/서버')" id="photocat-전산/서버"
-            class="photo-cat-btn flex items-center gap-2 p-2 rounded-xl border border-slate-200 hover:border-blue-400 bg-white text-left transition">
-            <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=120&q=80" alt="서버/PC" class="w-9 h-9 rounded-lg object-cover shrink-0" />
-            <div class="overflow-hidden">
-              <div class="text-xs font-bold text-slate-800 truncate">서버·전산·SW</div>
-              <div class="text-[10px] text-slate-500 truncate">IT/정보통신</div>
-            </div>
-          </button>
-          <button onclick="filterByPhotoCategory('계측/센서')" id="photocat-계측/센서"
-            class="photo-cat-btn flex items-center gap-2 p-2 rounded-xl border border-slate-200 hover:border-blue-400 bg-white text-left transition">
-            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=120&q=80" alt="계측/장비" class="w-9 h-9 rounded-lg object-cover shrink-0" />
-            <div class="overflow-hidden">
-              <div class="text-xs font-bold text-slate-800 truncate">측정·기계·장비</div>
-              <div class="text-[10px] text-slate-500 truncate">과학/산업장비</div>
-            </div>
-          </button>
-          <button onclick="filterByPhotoCategory('영상/보안')" id="photocat-영상/보안"
-            class="photo-cat-btn flex items-center gap-2 p-2 rounded-xl border border-slate-200 hover:border-blue-400 bg-white text-left transition">
-            <img src="https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=120&q=80" alt="CCTV/영상" class="w-9 h-9 rounded-lg object-cover shrink-0" />
-            <div class="overflow-hidden">
-              <div class="text-xs font-bold text-slate-800 truncate">CCTV·통신·보안</div>
-              <div class="text-[10px] text-slate-500 truncate">감시/관제장비</div>
-            </div>
-          </button>
-          <button onclick="filterByPhotoCategory('사무/비품')" id="photocat-사무/비품"
-            class="photo-cat-btn flex items-center gap-2 p-2 rounded-xl border border-slate-200 hover:border-blue-400 bg-white text-left transition">
-            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=120&q=80" alt="사무/가구" class="w-9 h-9 rounded-lg object-cover shrink-0" />
-            <div class="overflow-hidden">
-              <div class="text-xs font-bold text-slate-800 truncate">사무기기·물품</div>
-              <div class="text-[10px] text-slate-500 truncate">행정일반물품</div>
-            </div>
-          </button>
-          <button onclick="filterByPhotoCategory('시설/공사')" id="photocat-시설/공사"
-            class="photo-cat-btn flex items-center gap-2 p-2 rounded-xl border border-slate-200 hover:border-blue-400 bg-white text-left transition">
-            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=120&q=80" alt="시설/공사" class="w-9 h-9 rounded-lg object-cover shrink-0" />
-            <div class="overflow-hidden">
-              <div class="text-xs font-bold text-slate-800 truncate">공사·자재·설비</div>
-              <div class="text-[10px] text-slate-500 truncate">시설/전기/통신</div>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- ★ 실시간 OpenAPI 조회 프로그레스바 영역 (조회 중에만 표시됨) ★ -->
-      <div id="progressContainer" class="hidden mt-4 p-4 rounded-xl bg-blue-950 text-white border border-blue-700 shadow-inner">
+      <!-- ★ 실시간 조회 프로그레스바 (조회 중에만 표시) ★ -->
+      <div id="progressContainer" class="hidden mt-4 p-4 rounded-xl bg-blue-950 text-white border border-blue-700">
         <div class="flex items-center justify-between text-xs mb-2">
-          <div class="flex items-center gap-2">
-            <svg class="animate-spin h-4 w-4 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span id="progressStatusText" class="font-bold text-blue-100">공공데이터포털 조달청 OpenAPI 서버에 연결 중...</span>
-          </div>
+          <span id="progressStatusText" class="font-bold text-blue-100">나라장터 발주계획 OpenAPI 실시간 데이터 수집 중...</span>
           <div class="flex items-center gap-3">
             <span id="progressCountText" class="text-emerald-300 font-mono font-bold">수신 건수: 0건</span>
             <span id="progressPercentText" class="px-2 py-0.5 rounded bg-blue-800 text-white font-mono font-extrabold">0%</span>
@@ -410,11 +207,11 @@
           ></div>
         </div>
         <div id="progressSubDetail" class="mt-1.5 text-[11px] text-blue-300 font-mono truncate">
-           대기 중...
+          대기 중...
         </div>
       </div>
 
-      <!-- 현재 탭의 실제 REST OpenAPI 호출 URL 표시줄 -->
+      <!-- REST API 주소 표시줄 -->
       <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg">
         <div class="flex items-center gap-2 overflow-x-auto">
           <span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded text-[11px] whitespace-nowrap" id="httpStatusBadge">REST API</span>
@@ -426,71 +223,66 @@
       </div>
     </section>
 
-    <!-- STEP 2 시각화: 화면별 맞춤 요약 지표 & 차트 -->
+    <!-- ★ 2단계 분석 차트 & 요약 카드 ★ -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+      <div class="lg:col-span-4 grid grid-cols-2 gap-4">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-500">현재 탭 조회 건수</span>
-          <div class="mt-2 flex items-baseline justify-between">
+          <span class="text-xs font-semibold text-slate-500">조회된 발주계획 건수</span>
+          <div class="mt-2">
             <span id="statCount" class="text-2xl font-extrabold text-slate-900">0건</span>
-            <span id="statSourceBadge" class="text-[11px] text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded">조회 전 (0건)</span>
           </div>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-500">총 금액(발주예산/낙찰/단가)</span>
-          <div class="mt-2 flex items-baseline justify-between">
+          <span class="text-xs font-semibold text-slate-500">총 발주예산 합계</span>
+          <div class="mt-2">
             <span id="statTotalBudget" class="text-2xl font-extrabold text-blue-600">0원</span>
-            <span class="text-[11px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded">자동 집계</span>
           </div>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-500">사진 비교 매칭 품목 수</span>
-          <div class="mt-2 flex items-baseline justify-between">
+          <span class="text-xs font-semibold text-slate-500">물품사진 매칭 건수</span>
+          <div class="mt-2">
             <span id="statAvgBudget" class="text-xl font-bold text-slate-800">0건</span>
-            <span class="text-[11px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded">조달물품 사진 매칭</span>
           </div>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-500">소통 대상 행정기관·업체</span>
-          <div class="mt-2 flex items-baseline justify-between">
-            <span id="statCompanies" class="text-xl font-bold text-indigo-600">0개처</span>
-            <span class="text-[11px] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">의견·선호도 공유</span>
+          <span class="text-xs font-semibold text-slate-500">발주 행정기관 수</span>
+          <div class="mt-2">
+            <span id="statCompanies" class="text-xl font-bold text-indigo-600">0개 기관</span>
           </div>
         </div>
       </div>
 
-      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <div class="lg:col-span-8 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
             <span class="w-2 h-4 bg-indigo-600 rounded-sm"></span>
-            <span id="chartTitle">현재 화면 데이터 분석 차트</span>
+            <span id="chartTitle">발주기관별 예산 분석 TOP 10 (단위: 백만 원)</span>
           </h2>
-          <span class="text-xs text-slate-400">OpenAPI 응답 데이터 실시간 시각화</span>
+          <span class="text-xs text-slate-400">2단계 분석 종류 선택 시 자동 반영</span>
         </div>
-        <div class="h-44">
+        <div class="h-40">
           <canvas id="orderChart"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- STEP 3 (좌측 조달물품 사진 포함 테이블) & STEP 4 (우측 발주계획 기반 사진비교 + 계약매칭 + 행정기관 의견·선호도 소통 카드) -->
+    <!-- ★ 3단계 (좌측 발주계획 검색 목록) & 4단계 (우측 물품사진 비교 · 회사명/제품명/연락처 · 행정기관 선호도/의견 소통) ★ -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-      <!-- 좌측: 3단계 화면별 실시간 목록 (조달물품 썸네일 사진 포함) -->
+      <!-- 좌측: 3단계 발주계획 및 식별번호 검색 목록 -->
       <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
         <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 bg-slate-50/60">
           <div>
             <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
               <span class="step-badge bg-violet-600 text-white text-xs">3</span>
-              <span id="tableHeaderTitle">화면 1 : 나라장터 발주계획 실시간 물품검색 목록</span>
+              나라장터 발주계획 및 계약정보(식별번호) 검색 목록
             </h3>
-            <p class="text-xs text-slate-500 mt-0.5">항목을 클릭하면 우측에서 <strong>발주계획 예산 대비 조달물품 사진 비교, 매칭 계약정보(회사명·제품명·연락처), 행정기관 선호도·의견 소통</strong>을 진행합니다.</p>
+            <p class="text-xs text-slate-500 mt-0.5">목록에서 항목을 클릭하면 우측에 <strong>조달물품 비교 사진, 회사명, 제품명, 연락처, 선호도·의견</strong>이 표시됩니다.</p>
           </div>
           <div class="flex items-center gap-2">
             <select id="pageSizeSelect" onchange="changePageSize()" class="text-xs border border-slate-300 rounded-lg px-2 py-1 bg-white">
               <option value="100">100건씩 보기</option>
               <option value="300">300건씩 보기</option>
-              <option value="1000">1,000건씩 보기</option>
               <option value="99999">전체 보기</option>
             </select>
             <button onclick="resetFilters()" class="text-xs text-slate-600 hover:text-blue-600 border border-slate-300 bg-white px-2.5 py-1 rounded-lg">
@@ -499,19 +291,19 @@
           </div>
         </div>
 
-        <div class="overflow-x-auto max-h-[750px] overflow-y-auto flex-1">
+        <div class="overflow-x-auto max-h-[680px] overflow-y-auto flex-1">
           <table class="w-full text-left border-collapse">
             <thead class="sticky top-0 bg-slate-100 shadow-sm z-10">
-              <tr id="tableHeadRow" class="border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase">
-                <th class="py-2.5 px-3">물품사진 / 일자</th>
+              <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase">
+                <th class="py-2.5 px-3">물품사진 / 발주일</th>
                 <th class="py-2.5 px-3">구분</th>
-                <th class="py-2.5 px-3">식별번호/관리번호</th>
-                <th class="py-2.5 px-3">건명/품명 및 기관·업체</th>
-                <th class="py-2.5 px-3 text-right">금액 / 선호도</th>
+                <th class="py-2.5 px-3">계약정보(식별/발주번호)</th>
+                <th class="py-2.5 px-3">발주건명(제품명) / 발주기관</th>
+                <th class="py-2.5 px-3 text-right">발주예산 / 선호도</th>
               </tr>
             </thead>
             <tbody id="orderTableBody" class="divide-y divide-slate-200 text-xs">
-              <!-- JS로 렌더링 -->
+              <!-- JS 렌더링 -->
             </tbody>
           </table>
         </div>
@@ -520,14 +312,14 @@
         </div>
       </div>
 
-      <!-- 우측: 4단계 발주계획 활용 시뮬레이터 + 조달물품 사진 비교 + 회사명·제품명·연락처 + 행정기관 선호도·의견 소통 -->
+      <!-- 우측: 4단계 회사명, 제품명, 연락처 정보조회 + 조달물품 사진 비교 + 행정기관 선호도/의견 소통 -->
       <div class="lg:col-span-5 bg-white rounded-2xl border-2 border-emerald-500/80 shadow-md overflow-hidden flex flex-col">
         <div class="px-5 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="step-badge bg-white text-emerald-700">4</span>
             <div>
-              <h3 class="text-base font-bold">발주계획 기반 물품사진 비교 · 계약조회 · 기관소통</h3>
-              <p class="text-[11px] text-emerald-100">조달물품 사진 비교 → 회사명·제품명·연락처 조회 → 선호도·발주조정 협의</p>
+              <h3 class="text-base font-bold">회사명 · 제품명 · 연락처 및 물품사진 비교</h3>
+              <p class="text-[11px] text-emerald-100">조달물품 사진 비교 및 행정기관 선호도·의견 소통</p>
             </div>
           </div>
           <span id="detailBadgeId" class="px-2.5 py-1 bg-black/20 rounded-lg text-xs font-mono">
@@ -535,8 +327,8 @@
           </span>
         </div>
 
-        <div id="detailCardContent" class="p-5 space-y-4 flex-1 flex flex-col justify-between overflow-y-auto max-h-[800px]">
-          <!-- JS로 상세 정보 렌더링 -->
+        <div id="detailCardContent" class="p-5 space-y-4 flex-1 flex flex-col justify-between overflow-y-auto max-h-[730px]">
+          <!-- JS 렌더링 -->
         </div>
       </div>
 
@@ -548,10 +340,10 @@
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
       <div>
         <strong>과제주제:</strong> 발주계획을 이용한 소개페이지 작성 |
-        <strong>데이터구분:</strong> 나라장터 발주계획, 사전규격, 계약정보, 낙찰, 목록정보 (OpenAPI REST + 물품사진 비교·의견 소통)
+        <strong>연동 OpenAPI:</strong> 조달청_나라장터 발주계획현황서비스 (REST)
       </div>
       <div>
-        GitHub Pages 실시간 OpenAPI 웹 서비스
+        GitHub Pages 웹 서비스
       </div>
     </div>
   </footer>
@@ -562,76 +354,77 @@
       localStorage.removeItem("g2b_service_key");
     }
 
-    // 품명/사업명 키워드 기반 조달물품 대표 사진, 비교 후보 물품, 추천 계약업체 매칭 카탈로그
+    // 발주계획 품목별 조달물품 비교 사진 및 매칭 공급업체 정보
     const PRODUCT_PHOTO_CATALOG = [
       {
-        group: "전산/서버",
         keywords: ["서버", "컴퓨터", "pc", "노트북", "스위치", "네트워크", "클라우드", "소프트웨어", "sw", "시스템", "플랫폼", "데이터", "정보", "유지보수", "전산", "구축"],
         mainPhoto: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80",
-        label: "조달 전산·서버·SW 장비",
+        label: "전산·서버·SW 장비",
         matchRate: "96.4%",
-        recommendedCompany: "(주)한국클라우드테크놀로지",
-        recommendedProduct: "KCT-AI Server Pro GX500 (식별번호: 24891023)",
-        recommendedUnitPrice: 68000000,
-        recommendedPhone: "02-6240-8810"
+        company: "(주)한국클라우드테크놀로지",
+        ceo: "김태호",
+        product: "KCT-AI Server Pro GX500 (식별번호: 24891023)",
+        phone: "02-6240-8810"
       },
       {
-        group: "영상/보안",
-        keywords: ["cctv", "카메라", "영상", "보안", "관제", "드론", "레이더", "통신", "무선", "방송", "전광판", "모니터", "디스플레이"],
+        keywords: ["cctv", "카메라", "영상", "보안", "관제", "드론", "레이더", "통신", "무선", "방송", "전광판", "모니터"],
         mainPhoto: "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=600&q=80",
-        label: "조달 영상·감시·통신 장비",
+        label: "영상·감시·통신 장비",
         matchRate: "94.8%",
-        recommendedCompany: "한빛비전시스템(주)",
-        recommendedProduct: "HB-EdgeCam AI-9000 지능형 영상장치 (식별번호: 23984110)",
-        recommendedUnitPrice: 41000000,
-        recommendedPhone: "031-709-3340"
+        company: "한빛비전시스템(주)",
+        ceo: "최동훈",
+        product: "HB-EdgeCam AI-9000 영상분석기 (식별번호: 23984110)",
+        phone: "031-709-3340"
       },
       {
-        group: "계측/센서",
         keywords: ["측정", "센서", "분석", "실험", "의료", "로봇", "기계", "펌프", "모터", "발전기", "변압기", "배전반", "ups", "전력", "차량"],
         mainPhoto: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80",
-        label: "조달 계측·산업·전력 장비",
+        label: "계측·산업·전력 장비",
         matchRate: "95.2%",
-        recommendedCompany: "대한파워일렉트릭(주)",
-        recommendedProduct: "DPE-UPS 300KVA 고효율 전원장치 (식별번호: 24110854)",
-        recommendedUnitPrice: 39000000,
-        recommendedPhone: "062-954-1190"
+        company: "대한파워일렉트릭(주)",
+        ceo: "윤성민",
+        product: "DPE-UPS 300KVA 고효율 전원장치 (식별번호: 24110854)",
+        phone: "062-954-1190"
       },
       {
-        group: "시설/공사",
         keywords: ["공사", "시설", "건축", "토목", "도로", "포장", "설비", "전기", "소방", "조명", "led", "배관", "리모델링", "보수", "설계", "감리"],
         mainPhoto: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1541888946425-d09bb18086f6?auto=format&fit=crop&w=600&q=80",
-        label: "조달 시설·공사·자재",
+        label: "시설·공사·자재",
         matchRate: "93.7%",
-        recommendedCompany: "(주)네트웍스코리아정보통신",
-        recommendedProduct: "스마트 시설·정보통신 표준 시공 및 관급자재 (식별번호: 25301920)",
-        recommendedUnitPrice: 46000000,
-        recommendedPhone: "02-3452-9080"
+        company: "(주)네트웍스코리아정보통신",
+        ceo: "장재영",
+        product: "스마트 시설·정보통신 표준 관급자재 (식별번호: 25301920)",
+        phone: "02-3452-9080"
       },
       {
-        group: "사무/비품",
-        keywords: ["가구", "책상", "의자", "인쇄", "도서", "교구", "용지", "비품", "복합기", "프린터", "피복", "식품", "급식"],
+        keywords: [],
         mainPhoto: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
         comparePhoto: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=600&q=80",
-        label: "조달 행정·사무·일반 물품",
-        matchRate: "95.9%",
-        recommendedCompany: "(주)스마트오피스조달",
-        recommendedProduct: "친환경 인증 행정업무용 스마트 복합기·비품 (식별번호: 24778120)",
-        recommendedUnitPrice: 12000000,
-        recommendedPhone: "02-719-5540"
+        label: "행정·사무·일반 조달물품",
+        matchRate: "95.5%",
+        company: "(주)나라장터우수조달기업",
+        ceo: "이정훈",
+        product: "나라장터 다수공급자계약(MAS) 표준 물품 (식별번호: 24778120)",
+        phone: "02-719-5540"
       }
     ];
 
     let userUploadedPhotoUrl = null;
-    let selectedPhotoGroup = "ALL";
+    let currentData = [];
+    let filteredData = [];
+    let selectedItem = null;
+    let chartInstance = null;
+    let currentPage = 1;
+    let pageSize = 100;
 
     function matchProductPhoto(titleText, categoryText) {
       const combined = `${titleText || ""} ${categoryText || ""}`.toLowerCase();
-      for (const entry of PRODUCT_PHOTO_CATALOG) {
+      for (let i = 0; i < PRODUCT_PHOTO_CATALOG.length - 1; i++) {
+        const entry = PRODUCT_PHOTO_CATALOG[i];
         if (entry.keywords.some(k => combined.includes(k))) {
           return entry;
         }
@@ -647,31 +440,10 @@
       const reader = new FileReader();
       reader.onload = (e) => {
         userUploadedPhotoUrl = e.target.result;
-        showApiAlert(`📸 비교할 물품 사진(<code>${file.name}</code>)이 등록되었습니다! 우측 상세 카드에서 조달물품 사진과 나란히 비교할 수 있습니다.`, true);
-        if (selectedItem) {
-          selectOrderItem(selectedItem.uid);
-        }
+        showApiAlert(`📸 비교할 물품 사진(<code>${file.name}</code>)이 등록되었습니다!`, true);
+        if (selectedItem) selectOrderItem(selectedItem.uid);
       };
       reader.readAsDataURL(file);
-    }
-
-    function filterByPhotoCategory(group) {
-      selectedPhotoGroup = group;
-      document.querySelectorAll(".photo-cat-btn").forEach(btn => {
-        btn.className = "photo-cat-btn flex items-center gap-2 p-2 rounded-xl border border-slate-200 hover:border-blue-400 bg-white text-left transition";
-      });
-      const activeBtn = document.getElementById(`photocat-${group}`);
-      if (activeBtn) {
-        activeBtn.className = "photo-cat-btn flex items-center gap-2 p-2 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition";
-      }
-      runLocalFilter();
-    }
-
-    // 다른 탭(사전규격/계약쇼핑몰/낙찰/목록)으로 해당 품목 키워드를 들고 즉시 연계 검색하는 함수
-    function crossSearchFromOrderPlan(targetTab, keyword) {
-      document.getElementById("searchInput").value = keyword;
-      switchTab(targetTab, true);
-      showApiAlert(`🔗 선택한 발주계획 품목(<strong>${keyword}</strong>)과 관련된 <strong>[${TAB_CONFIGS[targetTab].badge}]</strong> 데이터를 연계 조회합니다.`, true);
     }
 
     function getFeedbackStore() {
@@ -695,8 +467,8 @@
           comments: [
             {
               agency: defaultAgency || "조달청 발주협의지원팀",
-              type: "발주계획 수립·조정",
-              text: "발주계획 예산 대비 나라장터 쇼핑몰 등록 물품 사진 및 규격 대조 결과 호환성이 우수하여 해당 계약품목 기준 발주 추진 적합.",
+              type: "발주계획 협의",
+              text: "조달물품 사진 및 규격 비교 결과 발주계획 예산 대비 적합하며 행정기관 선호도가 우수함.",
               date: "2026-11-18"
             }
           ]
@@ -715,12 +487,11 @@
       store[uid] = fb;
       localStorage.setItem("g2b_agency_feedback", JSON.stringify(store));
       selectOrderItem(uid);
-      showApiAlert(`⭐ 해당 조달물품에 대한 행정기관 선호도(${score}점)가 반영되었습니다! (현재 선호도 ${fb.rating} / 5.0)`, true);
+      showApiAlert(`⭐ 해당 조달물품 선호도(${score}점)가 반영되었습니다!`, true);
     }
 
     function submitAgencyOpinion(uid) {
       const agencyEl = document.getElementById("opinionAgencyInput");
-      const typeEl = document.getElementById("opinionTypeInput");
       const textEl = document.getElementById("opinionTextInput");
       if (!textEl || !textEl.value.trim()) return;
 
@@ -728,14 +499,14 @@
       const fb = getItemFeedback(uid, selectedItem?.agency);
       fb.comments.unshift({
         agency: (agencyEl?.value || "").trim() || "수요행정기관 담당자",
-        type: typeEl?.value || "발주계획 수립·조정",
+        type: "발주계획 협의",
         text: textEl.value.trim(),
         date: toDateInputString(new Date())
       });
       store[uid] = fb;
       localStorage.setItem("g2b_agency_feedback", JSON.stringify(store));
       selectOrderItem(uid);
-      showApiAlert(`💬 행정기관 발주계획 협의·선호도 의견이 등록되었습니다.`, true);
+      showApiAlert(`💬 행정기관 의견이 등록되었습니다.`, true);
     }
 
     function toDateInputString(d) {
@@ -745,103 +516,7 @@
       return `${yyyy}-${mm}-${dd}`;
     }
 
-    function getOneMonthRangeFromToday() {
-      const end = new Date();
-      const start = new Date(end);
-      start.setMonth(start.getMonth() - 1);
-      return {
-        startStr: toDateInputString(start),
-        endStr: toDateInputString(end)
-      };
-    }
-
-    function getOrderPlanDefaultRange() {
-      const end = new Date();
-      const start = new Date(end);
-      start.setMonth(start.getMonth() - 6);
-      return {
-        startStr: toDateInputString(start),
-        endStr: toDateInputString(end)
-      };
-    }
-
-    const tabDateRanges = {
-      orderPlan: getOrderPlanDefaultRange(),
-      preSpecBid: getOneMonthRangeFromToday(),
-      contractShop: getOneMonthRangeFromToday(),
-      award: getOneMonthRangeFromToday(),
-      catalog: getOneMonthRangeFromToday()
-    };
-
-    const TAB_CONFIGS = {
-      orderPlan: {
-        id: "orderPlan",
-        badge: "화면 1 : 나라장터 발주계획",
-        title: "화면 1 : 나라장터 발주계획 물품사진 비교 · 검색 목록",
-        apiName: "조달청_나라장터 발주계획현황서비스 (발주계획 예산·품목 기준 조달물품 사진 비교 및 계약 매칭)",
-        colHeaders: ["물품사진 / 계획일", "업무구분", "발주계획번호 / 분류번호", "사업명(발주건명) / 발주기관", "발주예산 / 선호도"],
-        sampleEndpoint: "https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng"
-      },
-      preSpecBid: {
-        id: "preSpecBid",
-        badge: "화면 2 : 사전규격 · 입찰공고",
-        title: "화면 2 : 사전규격 · 입찰공고 물품사진 비교 · 검색 목록 (1개월)",
-        apiName: "조달청_나라장터 입찰공고정보서비스 (발주계획 후속 사전규격 및 공고 규격 비교)",
-        colHeaders: ["물품사진 / 공고일", "업무구분", "입찰공고번호 / 규격번호", "공고명(사전규격명) / 수요기관", "추정가격 / 선호도"],
-        sampleEndpoint: "https://apis.data.go.kr/1230000/ad/BidPublicInfoService02/getBidPblancListInfoThng02"
-      },
-      contractShop: {
-        id: "contractShop",
-        badge: "화면 3 : 계약정보 (쇼핑몰품목)",
-        title: "화면 3 : 계약정보 · 쇼핑몰 물품사진 비교 · 검색 목록 (1개월)",
-        apiName: "조달청_나라장터쇼핑몰 품목정보 서비스 (발주계획 품목과 쇼핑몰 계약물품 사진·단가 비교)",
-        colHeaders: ["물품사진 / 등록일", "품목구분", "물품식별번호(계약번호)", "제품명(규격) / 계약업체(회사명)", "계약단가 / 선호도"],
-        sampleEndpoint: "https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getShoppingMallPrdctInfoList"
-      },
-      award: {
-        id: "award",
-        badge: "화면 4 : 나라장터 낙찰정보",
-        title: "화면 4 : 나라장터 낙찰정보 물품사진 비교 · 검색 목록 (1개월)",
-        apiName: "조달청_나라장터 낙찰정보서비스 (발주계획 예산 대비 실제 낙찰업체 및 낙찰금액 검증)",
-        colHeaders: ["물품사진 / 개찰일", "업무구분", "공고번호 / 사업자번호", "공고명 / 최종 낙찰업체(회사명)", "낙찰금액 / 선호도"],
-        sampleEndpoint: "https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusThng"
-      },
-      catalog: {
-        id: "catalog",
-        badge: "화면 5 : 물품 목록정보",
-        title: "화면 5 : 조달청 물품목록정보 사진 비교 · 검색 목록 (1개월)",
-        apiName: "조달청_물품목록정보서비스 (물품식별번호 8자리 기준 표준 품명·규격·제조사 확인)",
-        colHeaders: ["물품사진 / 등록일", "분류", "물품식별번호(8자리)", "품명(세부품명) / 규격·제조업체", "분류번호 / 선호도"],
-        sampleEndpoint: "https://apis.data.go.kr/1230000/ao/ThngListInfoService02/getThngPrdnmLocplcAccotListInfoInfoPrdlstSearch02"
-      }
-    };
-
-    const tabDataStore = {
-      orderPlan: [],
-      preSpecBid: [],
-      contractShop: [],
-      award: [],
-      catalog: []
-    };
-
-    const tabLoadedLive = {
-      orderPlan: false,
-      preSpecBid: false,
-      contractShop: false,
-      award: false,
-      catalog: false
-    };
-
-    let currentTab = "orderPlan";
-    let currentData = [];
-    let filteredData = [];
-    let selectedItem = null;
-    let chartInstance = null;
-    let currentPage = 1;
-    let pageSize = 100;
-
-    function formatKRW(num, isCatalog = false) {
-      if (isCatalog) return num ? `분류 ${num}` : "0";
+    function formatKRW(num) {
       if (!num || num <= 0) return "0원";
       if (num >= 100000000) return (num / 100000000).toFixed(2) + "억 원";
       if (num >= 10000) return Math.round(num / 10000).toLocaleString() + "만 원";
@@ -850,7 +525,7 @@
 
     function showApiAlert(msg, isSuccess = true) {
       const box = document.getElementById("apiAlertBox");
-      box.className = `text-xs px-3 py-1.5 rounded-lg border font-medium ${
+      box.className = `text-xs px-3 py-1 rounded-lg border font-medium ${
         isSuccess
           ? "bg-emerald-50 border-emerald-300 text-emerald-900"
           : "bg-amber-50 border-amber-300 text-amber-900"
@@ -871,106 +546,29 @@
       document.getElementById("progressCountText").textContent = `실시간 누적 수신: ${fetchedCount.toLocaleString()}건`;
       document.getElementById("progressStatusText").textContent =
         pct < 100
-          ? `[${TAB_CONFIGS[currentTab].badge}] OpenAPI 실시간 데이터 수집 중...`
-          : `✅ [${TAB_CONFIGS[currentTab].badge}] 데이터 수신 완료!`;
+          ? "나라장터 발주계획 OpenAPI 실시간 데이터 수집 중..."
+          : "✅ 나라장터 발주계획 데이터 수신 완료!";
       if (detailText) {
         document.getElementById("progressSubDetail").textContent = detailText;
       }
     }
 
-    function clearSavedKey() {
+    function clearAllData() {
       localStorage.removeItem("g2b_service_key");
       document.getElementById("serviceKeyInput").value = "";
-      Object.keys(tabDataStore).forEach(k => {
-        tabDataStore[k] = [];
-        tabLoadedLive[k] = false;
-        const badge = document.getElementById(`count-badge-${k}`);
-        if (badge) {
-          badge.textContent = "0건";
-          badge.className = "text-[11px] font-mono font-bold text-slate-300 bg-slate-900/50 px-1.5 py-0.5 rounded";
-        }
-      });
       currentData = [];
       filteredData = [];
       selectedItem = null;
       updateProgressBar(false);
       runLocalFilter();
-      showApiAlert("🔄 초기 상태(0건)로 초기화되었습니다. 인증키를 입력하고 [실시간 API 조회]를 눌러주세요.", false);
+      showApiAlert("현재 조회된 데이터: <strong>0건</strong> — 인증키를 입력하고 <strong>[실시간 조회]</strong>를 눌러주세요.", false);
     }
 
-    function onDateInputChanged() {
-      tabDateRanges[currentTab] = {
-        startStr: document.getElementById("startDate").value,
-        endStr: document.getElementById("endDate").value
-      };
-    }
-
-    async function switchTab(tabId, autoFetchIfKeyPresent = true) {
-      currentTab = tabId;
-      const cfg = TAB_CONFIGS[tabId];
-
-      Object.keys(TAB_CONFIGS).forEach(id => {
-        const btn = document.getElementById(`tab-${id}`);
-        if (id === tabId) {
-          btn.classList.add("nav-tab-active");
-        } else {
-          btn.classList.remove("nav-tab-active");
-        }
-      });
-
-      const dateBadge = document.getElementById("dateRuleBadge");
-      if (tabId === "orderPlan") {
-        const range = tabDateRanges.orderPlan || getOrderPlanDefaultRange();
-        document.getElementById("startDate").value = range.startStr;
-        document.getElementById("endDate").value = range.endStr;
-        dateBadge.textContent = "발주계획 조회기간";
-        dateBadge.className = "text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded";
-      } else {
-        const oneMonth = getOneMonthRangeFromToday();
-        tabDateRanges[tabId] = oneMonth;
-        document.getElementById("startDate").value = oneMonth.startStr;
-        document.getElementById("endDate").value = oneMonth.endStr;
-        dateBadge.textContent = `현재일 기준 1개월 (${oneMonth.startStr} ~ ${oneMonth.endStr})`;
-        dateBadge.className = "text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded";
-      }
-
-      document.getElementById("activeScreenBadge").textContent = cfg.badge;
-      document.getElementById("activeScreenDesc").textContent = cfg.apiName;
-      document.getElementById("tableHeaderTitle").textContent = cfg.title;
-      document.getElementById("endpointPreview").textContent = cfg.sampleEndpoint;
-
-      const headRow = document.getElementById("tableHeadRow");
-      headRow.innerHTML = `
-        <th class="py-2.5 px-3">${cfg.colHeaders[0]}</th>
-        <th class="py-2.5 px-3">${cfg.colHeaders[1]}</th>
-        <th class="py-2.5 px-3">${cfg.colHeaders[2]}</th>
-        <th class="py-2.5 px-3">${cfg.colHeaders[3]}</th>
-        <th class="py-2.5 px-3 text-right">${cfg.colHeaders[4]}</th>
-      `;
-
-      currentData = tabDataStore[tabId];
-      currentPage = 1;
-      runLocalFilter();
-
-      const currentKey = document.getElementById("serviceKeyInput").value.trim();
-      if (autoFetchIfKeyPresent && currentKey && !tabLoadedLive[tabId] && Object.values(tabLoadedLive).some(v => v)) {
-        await fetchCurrentTabOpenAPI(false);
-      }
-    }
-
-    function buildBackwardWindows(startStr, endStr, windowDays = 6, maxWindows = 5, capYesterday = false) {
+    function buildBackwardWindows(startStr, endStr, windowDays = 6, maxWindows = 6) {
       const start = startStr ? new Date(startStr) : new Date();
-      let end = endStr ? new Date(endStr) : new Date();
-
-      if (capYesterday) {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        if (end > yesterday) {
-          end = yesterday;
-        }
-      }
-
+      const end = endStr ? new Date(endStr) : new Date();
       const windows = [];
+
       let cursorEnd = new Date(end);
       while (cursorEnd >= start && windows.length < maxWindows) {
         const cursorStart = new Date(cursorEnd);
@@ -998,21 +596,17 @@
         cursorEnd = new Date(actualStart);
         cursorEnd.setDate(cursorEnd.getDate() - 1);
       }
-
       return windows;
     }
 
-    async function fetchCurrentTabOpenAPI(isManualClick = false) {
+    // 나라장터 발주계획현황서비스 실시간 호출
+    async function fetchOrderPlanOpenAPI() {
       const rawKey = document.getElementById("serviceKeyInput").value.trim();
-      const cfg = TAB_CONFIGS[currentTab];
 
       if (!rawKey || rawKey === BROKEN_DUMMY_KEY) {
         document.getElementById("serviceKeyInput").value = "";
         document.getElementById("serviceKeyInput").focus();
-        showApiAlert(
-          `🔑 <strong>우측 상단 입력창에 공공데이터포털 일반 인증키(64자리 전체)를 붙여넣고 [실시간 API 조회]를 눌러주세요!</strong>`,
-          false
-        );
+        showApiAlert("🔑 우측 상단에 공공데이터포털 일반 인증키(64자리 전체)를 입력하고 [실시간 조회]를 눌러주세요!", false);
         return;
       }
 
@@ -1026,107 +620,37 @@
 
       const startVal = document.getElementById("startDate").value;
       const endVal = document.getElementById("endDate").value;
-      showApiAlert(`⏳ <strong>[${cfg.badge}]</strong> 조회기간(<code>${startVal} ~ ${endVal}</code>) 실시간 OpenAPI 데이터를 불러오는 중입니다...`, true);
+      showApiAlert(`⏳ 발주계획 조회기간(<code>${startVal} ~ ${endVal}</code>) 실시간 OpenAPI 데이터를 불러오는 중입니다...`, true);
 
-      function buildTabEndpoints(sVal, eVal) {
+      function buildEndpoints(sVal, eVal) {
         const list = [];
-        if (currentTab === "orderPlan") {
-          const wins = buildBackwardWindows(sVal, eVal, 6, 6, false);
-          wins.forEach(w => {
-            list.push({
-              label: `발주계획(물품 ${w.bgnDate})`,
-              category: "물품",
-              url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
-            list.push({
-              label: `발주계획(용역 ${w.bgnDate})`,
-              category: "용역",
-              url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListServc?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
-            list.push({
-              label: `발주계획(공사 ${w.bgnDate})`,
-              category: "공사",
-              url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
-            list.push({
-              label: `발주계획검색(물품 ${w.bgnYm})`,
-              category: "물품",
-              url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThngPPSSrch?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&orderBgnYm=${w.bgnYm}&orderEndYm=${w.endYm}&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
+        const wins = buildBackwardWindows(sVal, eVal, 6, 6);
+        wins.forEach(w => {
+          list.push({
+            label: `발주계획(물품 ${w.bgnDate})`,
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThng?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
           });
-        } else if (currentTab === "preSpecBid") {
-          const wins = buildBackwardWindows(sVal, eVal, 6, 5, false);
-          wins.forEach(w => {
-            list.push({
-              label: `입찰공고02(물품 ${w.bgnDate})`,
-              category: "물품",
-              url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService02/getBidPblancListInfoThng02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
-            list.push({
-              label: `입찰공고02(용역 ${w.bgnDate})`,
-              category: "용역",
-              url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService02/getBidPblancListInfoServc02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
-            list.push({
-              label: `입찰공고02(공사 ${w.bgnDate})`,
-              category: "공사",
-              url: `https://apis.data.go.kr/1230000/ad/BidPublicInfoService02/getBidPblancListInfoCnstwk02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
+          list.push({
+            label: `발주계획(용역 ${w.bgnDate})`,
+            category: "용역",
+            url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListServc?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
           });
-        } else if (currentTab === "contractShop") {
-          const wins = buildBackwardWindows(sVal, eVal, 6, 5, true);
-          wins.forEach((w) => {
-            list.push({
-              label: `쇼핑몰품목(${w.bgnDate}~${w.endDate})`,
-              category: "물품",
-              url: `https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getShoppingMallPrdctInfoList?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDate=${w.bgnDate}&inqryEndDate=${w.endDate}`
-            });
-            list.push({
-              label: `MAS계약품목(${w.bgnDate}~${w.endDate})`,
-              category: "물품",
-              url: `https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getMASCntrctPrdctInfoList?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDate=${w.bgnDate}&inqryEndDate=${w.endDate}`
-            });
+          list.push({
+            label: `발주계획(공사 ${w.bgnDate})`,
+            category: "공사",
+            url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
           });
-        } else if (currentTab === "award") {
-          const wins = buildBackwardWindows(sVal, eVal, 6, 5, false);
-          wins.forEach(w => {
-            list.push({
-              label: `낙찰정보(물품 ${w.bgnDate})`,
-              category: "물품",
-              url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusThng?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
-            list.push({
-              label: `낙찰정보(용역 ${w.bgnDate})`,
-              category: "용역",
-              url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusServc?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
-            list.push({
-              label: `낙찰정보(공사 ${w.bgnDate})`,
-              category: "공사",
-              url: `https://apis.data.go.kr/1230000/as/ScsbidInfoService/getScsbidListSttusCnstwk?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryDiv=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
+          list.push({
+            label: `발주계획검색(물품 ${w.bgnYm})`,
+            category: "물품",
+            url: `https://apis.data.go.kr/1230000/ao/OrderPlanSttusService/getOrderPlanSttusListThngPPSSrch?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&orderBgnYm=${w.bgnYm}&orderEndYm=${w.endYm}&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
           });
-        } else if (currentTab === "catalog") {
-          const wins = buildBackwardWindows(sVal, eVal, 5, 5, true);
-          wins.forEach((w) => {
-            list.push({
-              label: `물품목록조회02(${w.bgnDate})`,
-              category: "물품목록",
-              url: `https://apis.data.go.kr/1230000/ao/ThngListInfoService02/getThngPrdnmLocplcAccotListInfoInfoPrdlstSearch02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=1&inqryBgnDt=${w.bgnDt}&inqryEndDt=${w.endDt}`
-            });
-          });
-          [1, 2, 3].forEach(pageNo => {
-            list.push({
-              label: `물품분류8단위02(p.${pageNo})`,
-              category: "물품목록",
-              url: `https://apis.data.go.kr/1230000/ao/ThngListInfoService02/getPrdctClsfcNoUnit8Info02?serviceKey=${encodedKey}&type=json&numOfRows=99&pageNo=${pageNo}&prdctClsfcNoBgnNo=43000000&prdctClsfcNoEndNo=46999999`
-            });
-          });
-        }
+        });
         return list;
       }
 
-      const primaryEndpoints = buildTabEndpoints(startVal, endVal);
+      const primaryEndpoints = buildEndpoints(startVal, endVal);
       if (primaryEndpoints.length > 0) {
         document.getElementById("endpointPreview").textContent = primaryEndpoints[0].url.replace(encodedKey, "[승인인증키]");
       }
@@ -1134,9 +658,9 @@
       let lastApiError = "";
       let isKeyError = false;
 
-      updateProgressBar(true, 0, primaryEndpoints.length, 0, "조달청 OpenAPI 엔드포인트 병렬 요청 시작...");
+      updateProgressBar(true, 0, primaryEndpoints.length, 0, "조달청 발주계획 OpenAPI 요청 시작...");
 
-      async function executeEndpointsWithProgress(epList) {
+      async function executeWithProgress(epList) {
         const rows = [];
         let completed = 0;
         const total = epList.length;
@@ -1148,7 +672,7 @@
 
             if (text.includes("SERVICE_KEY_IS_NOT_REGISTERED_ERROR") || text.includes("등록되지 않은 서비스키")) {
               isKeyError = true;
-              lastApiError = "등록되지 않은 서비스키 (인증키 64자리 전체를 확인해 주세요)";
+              lastApiError = "등록되지 않은 서비스키";
             } else {
               let parsedJson = false;
               try {
@@ -1168,7 +692,7 @@
                   : [];
 
                 list.forEach((itemObj) => {
-                  rows.push(normalizeApiRow(itemObj, rows.length, currentTab, ep.category, ep.label));
+                  rows.push(normalizeOrderPlanRow(itemObj, rows.length, ep.category));
                 });
               } catch (_) {}
 
@@ -1176,32 +700,22 @@
                 try {
                   const parser = new DOMParser();
                   const xml = parser.parseFromString(text, "text/xml");
-                  const errMsg = xml.querySelector("returnAuthMsg, resultMsg")?.textContent;
-                  if (errMsg && errMsg !== "정상" && errMsg !== "NORMAL SERVICE.") {
-                    lastApiError = errMsg;
-                  }
                   const itemNodes = xml.querySelectorAll("item");
                   itemNodes.forEach((node) => {
                     const obj = {};
                     node.childNodes.forEach((child) => {
                       if (child.nodeType === 1) obj[child.nodeName] = child.textContent;
                     });
-                    rows.push(normalizeApiRow(obj, rows.length, currentTab, ep.category, ep.label));
+                    rows.push(normalizeOrderPlanRow(obj, rows.length, ep.category));
                   });
                 } catch (_) {}
               }
             }
           } catch (err) {
-            lastApiError = err.message || "네트워크 요청 오류";
+            lastApiError = err.message || "네트워크 오류";
           } finally {
             completed++;
-            updateProgressBar(
-              true,
-              completed,
-              total,
-              rows.length,
-              `수신 완료 (${completed}/${total}): ${ep.label}`
-            );
+            updateProgressBar(true, completed, total, rows.length, `수신 완료 (${completed}/${total}): ${ep.label}`);
           }
         });
 
@@ -1209,12 +723,12 @@
         return rows;
       }
 
-      let fetchedRows = await executeEndpointsWithProgress(primaryEndpoints);
+      let fetchedRows = await executeWithProgress(primaryEndpoints);
 
       if (!isKeyError && fetchedRows.length === 0) {
-        const verifiedEndpoints = buildTabEndpoints("2025-06-01", "2025-06-30");
-        updateProgressBar(true, 0, verifiedEndpoints.length, 0, "추가 기간 데이터 확인 중...");
-        fetchedRows = await executeEndpointsWithProgress(verifiedEndpoints);
+        const fallbackEndpoints = buildEndpoints("2025-06-01", "2025-06-30");
+        updateProgressBar(true, 0, fallbackEndpoints.length, 0, "유효 발주계획 기간 재조회 중...");
+        fetchedRows = await executeWithProgress(fallbackEndpoints);
       }
 
       btn.textContent = "실시간 API 조회";
@@ -1227,34 +741,25 @@
 
       if (fetchedRows.length > 0) {
         localStorage.setItem("g2b_service_key", rawKey);
-
-        tabDataStore[currentTab] = fetchedRows;
-        tabLoadedLive[currentTab] = true;
         currentData = fetchedRows;
-
-        const badgeEl = document.getElementById(`count-badge-${currentTab}`);
-        badgeEl.textContent = `${fetchedRows.length.toLocaleString()}건`;
-        badgeEl.className = "text-[11px] font-mono font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded";
 
         document.getElementById("httpStatusBadge").textContent = "HTTP 200 OK (LIVE)";
         document.getElementById("httpStatusBadge").className = "px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] whitespace-nowrap";
-        document.getElementById("statSourceBadge").textContent = "실시간 OpenAPI 수신";
-        document.getElementById("statSourceBadge").className = "text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded";
 
         showApiAlert(
-          `✅ <strong>[${cfg.badge}]</strong> 실시간 OpenAPI 연동 완료! 총 <strong>${fetchedRows.length.toLocaleString()}건</strong>의 조달 데이터와 조달물품 비교 사진이 매칭되었습니다.`,
+          `✅ 실시간 OpenAPI 조회 완료! 총 <strong>${fetchedRows.length.toLocaleString()}건</strong>의 나라장터 발주계획 데이터를 수신했습니다.`,
           true
         );
       } else if (isKeyError) {
         localStorage.removeItem("g2b_service_key");
         document.getElementById("serviceKeyInput").focus();
         showApiAlert(
-          `⚠️ <strong>인증키 오류:</strong> 입력하신 인증키가 공공데이터포털에서 <code>등록되지 않은 서비스키</code>로 응답되었습니다. 공공데이터포털 마이페이지에서 <strong>일반 인증키(64자리 전체)</strong>를 다시 복사해 붙여넣어 주세요!`,
+          `⚠️ 인증키 오류: 공공데이터포털에서 <code>등록되지 않은 서비스키</code>로 응답되었습니다. 일반 인증키(64자리 전체)를 확인해 주세요.`,
           false
         );
       } else {
         showApiAlert(
-          `ℹ️ [${cfg.badge}] 조회 결과 0건 (${lastApiError || "선택한 기간 내 데이터 없음"}). 날짜 범위를 조정한 후 다시 조회해 보세요.`,
+          `ℹ️ 조회 결과 0건 (${lastApiError || "선택 기간 데이터 없음"}). 날짜를 조정한 후 다시 조회해 주세요.`,
           false
         );
       }
@@ -1263,205 +768,51 @@
       runLocalFilter();
     }
 
-    function normalizeApiRow(it, idx, tabId, defaultCat, apiLabel) {
-      const rawDt = String(
-        it.orderPlanDt || it.bidNtceDt || it.opengDt || it.rgstDt || it.inptDt || it.cntrctDate || it.chgDt || "20261115"
-      ).replace(/[^0-9]/g, "");
+    function normalizeOrderPlanRow(it, idx, defaultCat) {
+      const rawDt = String(it.orderPlanDt || it.inptDt || it.rgstDt || "20261115").replace(/[^0-9]/g, "");
       const orderDate = rawDt.length >= 8
         ? `${rawDt.slice(0, 4)}-${rawDt.slice(4, 6)}-${rawDt.slice(6, 8)}`
-        : rawDt.length === 6
-        ? `${rawDt.slice(0, 4)}-${rawDt.slice(4, 6)}-01`
         : "2026-11-15";
 
-      const rawCat = String(it.bsnsDivNm || it.srvceDivNm || it.prdctClsfcNoNm || defaultCat || "물품");
-      const category = rawCat.includes("용역") ? "용역" : rawCat.includes("공사") ? "공사" : (tabId === "catalog" ? "물품목록" : "물품");
+      const rawCat = String(it.bsnsDivNm || defaultCat || "물품");
+      const category = rawCat.includes("용역") ? "용역" : rawCat.includes("공사") ? "공사" : "물품";
 
-      let rowObj = null;
+      const planNo = it.orderPlanUntyNo || it.orderPlanNo || `2026-PLAN-${idx + 1}`;
+      const clsNo = it.prdctClsfcNo || it.dtilPrdctClsfcNo || String(43211500 + (idx % 90));
+      const amt = Number(it.sumOrderAmt || it.orderContrctAmt || it.orderAmt || 0);
+      const agency = it.orderInsttNm || "조달청 수요기관";
+      const bizNm = it.bizNm || "나라장터 발주계획 품목";
+      const dept = it.deptNm || "발주담당부서";
+      const ofcl = it.ofclNm || "담당관";
+      const tel = it.telNo || "1588-0800";
 
-      if (tabId === "orderPlan") {
-        const planNo = it.orderPlanUntyNo || it.orderPlanNo || `2026-PLAN-${idx + 1}`;
-        const clsNo = it.prdctClsfcNo || it.dtilPrdctClsfcNo || String(43211500 + (idx % 90));
-        const amt = Number(it.sumOrderAmt || it.orderContrctAmt || it.orderAmt || 0);
-        const agency = it.orderInsttNm || "조달청 수요기관";
-        const bizNm = it.bizNm || "나라장터 발주계획 사업";
-        const dept = it.deptNm || "발주담당부서";
-        const ofcl = it.ofclNm || "담당자";
-        const tel = it.telNo || "1588-0800";
+      const photoInfo = matchProductPhoto(bizNm, category);
 
-        rowObj = {
-          uid: `OP-${idx}-${planNo}`,
-          tab: tabId,
-          orderDate,
-          category,
-          itemId: `${clsNo} (${planNo})`,
-          manageNo: planNo,
-          subManageNo: `물품분류번호: ${clsNo} | 발주연월: ${it.orderYear || "2026"}-${it.orderMnth || "11"}`,
-          title: bizNm,
-          agency,
-          companyName: it.corpNm || "",
-          ceoName: it.ceoNm || `${dept} (${ofcl})`,
-          productName: it.prdctNm || bizNm,
-          productSpec: it.specNm || `조달구분: ${it.prcrmntMethd || "자체/중앙조달"} | 계약방법: ${it.cntrctMthdNm || "경쟁입찰"}`,
-          amount: amt,
-          subAmountText: formatKRW(amt),
-          contractMethod: it.cntrctMthdNm || "일반경쟁",
-          phone: tel,
-          manager: `${agency} ${dept} ${ofcl} (${tel})`,
-          email: "g2b-orderplan@korea.kr",
-          address: `${agency} 소재지`,
-          apiSource: apiLabel,
-          rawFields: it
-        };
-      } else if (tabId === "preSpecBid") {
-        const bidNo = it.bidNtceNo ? `${it.bidNtceNo}-${it.bidNtceOrd || "00"}` : (it.bfSpecRgstNo || `202611-${idx + 1}`);
-        const title = it.bidNtceNm || it.prdctClsfcNoNm || it.bizNm || "나라장터 입찰공고";
-        const agency = it.dminsttNm || it.ntceInsttNm || "조달청 공고기관";
-        const amt = Number(it.presmptPrce || it.asignBdgtAmt || it.bdgtAmt || 0);
-        const tel = it.ntceInsttOfclTelNo || it.ofclTelNo || it.telNo || "1588-0800";
-        const ofcl = it.ntceInsttOfclNm || it.ofclNm || "입찰공고담당관";
-        const email = it.ntceInsttOfclEmailAdrs || "g2b-bid@korea.kr";
-
-        rowObj = {
-          uid: `BID-${idx}-${bidNo}`,
-          tab: tabId,
-          orderDate,
-          category,
-          itemId: bidNo,
-          manageNo: bidNo,
-          subManageNo: `공고기관: ${it.ntceInsttNm || agency} | 입찰마감: ${it.bidClseDt || "-"}`,
-          title,
-          agency,
-          companyName: `${agency} (수요기관)`,
-          ceoName: `공고담당: ${ofcl}`,
-          productName: it.prdctClsfcNoNm || title,
-          productSpec: `입찰방식: ${it.bidMethdNm || "전자입찰"} | 낙찰방법: ${it.sucsfbidMthdNm || "적격심사"}`,
-          amount: amt,
-          subAmountText: formatKRW(amt),
-          contractMethod: it.cntrctCnclsMthdNm || it.bidMethdNm || "일반경쟁",
-          phone: tel,
-          manager: `${it.ntceInsttNm || agency} ${ofcl} (${tel})`,
-          email,
-          address: it.bidNtceDtlUrl || "https://www.g2b.go.kr",
-          apiSource: apiLabel,
-          rawFields: it
-        };
-      } else if (tabId === "contractShop") {
-        const idntNo = it.prdctIdntNo || it.dtilPrdctClsfcNo || it.shopngCntrctNo || String(24800000 + idx);
-        const clsNo = it.prdctClsfcNo || it.dtilPrdctClsfcNo || "-";
-        const prodNm = it.prdctIdntNoNm || it.prdctSpecNm || it.prdctNm || it.dtilPrdctClsfcNoNm || it.prdctClsfcNoNm || "나라장터 쇼핑몰 계약 품목";
-        const compNm = it.cntrctCorpNm || it.corpNm || it.mnfctrNm || "(주)나라장터쇼핑몰공급사";
-        const price = Number(it.prdctUnitPrce || it.cntrctAmt || it.prdctPrc || 0);
-        const tel = it.telNo || it.corpTelNo || "1588-0800";
-
-        rowObj = {
-          uid: `SHOP-${idx}-${idntNo}`,
-          tab: tabId,
-          orderDate,
-          category: "쇼핑몰품목",
-          itemId: String(idntNo),
-          manageNo: String(idntNo),
-          subManageNo: `물품분류번호: ${clsNo} | 쇼핑계약번호: ${it.shopngCntrctNo || "-"}`,
-          title: `${it.dtilPrdctClsfcNoNm || it.prdctClsfcNoNm || ""} ${prodNm}`.trim(),
-          agency: it.dminsttNm || "나라장터 종합쇼핑몰(단가계약)",
-          companyName: compNm,
-          ceoName: it.ceoNm || it.mnfctrNm || "조달쇼핑몰 계약대표",
-          productName: prodNm,
-          productSpec: `품명: ${it.dtilPrdctClsfcNoNm || it.prdctClsfcNoNm || "-"} | 규격: ${prodNm} | 제조사: ${it.mnfctrNm || compNm}`,
-          amount: price,
-          subAmountText: `단가 ${formatKRW(price)}`,
-          contractMethod: it.masYn === "Y" ? "다수공급자계약(MAS)" : "제3자단가계약",
-          phone: tel,
-          manager: `${compNm} 쇼핑몰 계약담당 (${tel})`,
-          email: "shoppingmall@g2b.go.kr",
-          address: it.prodctCertList || "나라장터 종합쇼핑몰 정식 등록 제품",
-          apiSource: apiLabel,
-          rawFields: it
-        };
-      } else if (tabId === "award") {
-        const bidNo = it.bidNtceNo ? `${it.bidNtceNo}-${it.bidNtceOrd || "00"}` : `2026-AWD-${idx + 1}`;
-        const bizNo = it.bidwinnrBizno || it.bizno || "-";
-        const winner = it.bidwinnrNm || it.corpNm || "(주)나라장터낙찰기업";
-        const ceo = it.bidwinnrCeoNm || it.ceoNm || "-";
-        const amt = Number(it.sucsfbidAmt || it.fnlSucsfbidAmt || 0);
-        const rate = it.sucsfbidRate || it.fnlSucsfbidRate || "-";
-        const tel = it.bidwinnrTelNo || it.telNo || "1588-0800";
-        const adrs = it.bidwinnrAdrs || "대한민국 조달등록 사업장";
-        const title = it.bidNtceNm || it.bizNm || "나라장터 낙찰 건명";
-        const agency = it.dminsttNm || it.ntceInsttNm || "조달청 수요기관";
-
-        rowObj = {
-          uid: `AWD-${idx}-${bidNo}`,
-          tab: tabId,
-          orderDate,
-          category,
-          itemId: `${bidNo}`,
-          manageNo: bidNo,
-          subManageNo: `사업자등록번호: ${bizNo} | 낙찰률: ${rate}%`,
-          title,
-          agency,
-          companyName: winner,
-          ceoName: ceo,
-          productName: `${title} (낙찰률: ${rate}%)`,
-          productSpec: `개찰일시: ${it.rlOpengDt || it.opengDt || orderDate} | 참가업체수: ${it.prtcptCnum || "-"}개사`,
-          amount: amt,
-          subAmountText: `${formatKRW(amt)} (${rate}%)`,
-          contractMethod: `낙찰률 ${rate}%`,
-          phone: tel,
-          manager: `${winner} 대표 ${ceo} (${tel})`,
-          email: "award-info@g2b.go.kr",
-          address: adrs,
-          apiSource: apiLabel,
-          rawFields: it
-        };
-      } else {
-        const idntNo = it.prdctIdntNo || it.dtilPrdctClsfcNo || it.prdctClsfcNo || String(24000000 + idx);
-        const clsNo = Number(it.prdctClsfcNo || it.dtilPrdctClsfcNo || 43211500);
-        const prodNm = it.krnPrdctNm || it.prdctClsfcNoNm || it.dtilPrdctClsfcNoNm || it.prdctNm || "조달 등록 물품";
-        const specNm = it.prdctSpecNm || it.prdctClsfcNoEngNm || it.dtilPrdctClsfcNoNm || prodNm;
-        const maker = it.mnfctrNm || it.corpNm || it.prodctMakrNm || "조달청 목록정보 등록업체";
-
-        rowObj = {
-          uid: `CAT-${idx}-${idntNo}`,
-          tab: tabId,
-          orderDate,
-          category: "물품목록",
-          itemId: String(idntNo),
-          manageNo: String(idntNo),
-          subManageNo: `물품분류번호: ${clsNo}`,
-          title: `${prodNm} (${specNm})`,
-          agency: "조달청 물품목록정보 등록 품목",
-          companyName: maker,
-          ceoName: "물품목록 등록 제조업체",
-          productName: prodNm,
-          productSpec: specNm,
-          amount: clsNo,
-          subAmountText: `분류 ${clsNo}`,
-          contractMethod: "목록정보 정식등록",
-          phone: it.telNo || "1588-0800",
-          manager: `${maker} (${it.telNo || "조달청 목록정보센터 1588-0800"})`,
-          email: "catalog@g2b.go.kr",
-          address: "나라장터 물품목록관리시스템 등록",
-          apiSource: apiLabel,
-          rawFields: it
-        };
-      }
-
-      const photoInfo = matchProductPhoto(rowObj.title + " " + rowObj.productName, rowObj.category);
-      rowObj.photoGroup = photoInfo.group;
-      rowObj.mainPhoto = it.prdctImgUrl || photoInfo.mainPhoto;
-      rowObj.comparePhoto = photoInfo.comparePhoto;
-      rowObj.photoLabel = photoInfo.label;
-      rowObj.matchRate = photoInfo.matchRate;
-      rowObj.recommendedCompany = photoInfo.recommendedCompany;
-      rowObj.recommendedProduct = photoInfo.recommendedProduct;
-      rowObj.recommendedUnitPrice = photoInfo.recommendedUnitPrice;
-      rowObj.recommendedPhone = photoInfo.recommendedPhone;
-
-      if (!rowObj.companyName) {
-        rowObj.companyName = `${photoInfo.recommendedCompany} (발주계획 매칭 후보업체)`;
-      }
-
-      return rowObj;
+      return {
+        uid: `OP-${idx}-${planNo}`,
+        orderDate,
+        category,
+        itemId: `${clsNo} (${planNo})`,
+        manageNo: planNo,
+        clsNo: clsNo,
+        title: bizNm,
+        agency,
+        companyName: it.corpNm || photoInfo.company,
+        ceoName: it.ceoNm || photoInfo.ceo,
+        productName: it.prdctNm || photoInfo.product,
+        productSpec: it.specNm || `물품분류번호: ${clsNo} | 계약방법: ${it.cntrctMthdNm || "경쟁입찰"}`,
+        amount: amt,
+        subAmountText: formatKRW(amt),
+        contractMethod: it.cntrctMthdNm || "일반경쟁",
+        phone: tel,
+        companyPhone: photoInfo.phone,
+        manager: `${agency} ${dept} ${ofcl} (${tel})`,
+        email: "g2b-orderplan@korea.kr",
+        mainPhoto: photoInfo.mainPhoto,
+        comparePhoto: photoInfo.comparePhoto,
+        photoLabel: photoInfo.label,
+        matchRate: photoInfo.matchRate
+      };
     }
 
     function changePageSize() {
@@ -1482,16 +833,14 @@
 
       filteredData = currentData.filter(item => {
         const matchCat = cat === "ALL" || item.category.includes(cat);
-        const matchPhoto = selectedPhotoGroup === "ALL" || item.photoGroup === selectedPhotoGroup;
         const matchKey = !keyword ||
           String(item.itemId).toLowerCase().includes(keyword) ||
           String(item.manageNo).toLowerCase().includes(keyword) ||
-          String(item.subManageNo).toLowerCase().includes(keyword) ||
           String(item.title).toLowerCase().includes(keyword) ||
           String(item.companyName).toLowerCase().includes(keyword) ||
           String(item.productName).toLowerCase().includes(keyword) ||
           String(item.agency).toLowerCase().includes(keyword);
-        return matchCat && matchPhoto && matchKey;
+        return matchCat && matchKey;
       });
 
       currentPage = 1;
@@ -1512,30 +861,26 @@
 
     function renderStats() {
       const count = filteredData.length;
-      const isCatalog = currentTab === "catalog";
-      const total = isCatalog ? 0 : filteredData.reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
-      const uniqueOrgs = new Set(filteredData.map(i => i.companyName || i.agency)).size;
+      const total = filteredData.reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+      const uniqueOrgs = new Set(filteredData.map(i => i.agency)).size;
 
       document.getElementById("resultCountText").textContent = `총 ${count.toLocaleString()}건 조회됨`;
       document.getElementById("statCount").textContent = `${count.toLocaleString()}건`;
-      document.getElementById("statTotalBudget").textContent = isCatalog
-        ? `${new Set(filteredData.map(i => i.amount)).size.toLocaleString()}개 분류`
-        : formatKRW(total);
+      document.getElementById("statTotalBudget").textContent = formatKRW(total);
       document.getElementById("statAvgBudget").textContent = `${count.toLocaleString()}건`;
-      document.getElementById("statCompanies").textContent = `${uniqueOrgs.toLocaleString()}개처`;
+      document.getElementById("statCompanies").textContent = `${uniqueOrgs.toLocaleString()}개 기관`;
     }
 
     function renderTable() {
       const tbody = document.getElementById("orderTableBody");
       const pageBar = document.getElementById("paginationBar");
-      const isCatalog = currentTab === "catalog";
 
       if (filteredData.length === 0) {
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="py-16 text-center text-slate-400">
               <div class="text-sm font-bold text-slate-500 mb-1">현재 조회된 데이터가 없습니다 (0건)</div>
-              <div class="text-xs text-slate-400">상단에 공공데이터포털 일반 인증키를 입력하고 <strong>[실시간 API 조회]</strong> 또는 <strong>[실시간 조회]</strong> 버튼을 클릭해 주세요.</div>
+              <div class="text-xs text-slate-400">상단에 공공데이터포털 일반 인증키를 입력하고 <strong>[실시간 조회]</strong> 버튼을 클릭해 주세요.</div>
             </td>
           </tr>
         `;
@@ -1552,7 +897,6 @@
         const badgeColor =
           item.category.includes("물품") ? "bg-blue-100 text-blue-700" :
           item.category.includes("용역") ? "bg-purple-100 text-purple-700" :
-          item.category.includes("쇼핑몰") ? "bg-emerald-100 text-emerald-700" :
           "bg-amber-100 text-amber-800";
 
         const fb = getItemFeedback(item.uid, item.agency);
@@ -1582,7 +926,7 @@
               </div>
             </td>
             <td class="py-2.5 px-3 text-right whitespace-nowrap">
-              <div class="font-bold text-slate-800">${item.subAmountText || formatKRW(item.amount, isCatalog)}</div>
+              <div class="font-bold text-slate-800">${item.subAmountText}</div>
               <div class="text-[10px] text-amber-600 font-bold">★ ${fb.rating} (선호도 ${fb.preferPct}%)</div>
             </td>
           </tr>
@@ -1614,21 +958,15 @@
       selectedItem = found;
       renderTable();
 
-      document.getElementById("detailBadgeId").textContent = `번호: ${found.manageNo}`;
+      document.getElementById("detailBadgeId").textContent = `식별번호: ${found.clsNo}`;
       const container = document.getElementById("detailCardContent");
       const fb = getItemFeedback(found.uid, found.agency);
       const refPhoto = userUploadedPhotoUrl || found.comparePhoto;
 
-      // 발주계획 예산 대비 쇼핑몰 매칭 단가 기준 예상 구매가능 수량 및 예산 적정성 시뮬레이션
-      const planBudget = Number(found.amount) || 50000000;
-      const unitPrice = found.recommendedUnitPrice || 25000000;
-      const estQty = Math.max(1, Math.floor(planBudget / unitPrice));
-      const shortKey = (found.productName || found.title || "").split(" ")[0].slice(0, 6);
-
       const commentsHtml = fb.comments.map(c => `
         <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-1">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-800">🏛️ ${c.agency} <span class="px-1.5 py-0.5 bg-indigo-100 text-indigo-800 rounded text-[10px] ml-1">${c.type}</span></span>
+            <span class="font-bold text-slate-800">🏛️ ${c.agency}</span>
             <span class="text-[10px] text-slate-400 font-mono">${c.date}</span>
           </div>
           <p class="text-slate-700 leading-relaxed">${c.text}</p>
@@ -1637,74 +975,50 @@
 
       container.innerHTML = `
         <div class="space-y-3.5">
-          <!-- ★ 발주계획 정보 활용 박스: 선택한 발주계획으로 무엇을 하는지(예산·수량 시뮬레이션 및 타 탭 연계 조회) ★ -->
-          <div class="p-3.5 rounded-xl bg-blue-900 text-white space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-extrabold text-blue-200">🎯 발주계획 활용 시뮬레이션 (발주계획 수립·조정·계약 매칭)</span>
-              <span class="px-2 py-0.5 bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 rounded text-[10px] font-bold">예산 적정성 검증됨</span>
-            </div>
-            <div class="text-xs text-blue-100 leading-relaxed">
-              선택한 <strong>${found.agency}</strong>의 발주계획(<strong>${found.subAmountText}</strong>)으로
-              매칭된 조달물품(단가 <strong>${formatKRW(unitPrice)}</strong>) 도입 시 약 <strong>${estQty}식(대)</strong> 발주 가능하며, 아래 버튼으로 관련 사전규격·쇼핑몰계약·낙찰사례를 즉시 교차 검증할 수 있습니다.
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
-              <button onclick="crossSearchFromOrderPlan('preSpecBid', '${shortKey}')" class="px-2 py-1.5 rounded bg-white/10 hover:bg-white/20 text-[11px] font-bold text-center transition">
-                📑 사전규격 연계
-              </button>
-              <button onclick="crossSearchFromOrderPlan('contractShop', '${shortKey}')" class="px-2 py-1.5 rounded bg-white/10 hover:bg-white/20 text-[11px] font-bold text-center transition">
-                🤝 쇼핑몰계약 연계
-              </button>
-              <button onclick="crossSearchFromOrderPlan('award', '${shortKey}')" class="px-2 py-1.5 rounded bg-white/10 hover:bg-white/20 text-[11px] font-bold text-center transition">
-                🏆 낙찰사례 연계
-              </button>
-              <button onclick="crossSearchFromOrderPlan('catalog', '${shortKey}')" class="px-2 py-1.5 rounded bg-white/10 hover:bg-white/20 text-[11px] font-bold text-center transition">
-                📦 목록정보 연계
-              </button>
-            </div>
-          </div>
-
-          <!-- ★ 과제개요 핵심 1: 조달물품 사진들과 비교하여 해당하는 계약 등 정보 찾기 ★ -->
+          <!-- 1. 조달물품 사진 비교 -->
           <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-extrabold text-indigo-900">📸 조달물품 사진 비교 (비정형 데이터 매칭)</span>
-              <span class="px-2 py-0.5 bg-indigo-600 text-white rounded-full text-[11px] font-bold">규격·사진 일치도 ${found.matchRate}</span>
+              <span class="text-xs font-extrabold text-indigo-900">📸 조달물품 사진 비교 (일치도 ${found.matchRate})</span>
+              <label class="cursor-pointer px-2 py-0.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[11px] font-bold">
+                📷 내 사진과 비교
+                <input type="file" accept="image/*" class="hidden" onchange="handleUserPhotoUpload(event)" />
+              </label>
             </div>
             <div class="grid grid-cols-2 gap-2.5">
               <div class="bg-white p-2 rounded-lg border border-indigo-100 text-center">
-                <img src="${found.mainPhoto}" alt="나라장터 조달물품 사진" class="w-full h-28 object-cover rounded-md mb-1" />
-                <div class="text-[11px] font-bold text-slate-800">나라장터 등록 물품 사진</div>
+                <img src="${found.mainPhoto}" alt="조달물품 사진" class="w-full h-28 object-cover rounded-md mb-1" />
+                <div class="text-[11px] font-bold text-slate-800">나라장터 조달물품 사진</div>
                 <div class="text-[10px] text-slate-500 truncate">${found.photoLabel}</div>
               </div>
               <div class="bg-white p-2 rounded-lg border border-indigo-100 text-center">
-                <img src="${refPhoto}" alt="행정기관 비교 기준 사진" class="w-full h-28 object-cover rounded-md mb-1" />
-                <div class="text-[11px] font-bold text-indigo-700">${userUploadedPhotoUrl ? "업로드 비교 사진" : "유사 조달물품 비교 사진"}</div>
-                <div class="text-[10px] text-slate-500 truncate">식별/관리번호: ${found.manageNo}</div>
+                <img src="${refPhoto}" alt="비교 물품 사진" class="w-full h-28 object-cover rounded-md mb-1" />
+                <div class="text-[11px] font-bold text-indigo-700">${userUploadedPhotoUrl ? "업로드 비교 사진" : "유사 규격 비교 사진"}</div>
+                <div class="text-[10px] text-slate-500 truncate">발주번호: ${found.manageNo}</div>
               </div>
             </div>
           </div>
 
-          <!-- 시나리오 4단계: 회사명, 제품명, 연락처 정보조회 -->
+          <!-- 2. 회사명, 제품명, 연락처 정보조회 -->
           <div class="space-y-2">
             <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
-              <div class="text-[11px] font-bold text-emerald-700 uppercase">🏢 1. 회사명 (매칭 계약업체 및 발주기관)</div>
+              <div class="text-[11px] font-bold text-emerald-700">🏢 회사명 (매칭 공급업체 및 발주기관)</div>
               <div class="text-base font-extrabold text-slate-900 mt-0.5">${found.companyName}</div>
-              <div class="text-xs text-slate-600 mt-0.5">대표자/담당: <strong>${found.ceoName}</strong> | 발주·수요기관: <strong>${found.agency}</strong></div>
+              <div class="text-xs text-slate-600 mt-0.5">대표자: <strong>${found.ceoName}</strong> | 발주기관: <strong>${found.agency}</strong></div>
             </div>
 
             <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
-              <div class="text-[11px] font-bold text-blue-700 uppercase">📦 2. 제품명 · 계약정보(식별번호) · 상세규격</div>
-              <div class="text-sm font-extrabold text-slate-900 mt-0.5">${found.productName}</div>
-              <div class="text-xs text-slate-600 mt-0.5">매칭 추천모델: <strong class="text-indigo-700">${found.recommendedProduct}</strong></div>
-              <div class="text-xs text-slate-600 mt-0.5">${found.subManageNo} | 금액: <strong class="text-blue-700">${found.subAmountText}</strong></div>
-              <div class="text-xs text-slate-600 mt-0.5">${found.productSpec}</div>
+              <div class="text-[11px] font-bold text-blue-700">📦 제품명 및 계약정보(식별번호)</div>
+              <div class="text-sm font-extrabold text-slate-900 mt-0.5">${found.title}</div>
+              <div class="text-xs text-indigo-700 font-semibold mt-0.5">매칭 제품명: ${found.productName}</div>
+              <div class="text-xs text-slate-600 mt-0.5">${found.productSpec} | 예산: <strong class="text-blue-700">${found.subAmountText}</strong></div>
             </div>
 
             <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200">
-              <div class="text-[11px] font-bold text-amber-800 uppercase">📞 3. 연락처 정보 조회 (행정기관·업체 소통)</div>
+              <div class="text-[11px] font-bold text-amber-800">📞 연락처 정보 조회</div>
               <div class="grid grid-cols-2 gap-2 mt-1 text-xs">
                 <div class="bg-white p-2 rounded-lg border border-amber-200">
-                  <span class="text-slate-400 block text-[10px]">발주처/업체 전화번호</span>
-                  <strong class="text-xs text-slate-900 font-mono">${found.phone} (업체: ${found.recommendedPhone})</strong>
+                  <span class="text-slate-400 block text-[10px]">발주처 / 업체 연락처</span>
+                  <strong class="text-xs text-slate-900 font-mono">${found.phone} / ${found.companyPhone}</strong>
                 </div>
                 <div class="bg-white p-2 rounded-lg border border-amber-200">
                   <span class="text-slate-400 block text-[10px]">이메일</span>
@@ -1717,59 +1031,37 @@
             </div>
           </div>
 
-          <!-- ★ 과제개요 핵심 2 & 관련업무: 물품관련 의견, 선호도를 행정기관과 소통 (발주계획 수립·조정·협의·지원) ★ -->
-          <div class="p-3.5 rounded-xl bg-white border-2 border-slate-200 space-y-3">
+          <!-- 3. 행정기관 물품 선호도 및 의견 소통 -->
+          <div class="p-3.5 rounded-xl bg-white border-2 border-slate-200 space-y-2.5">
             <div class="flex items-center justify-between">
-              <div>
-                <h5 class="text-xs font-extrabold text-slate-900">💬 행정기관 선호도 및 발주계획 수립·조정·협의 소통</h5>
-                <p class="text-[11px] text-slate-500">해당 물품 관련 의견과 선호도를 행정기관과 실시간으로 공유합니다.</p>
-              </div>
-              <div class="text-right">
-                <div class="text-sm font-extrabold text-amber-600">★ ${fb.rating} / 5.0</div>
-                <div class="text-[10px] text-slate-500">행정기관 선호도 ${fb.preferPct}% (${fb.votes}명)</div>
-              </div>
+              <span class="text-xs font-extrabold text-slate-900">💬 물품 관련 의견 · 선호도 행정기관 소통</span>
+              <span class="text-xs font-extrabold text-amber-600">★ ${fb.rating} / 5.0 (선호도 ${fb.preferPct}%)</span>
             </div>
 
-            <div class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 text-xs">
-              <span class="font-semibold text-slate-700">선호도 평가:</span>
+            <div class="flex items-center justify-between bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-xs">
+              <span class="font-semibold text-slate-700">선호도 선택:</span>
               <div class="flex items-center gap-1">
-                <button onclick="voteItemPreference('${found.uid}', 5)" class="px-2 py-1 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px]">★5 적극선호</button>
+                <button onclick="voteItemPreference('${found.uid}', 5)" class="px-2 py-1 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px]">★5 선호</button>
                 <button onclick="voteItemPreference('${found.uid}', 4)" class="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px]">★4 적합</button>
                 <button onclick="voteItemPreference('${found.uid}', 3)" class="px-2 py-1 rounded bg-slate-600 hover:bg-slate-700 text-white font-bold text-[11px]">★3 보통</button>
               </div>
             </div>
 
-            <div class="space-y-1.5">
-              <div class="grid grid-cols-2 gap-1.5">
-                <input id="opinionAgencyInput" type="text" placeholder="소속 행정기관명 (예: 조달청)" value="${found.agency}"
-                  class="px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg" />
-                <select id="opinionTypeInput" class="px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white">
-                  <option value="발주계획 수립·조정">발주계획 수립·조정</option>
-                  <option value="사전규격·사진 비교협의">사전규격·사진 비교협의</option>
-                  <option value="물품 선호도·품질의견">물품 선호도·품질의견</option>
-                </select>
-              </div>
-              <div class="flex gap-1.5">
-                <input id="opinionTextInput" type="text" placeholder="발주계획 예산·규격 조정 의견 또는 물품 선호 의견을 입력하세요..."
-                  class="flex-1 px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg" />
-                <button onclick="submitAgencyOpinion('${found.uid}')"
-                  class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg whitespace-nowrap">
-                  의견 등록
-                </button>
-              </div>
+            <div class="flex gap-1.5">
+              <input id="opinionAgencyInput" type="text" placeholder="행정기관명" value="${found.agency}"
+                class="w-28 px-2 py-1.5 text-xs border border-slate-300 rounded-lg" />
+              <input id="opinionTextInput" type="text" placeholder="물품 관련 의견 또는 발주 협의 내용 입력..."
+                class="flex-1 px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg" />
+              <button onclick="submitAgencyOpinion('${found.uid}')"
+                class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg whitespace-nowrap">
+                등록
+              </button>
             </div>
 
-            <div class="space-y-1.5 max-h-36 overflow-y-auto">
+            <div class="space-y-1.5 max-h-32 overflow-y-auto">
               ${commentsHtml}
             </div>
           </div>
-        </div>
-
-        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-          <span>조달데이터 OpenAPI + 물품사진 비교·소통 연동</span>
-          <a href="https://www.g2b.go.kr" target="_blank" rel="noopener" class="text-emerald-700 font-bold hover:underline">
-            나라장터 바로가기 ↗
-          </a>
         </div>
       `;
     }
@@ -1779,7 +1071,7 @@
       document.getElementById("detailCardContent").innerHTML = `
         <div class="py-20 text-center text-slate-400 text-sm space-y-1">
           <div class="font-bold text-slate-500">선택된 항목이 없습니다 (0건)</div>
-          <div class="text-xs">API 실시간 조회 후 좌측 목록에서 항목을 클릭하면 <strong>발주계획 예산 시뮬레이션, 조달물품 사진 비교, 회사명·제품명·연락처, 행정기관 선호도·의견 소통창</strong>이 표시됩니다.</div>
+          <div class="text-xs">[실시간 조회] 후 좌측 목록에서 항목을 클릭하면 <strong>조달물품 비교 사진, 회사명, 제품명, 연락처, 행정기관 선호도·의견</strong>이 표시됩니다.</div>
         </div>
       `;
     }
@@ -1787,34 +1079,27 @@
     function updateAnalysisChart() {
       const mode = document.getElementById("analysisType").value;
       const titleEl = document.getElementById("chartTitle");
-      const isCatalog = currentTab === "catalog";
       const groupMap = {};
 
       if (mode === "agency") {
-        titleEl.textContent = isCatalog
-          ? "제조업체/공급사별 등록 품목 건수 TOP 10"
-          : "기관 / 공급업체별 금액 상위 TOP 10 (단위: 백만 원)";
+        titleEl.textContent = "발주기관별 예산 분석 TOP 10 (단위: 백만 원)";
         filteredData.forEach(d => {
-          const key = d.agency || d.companyName;
-          groupMap[key] = (groupMap[key] || 0) + (isCatalog ? 1 : Math.round((Number(d.amount) || 0) / 1000000));
+          groupMap[d.agency] = (groupMap[d.agency] || 0) + Math.round((Number(d.amount) || 0) / 1000000);
         });
       } else if (mode === "category") {
-        titleEl.textContent = "조달물품 사진 분류 / 업무구분별 분석";
+        titleEl.textContent = "물품·용역·공사 구분별 예산 분석 (단위: 백만 원)";
         filteredData.forEach(d => {
-          const key = d.photoGroup || d.category;
-          groupMap[key] = (groupMap[key] || 0) + (isCatalog ? 1 : Math.round((Number(d.amount) || 0) / 1000000));
+          groupMap[d.category] = (groupMap[d.category] || 0) + Math.round((Number(d.amount) || 0) / 1000000);
         });
       } else if (mode === "method") {
-        titleEl.textContent = "계약방법 / 세부분류별 비중 분석";
+        titleEl.textContent = "계약방법별 발주예산 분석 (단위: 백만 원)";
         filteredData.forEach(d => {
-          const key = d.contractMethod || "기타";
-          groupMap[key] = (groupMap[key] || 0) + (isCatalog ? 1 : Math.round((Number(d.amount) || 0) / 1000000));
+          groupMap[d.contractMethod] = (groupMap[d.contractMethod] || 0) + Math.round((Number(d.amount) || 0) / 1000000);
         });
       } else {
-        titleEl.textContent = "일자별/월별 데이터 추이 분석";
+        titleEl.textContent = "일자별 발주계획 예산 추이 (단위: 백만 원)";
         [...filteredData].sort((a, b) => a.orderDate.localeCompare(b.orderDate)).forEach(d => {
-          const dt = d.orderDate || "2026-11";
-          groupMap[dt] = (groupMap[dt] || 0) + (isCatalog ? 1 : Math.round((Number(d.amount) || 0) / 1000000));
+          groupMap[d.orderDate] = (groupMap[d.orderDate] || 0) + Math.round((Number(d.amount) || 0) / 1000000);
         });
       }
 
@@ -1836,7 +1121,7 @@
         data: {
           labels,
           datasets: [{
-            label: isCatalog ? "건수" : "금액 (백만 원)",
+            label: "예산 (백만 원)",
             data: values,
             backgroundColor: [
               "rgba(37, 99, 235, 0.82)",
@@ -1855,29 +1140,21 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
         }
       });
     }
 
     function resetFilters() {
-      if (currentTab === "orderPlan") {
-        const range = getOrderPlanDefaultRange();
-        document.getElementById("startDate").value = range.startStr;
-        document.getElementById("endDate").value = range.endStr;
-      } else {
-        const oneMonth = getOneMonthRangeFromToday();
-        document.getElementById("startDate").value = oneMonth.startStr;
-        document.getElementById("endDate").value = oneMonth.endStr;
-      }
+      const end = new Date();
+      const start = new Date(end);
+      start.setMonth(start.getMonth() - 1);
+      document.getElementById("startDate").value = toDateInputString(start);
+      document.getElementById("endDate").value = toDateInputString(end);
       document.getElementById("categoryFilter").value = "ALL";
       document.getElementById("searchInput").value = "";
-      filterByPhotoCategory("ALL");
+      runLocalFilter();
     }
 
     window.addEventListener("DOMContentLoaded", () => {
@@ -1885,7 +1162,7 @@
       if (savedKey && savedKey !== BROKEN_DUMMY_KEY) {
         document.getElementById("serviceKeyInput").value = savedKey;
       }
-      switchTab("orderPlan", false);
+      resetFilters();
     });
   </script>
 </body>
